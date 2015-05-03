@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eno: 1
+  entity_type: MyString
+  entityid: MyString
+  x: 1
+  'y': 1
+  z: 1
+  has_well: MyString
+  has_samples: MyString
+  no_samples: 1
+  action: MyString
+  duplicate_group_id: 
+
+two:
+  eno: 1
+  entity_type: MyString
+  entityid: MyString
+  x: 1
+  'y': 1
+  z: 1
+  has_well: MyString
+  has_samples: MyString
+  no_samples: 1
+  action: MyString
+  duplicate_group_id: 
