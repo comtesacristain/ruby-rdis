@@ -1,7 +1,7 @@
 namespace :duplicate_manager do
   desc "TODO"
   task find_duplicates: :environment do
-    #find_duplicates
+    find_duplicates
   end
 
   desc "TODO"
@@ -11,13 +11,9 @@ namespace :duplicate_manager do
 
 end
 
-#def find_duplicates
-#  puts "Found duplicates"
-#  conn=OCI8.new(database.DATABASES['production']['USER'],database.DATABASES['production']['PASSWORD'],database.DATABASES['production']['NAME'])
+def find_duplicates
+  db=YAML.load_file('config/database.yml')
+  conn=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
+  connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null")
 
-#  conn.exec("alter session set nls_date_format='DD-MON-YYYY'")
-#  entities=conn.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null")
-
-
-  
-#end
+end
