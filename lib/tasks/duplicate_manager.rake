@@ -49,7 +49,6 @@ def insert_duplicates(duplicates) #kind
         duplicate.save
       end
     end
-    duplicate_group.num_dupes = duplicate_group.duplicates.count
     duplicate_group.save
   end
 end
