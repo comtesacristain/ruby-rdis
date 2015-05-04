@@ -22,12 +22,11 @@ def find_duplicates
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum <20") 
   cursor.fetch_hash do |row|
-    spatial_queries.keys.each do |k|
+    spatial_queries.each_key do |k|
       geom = to_sdo_string(row["GEOM"])
       statement=spatial_queries[k] % {:geom=>geom,:eno=>row["ENO"]}
-      puts statement
       results=connection.exec(statement)
-        duplicates = Array.new
+      duplicates = Array.new
       results.fetch_hash{ |r| duplicates.push(r)}
       if duplicates.count > 1
         insert_duplicates(duplicates,k)
