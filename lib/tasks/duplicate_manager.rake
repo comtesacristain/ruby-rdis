@@ -11,12 +11,12 @@ namespace :duplicate_manager do
 
 end
 
-exact = "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') and eno <> %{eno}"
+exact = "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 
 def find_duplicates
   db=YAML.load_file('config/database.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum <2")
+  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum <20") 
   cursor.fetch_hash do |row|
     geom = to_sdo_string(row["GEOM"])
     statement=exact % {:geom=>geom,:eno=>row["ENO"]}
@@ -28,8 +28,27 @@ def find_duplicates
   end
 end
 
-def insert_duplicates(duplicates)
-  puts duplicates
+def insert_duplicates(duplicates) #kind 
+  enos = duplicates.map{|d| d["ENO"]}
+  duplicate_groups = DuplicateGroup.includes(:duplicates).where(duplicates:{eno:enos}) #kind:kind
+  if duplicate_groups.exists?
+    duplicate_group=duplicate_groups.first
+  else
+    duplicate_group = DuplicateGroup.new
+    duplicate_group.save
+    duplicates.each do | d |
+      duplicate_set = duplicate_group.duplicates.where(eno:d["ENO"])
+      if duplicate_set.exists?
+        duplicate = duplicate_set.first
+      else
+        geometry=d["GEOM"].instance_variable_get("@attributes")
+        duplicate=Duplicate.create(eno:d["ENO"],entityid:d["ENTITYID"],entity_type:d["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],duplicate_group:duplicate_group)
+        duplicate.save
+      end
+    end
+    duplicate_group.num_dupes = duplicate_group.duplicates.count
+    duplicate_group.save
+  end
 end
 
 def to_sdo_string(sdo)
