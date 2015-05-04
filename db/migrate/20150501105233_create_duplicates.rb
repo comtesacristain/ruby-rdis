@@ -4,9 +4,9 @@ class CreateDuplicates < ActiveRecord::Migration
       t.integer :eno
       t.string :entity_type
       t.string :entityid
-      t.integer :x
-      t.integer :y
-      t.integer :z
+      t.float :x
+      t.float :y
+      t.float :z
       t.string :has_well
       t.string :has_samples
       t.integer :no_samples
