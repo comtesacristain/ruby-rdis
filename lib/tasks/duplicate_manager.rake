@@ -25,6 +25,7 @@ def find_duplicates
     spatial_queries.keys.each do |k|
       geom = to_sdo_string(row["GEOM"])
       statement=spatial_queries[k] % {:geom=>geom,:eno=>row["ENO"]}
+      puts statement
       results=connection.exec(statement)
         duplicates = Array.new
       results.fetch_hash{ |r| duplicates.push(r)}
