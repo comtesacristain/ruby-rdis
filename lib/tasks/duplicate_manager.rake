@@ -41,7 +41,7 @@ def insert_duplicates(duplicates,kind) #kind
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
-    duplicate_group = DuplicateGroup.new
+    duplicate_group = DuplicateGroup.create(kind:kind)
     duplicate_group.save
     duplicates.each do | d |
       duplicate_set = duplicate_group.duplicates.where(eno:d["ENO"])
