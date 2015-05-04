@@ -37,7 +37,7 @@ end
 
 def insert_duplicates(duplicates,kind) #kind 
   enos = duplicates.map{|d| d["ENO"]}
-  duplicate_groups = DuplicateGroup.includes(:duplicates).where(duplicates:{eno:enos,kind:kind}) #
+  duplicate_groups = DuplicateGroup.includes(:duplicates).where(duplicates:{eno:enos},kind:kind) #
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
