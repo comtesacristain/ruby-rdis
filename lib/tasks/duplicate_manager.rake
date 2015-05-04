@@ -16,6 +16,10 @@ def find_duplicates
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum < 20")
   cursor.fetch_hash do |row|
-    puts row
+    geom = to_sdo_string(row["GEOM"])
   end
+end
+
+def to_sdo_string(geom)
+  puts geom
 end
