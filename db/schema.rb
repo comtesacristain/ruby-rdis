@@ -14,7 +14,7 @@
 ActiveRecord::Schema.define(version: 20150501105233) do
 
   create_table "duplicate_groups", force: :cascade do |t|
-    t.string   "type"
+    t.string   "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
