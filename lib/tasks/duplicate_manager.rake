@@ -23,6 +23,7 @@ def find_duplicates
     geom = to_sdo_string(row["GEOM"])
     statement=exact % {:geom=>geom,:eno=>row["ENO"]}
     results=connection.exec(statement)
+    puts results.count
     duplicates = Array.new()
     results.fetch_hash{ |r| duplicates.push(r)}
     puts duplicates
