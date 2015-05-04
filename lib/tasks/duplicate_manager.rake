@@ -12,7 +12,7 @@ namespace :duplicate_manager do
 end
 
 def exact 
-  return "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+  return "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
 end
 
 def find_duplicates
@@ -23,11 +23,11 @@ def find_duplicates
     geom = to_sdo_string(row["GEOM"])
     statement=exact % {:geom=>geom,:eno=>row["ENO"]}
     results=connection.exec(statement)
-    duplicates = Array.new()
+    duplicates = Array.new
     results.fetch_hash{ |r| duplicates.push(r)}
-    puts duplicates
-    insert_duplicates(duplicates)
-
+    if duplicates.count > 1
+      insert_duplicates(duplicates)
+    end
   end
 end
 
