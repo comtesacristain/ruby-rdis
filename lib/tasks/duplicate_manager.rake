@@ -25,6 +25,7 @@ def find_duplicates
     results=connection.exec(statement)
     duplicates = Array.new()
     results.fetch_hash{ |r| duplicates.push(r)}
+    puts duplicates
     insert_duplicates(duplicates)
 
   end
