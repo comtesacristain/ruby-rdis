@@ -11,7 +11,9 @@ namespace :duplicate_manager do
 
 end
 
-exact = "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+def exact 
+  return "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+end
 
 def find_duplicates
   db=YAML.load_file('config/database.yml')
