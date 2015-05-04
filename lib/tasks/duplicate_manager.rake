@@ -18,7 +18,7 @@ end
 def find_duplicates
   db=YAML.load_file('config/oracle.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null <20") 
+  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum <20") 
   cursor.fetch_hash do |row|
     geom = to_sdo_string(row["GEOM"])
     statement=exact % {:geom=>geom,:eno=>row["ENO"]}
