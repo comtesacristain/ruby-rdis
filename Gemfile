@@ -7,7 +7,7 @@ gem 'rails', '4.2.1'
 gem 'sqlite3'
 
 gem 'ruby-oci8'
-gem 'activerecord-oracle_enhanced-adapter'
+gem 'activerecord-oracle_enhanced-adapter', '~> 1.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
