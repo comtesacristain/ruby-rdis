@@ -1,4 +1,3 @@
-require 'oci8'
 namespace :duplicate_manager do
   desc "TODO"
   task find_duplicates: :environment do
