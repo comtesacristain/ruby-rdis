@@ -11,8 +11,10 @@ namespace :duplicate_manager do
 
 end
 
-def exact 
-  return "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+def spatial_queries 
+  exact = "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+  hundred_metres = "select eno, entityid, geom, entity_type from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') and eno <> %{eno}"
+  return {:exact=>exact,:hundred_metres=>hundred_metres}
 end
 
 def find_duplicates
@@ -20,20 +22,22 @@ def find_duplicates
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum <20") 
   cursor.fetch_hash do |row|
-    geom = to_sdo_string(row["GEOM"])
-    statement=exact % {:geom=>geom,:eno=>row["ENO"]}
-    results=connection.exec(statement)
-    duplicates = Array.new
-    results.fetch_hash{ |r| duplicates.push(r)}
-    if duplicates.count > 1
-      insert_duplicates(duplicates)
+    spatial_queries.keys.each do |k|
+      geom = to_sdo_string(row["GEOM"])
+      statement=spatial_queries[k] % {:geom=>geom,:eno=>row["ENO"]}
+      results=connection.exec(statement)
+        duplicates = Array.new
+      results.fetch_hash{ |r| duplicates.push(r)}
+      if duplicates.count > 1
+        insert_duplicates(duplicates,k)
+      end
     end
   end
 end
 
-def insert_duplicates(duplicates) #kind 
+def insert_duplicates(duplicates,kind) #kind 
   enos = duplicates.map{|d| d["ENO"]}
-  duplicate_groups = DuplicateGroup.includes(:duplicates).where(duplicates:{eno:enos}) #kind:kind
+  duplicate_groups = DuplicateGroup.includes(:duplicates).where(duplicates:{eno:enos,kind:kind}) #
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
