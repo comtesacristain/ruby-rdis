@@ -82,7 +82,7 @@ def rank_well_and_drillhole(duplicates)
   end
     drillhole_names = drillhole_set.pluck(:entityid)
     if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
-       drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action_status=>'DELETE',:data_transferred_to=>well.eno
+       drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action_status=>'DELETE',:data_transferred_to=>well.eno)
     else
     end
     well.save   
