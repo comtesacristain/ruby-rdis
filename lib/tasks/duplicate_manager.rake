@@ -111,7 +111,7 @@ def rank_drillholes(duplicates)
 end
 
 def names_hash(names)
-  h=names.group_by {|n| strip_leading_zeros(n) }
+  return names.group_by {|n| strip_leading_zeros(n) }
 end
 
 def strip_leading_zeros(s)
