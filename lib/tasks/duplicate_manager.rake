@@ -80,6 +80,7 @@ def rank_well_and_drillhole(duplicates)
     well.action_status='KEEP'
   else
     rank_wells(well_set)
+	return
   end
   drillhole_names = drillhole_set.pluck(:entityid)
   if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
