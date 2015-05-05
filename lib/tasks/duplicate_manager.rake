@@ -114,7 +114,7 @@ def names_hash(names)
   h=names.group_by {|n| strip_leading_zeros(n) }
 end
 
-def strip_leading_zeros(s):
+def strip_leading_zeros(s)
     return s.gsub('(?<=[A-Z])+0+','')
 
 def parse_string(s)
