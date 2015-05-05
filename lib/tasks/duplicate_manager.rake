@@ -68,6 +68,7 @@ def rank_duplicates
       rank_wells(duplicates)
     elsif type_set.first =="DRILLHOLE"
       rank_drillholes(duplicates)
+    end
   end
 end
 
@@ -80,18 +81,22 @@ def rank_well_and_drillhole(duplicates)
   else
     rank_wells(well_set)
   end
-    drillhole_names = drillhole_set.pluck(:entityid)
-    if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
-       drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action_status=>'DELETE',:data_transferred_to=>well.eno)
-    else
-    end
-    well.save   
+  drillhole_names = drillhole_set.pluck(:entityid)
+  if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
+    drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action_status=>'DELETE',:data_transferred_to=>well.eno)
+  else
+    return
+  end
+  well.save
 end
 
 def rank_wells(duplicates)
+  return
 end
 def rank_drillholes(duplicates)
+  return
 end
+
 def parse_string(s)
     return s.downcase.gsub(/[\W_]+/,' ')
 end
