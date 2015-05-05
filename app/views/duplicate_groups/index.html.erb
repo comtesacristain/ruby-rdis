@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Duplicate Groups</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @duplicate_groups.each do |duplicate_group| %>
+      <tr>
+        <td><%= link_to 'Show', duplicate_group %></td>
+        <td><%= link_to 'Edit', edit_duplicate_group_path(duplicate_group) %></td>
+        <td><%= link_to 'Destroy', duplicate_group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Duplicate group', new_duplicate_group_path %>
