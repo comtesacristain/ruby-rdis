@@ -12,6 +12,8 @@
   <tbody>
     <% @duplicates.each do |duplicate| %>
       <tr>
+		<td><%=duplicate.eno%></td>
+		<td><%=duplicate.entityid%></td>
         <td><%= link_to 'Show', duplicate %></td>
         <td><%= link_to 'Edit', edit_duplicate_path(duplicate) %></td>
         <td><%= link_to 'Destroy', duplicate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
