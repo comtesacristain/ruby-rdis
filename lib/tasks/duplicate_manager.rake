@@ -106,7 +106,7 @@ def rank_drillholes(duplicates)
     dates = Hash[duplicates.map {|d| [d.eno, d.entity.entrydate]}]
     eno = dates.key(dates.values.min)
     duplicates.where(:eno=>eno).update_all(:action_status=>'KEEP')
-    duplicates.where(Duplicate.arel_table[:eno].not_in eno).update_all(a:ction_status=>'DELETE',:data_transferred_to=>eno)
+    duplicates.where(Duplicate.arel_table[:eno].not_in eno).update_all(:action_status=>'DELETE',:data_transferred_to=>eno)
   end
 end
 
