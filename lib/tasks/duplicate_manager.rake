@@ -95,8 +95,27 @@ def rank_wells(duplicates)
   return
 end
 def rank_drillholes(duplicates)
-  return
+  names = name_hash(duplicates.pluck(:entityid))
+  if names.size > 1
+    names.each do |k,v|
+      if v.size > 1
+        rank_drillholes(duplicates.where(:entityid=>v))
+      end
+    end 
+  elsif names.size ==1 
+    dates = Hash[duplicates.map {|d| [d.eno, d.entity.entrydate]}]
+    eno = dates.key(dates.values.min)
+    duplicates.where(:eno=>eno).update_all(:action_status=>'KEEP')
+    duplicates.where(Duplicate.arel_table[:eno].not_in eno).update_all(a:ction_status=>'DELETE',:data_transferred_to=>eno)
+  end
 end
+
+def names_hash(names)
+  h=names.group_by {|n| strip_leading_zeros(n) }
+end
+
+def strip_leading_zeros(s):
+    return s.gsub('(?<=[A-Z])+0+','')
 
 def parse_string(s)
     return s.downcase.gsub(/[\W_]+/,' ')
