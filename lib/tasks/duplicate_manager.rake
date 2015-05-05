@@ -116,7 +116,8 @@ end
 
 def strip_leading_zeros(s)
     return s.gsub('(?<=[A-Z])+0+','')
-
+end
+  
 def parse_string(s)
     return s.downcase.gsub(/[\W_]+/,' ')
 end
