@@ -6,7 +6,7 @@ namespace :duplicate_manager do
 
   desc "TODO"
   task rank_duplicates: :environment do
-    
+    rank_duplicates
   end
 
 end
@@ -55,6 +55,49 @@ def insert_duplicates(duplicates,kind) #kind
     end
     duplicate_group.save
   end
+end
+
+def rank_duplicates
+  duplicate_groups=DuplicateGroup.all
+  duplicate_groups.each do |duplicate_group|
+    duplicates = duplicate_group.duplicates
+    type_set=duplicates.pluck(:entity_type)
+    if type_set.size == 2
+      rank_well_and_drillhole(duplicates)
+    elsif type_set.first =="WELL"
+      rank_wells(duplicates)
+    elsif type_set.first =="DRILLHOLE"
+      rank_drillholes(duplicates)
+  end
+end
+
+def rank_well_and_drillhole(duplicates)
+  well_set = duplicates.where(:entity_type=>"WELL")
+  drillhole_set = duplicates.where(:entity_type=>"DRILLHOLE")
+  if well_set.size == 1
+    well=well_set.first
+    well.action_status='KEEP'
+  else
+    rank_wells(well_set)
+  end
+    drillhole_names = drillhole_set.pluck(:entityid)
+    if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
+       drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action_status=>'DELETE',:data_transferred_to=>well.eno
+    else
+    end
+    well.save   
+end
+
+def rank_wells(duplicates)
+end
+def rank_drillholes(duplicates)
+end
+def parse_string(s)
+    return s.downcase.gsub(/[\W_]+/,' ')
+end
+
+def regex_string(s)
+    return s.gsub('[\W_]+','%')
 end
 
 def to_sdo_string(sdo)
