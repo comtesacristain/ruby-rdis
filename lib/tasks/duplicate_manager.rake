@@ -95,7 +95,7 @@ def rank_wells(duplicates)
   return
 end
 def rank_drillholes(duplicates)
-  names = name_hash(duplicates.pluck(:entityid))
+  names = names_hash(duplicates.pluck(:entityid))
   if names.size > 1
     names.each do |k,v|
       if v.size > 1
