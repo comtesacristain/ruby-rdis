@@ -13,6 +13,11 @@ namespace :duplicate_manager do
   task rank_duplicates: :environment do
     rank_duplicates
   end
+  
+  desc "TODO"
+  task read_spreadsheet: :environment do
+    read_spreadsheet
+  end
 
 end
 
@@ -147,6 +152,11 @@ def rank_drillholes(boreholes)
     print delete
     boreholes.each {|b| b.save}
   end
+end
+
+def read_spreadsheet 
+  spreadsheet = '/nas/energy/ideas/RDIS/duplicate boreholes remediation/duplicate_boreholes_analysis_Jan2015.xlsx'
+  xlsx =Roo::Spreadsheet.open(spreadsheet)
 end
 
 def names_hash(names)
