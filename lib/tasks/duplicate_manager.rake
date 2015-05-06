@@ -56,6 +56,7 @@ def insert_duplicates(duplicates,kind) #kind
     duplicate_group=duplicate_groups.first
   else
     duplicate_group = Duplicate.create(kind:kind)
+    
     duplicate_group.save
   end
   duplicates.each do | d |
@@ -163,6 +164,8 @@ def read_spreadsheet
     olr = wb.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
     borehole.handler.olr_comment = olr
+    puts olr
+    borehole.handler.save
   end
 end
 
