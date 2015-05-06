@@ -4,6 +4,8 @@ namespace :duplicate_manager do
     find_duplicates
   end
 
+  
+
   desc "TODO"
   task rank_duplicates: :environment do
     rank_duplicates
@@ -12,7 +14,7 @@ namespace :duplicate_manager do
 end
 
 def query_terms
-  return "eno, entityid, entity_type, geom, access_code,confid_until,qa_status_code,qadate,acquisition_methodno,geom_original,parent,remark"
+  return "eno, entityid, entity_type, geom, access_code,confid_until,qa_status_code,qadate,acquisition_methodno,geom_original,parent,remark,qualifier"
 end
 
 def spatial_queries 
