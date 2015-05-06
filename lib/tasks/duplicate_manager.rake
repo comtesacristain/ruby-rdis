@@ -28,7 +28,7 @@ end
 def spatial_queries 
   exact = "select #{query_terms} from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
   hundred_metres = "select #{query_terms} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
-  return {:exact=>exact,:hundred_metres=>hundred_metres}
+  return {:hundred_metres=>hundred_metres}
 end
 
 def find_duplicates
