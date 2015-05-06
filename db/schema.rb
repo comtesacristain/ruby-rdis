@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150506150424) do
+ActiveRecord::Schema.define(version: 20150506150339) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -53,7 +53,16 @@ ActiveRecord::Schema.define(version: 20150506150424) do
     t.datetime "updated_at",     null: false
   end
 
-# Could not dump table "handlers" because of following NoMethodError
-#   undefined method `[]' for nil:NilClass
+  create_table "handlers", force: :cascade do |t|
+    t.string   "action"
+    t.string   "data_transferred_to"
+    t.string   "olr_status"
+    t.string   "olr_comment"
+    t.integer  "borehole_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "handlers", ["borehole_id"], name: "index_handlers_on_borehole_id"
 
 end
