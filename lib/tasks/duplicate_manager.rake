@@ -162,7 +162,7 @@ def parse_string(s)
 end
 
 def regex_string(s)
-    return s.gsub('[\W_]+','%')
+    return s.gsub(/[\W_]+/,'%')
 end
 
 def to_sdo_string(sdo)
