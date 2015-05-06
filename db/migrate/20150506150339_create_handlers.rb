@@ -5,7 +5,7 @@ class CreateHandlers < ActiveRecord::Migration
       t.string :data_transferred_to
       t.string :olr_status
       t.string :olr_comment
-
+      t.references :borehole, index: true, foreign_key: true
       t.timestamps null: false
     end
   end

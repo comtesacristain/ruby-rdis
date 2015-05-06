@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  action: MyString
+  data_transferred_to: MyString
+  olr_status: MyString
+  olr_comment: MyString
+
+two:
+  action: MyString
+  data_transferred_to: MyString
+  olr_status: MyString
+  olr_comment: MyString
