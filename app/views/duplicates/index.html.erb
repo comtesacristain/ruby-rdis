@@ -1,7 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Duplicates</h1>
-
+<h1>Listing Duplicate Groups</h1>
 <table>
   <thead>
     <tr>
@@ -12,16 +11,16 @@
   <tbody>
     <% @duplicates.each do |duplicate| %>
       <tr>
-		<td><%=duplicate.eno%></td>
-		<td><%=duplicate.entityid%></td>
+        <td><%=duplicate.boreholes.pluck(:entityid).to_sentence%></td>
         <td><%= link_to 'Show', duplicate %></td>
-        <td><%= link_to 'Edit', edit_duplicate_path(duplicate) %></td>
-        <td><%= link_to 'Destroy', duplicate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <!--<td><%= link_to 'Edit', edit_duplicate_path(duplicate) %></td>
+        <td><%= link_to 'Destroy', duplicate, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
+<%= will_paginate @duplicates %>
 
-<%= link_to 'New Duplicate', new_duplicate_path %>
+<%= link_to 'New Duplicate group', new_duplicate_path %>

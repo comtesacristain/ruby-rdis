@@ -1,1 +1,1 @@
-json.extract! @duplicate, :id, :created_at, :updated_at
+json.extract! @duplicate_group, :id, :created_at, :updated_at

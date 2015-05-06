@@ -1,10 +1,10 @@
-<%= form_for(@duplicate) do |f| %>
-  <% if @duplicate.errors.any? %>
+<%= form_for(@duplicate_group) do |f| %>
+  <% if @duplicate_group.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@duplicate.errors.count, "error") %> prohibited this duplicate from being saved:</h2>
+      <h2><%= pluralize(@duplicate_group.errors.count, "error") %> prohibited this duplicate_group from being saved:</h2>
 
       <ul>
-      <% @duplicate.errors.full_messages.each do |message| %>
+      <% @duplicate_group.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>

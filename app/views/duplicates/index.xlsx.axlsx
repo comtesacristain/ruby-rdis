@@ -2,11 +2,17 @@ wb = xlsx_package.workbook
 border_color = '000000'
 
 header_style= {  :alignment => { :horizontal => :center }, :bold => true, :b=>true }
-delete_style = { :bg_color =>'ffdddd'}
-unknown_style = { :bg_color =>'dddddd'}
-keep_style =  { :bg_color =>'ddffdd'}
+ styles_hash = {:delete=>{ :bg_color =>'ffdddd'},:keep=>{ :bg_color =>'ddffdd'},:unknown=>{ :bg_color =>'dddddd'}} 
+ styles={}                             
+styles_hash.each {|k,v| 
+styles[k]=Hash.new
+styles[k][:top]=wb.styles.add_style v.merge({:border => { :style => :thick, :color =>"FF000000", :edges => [:top] }})
+styles[k][:middle]=wb.styles.add_style v    
 
-row_styles = {:delete_style=>delete_style,u}
+
+}
+
+
 wb.add_worksheet(name: "Duplicates") do |sheet|
   sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","ACTION","TRANSFER DATA TO"], style: wb.styles.add_style(header_style)
   @duplicates.each.with_index(1) do |duplicate|
@@ -14,18 +20,19 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
   	boreholes.each_with_index do |borehole,i|
   	case borehole.action
   	when "DELETE"
-  	  row_style= delete_style
+  	  row_style= styles[:delete]
   	when "KEEP"
-  	row_style=keep_style
+  	row_style=styles[:keep]
   	else
-  	  row_style= unknown_style 
+  	  row_style= styles[:unknown]
   	end
   	if i ==0
-  		row_style.merge!({:border => { :style => :thick, :color =>"FF000000", :edges => [:top] }})
-    
+  		row_style=row_style[:top]
+      else
+    row_style=row_style[:middle]
   	end
 
-    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.action,borehole.data_transferred_to,i,boreholes.count,row_style], style:wb.styles.add_style(row_style)
+    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,borehole.action,borehole.data_transferred_to], style:row_style
     end
   end
 end
