@@ -4,7 +4,10 @@ namespace :duplicate_manager do
     find_duplicates
   end
 
-  
+  desc "TODO"
+  task update_duplicates :environment do
+    update_duplicates
+  end
 
   desc "TODO"
   task rank_duplicates: :environment do
@@ -66,6 +69,19 @@ def insert_duplicates(duplicates,kind) #kind
     end
     duplicate_group.save
   
+end
+
+def update_duplicates
+  
+  connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
+  boreholes = Borehole.all
+  boreholes.each do |borehole|
+    statement = "select #{query_terms} from a.entities e where eno =#{borehole.eno}"
+    cursor=connection.exec(statement)
+    row = cursor.fetch_hash
+    borehole.update(eno:row["ENO"],entityid:row["ENTITYID"],entity_type:row["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],access_code:row["ACCESS_CODE"],confid_until:row["CONFID_UNTIL"],qa_status_code:row["qa_status_code"],qadate:row["QADATE"],acquisition_methodno:row["ACQUISITION_METHODNO"],geom_original:to_sdo_string(row["GEOM_ORIGINAL"]),parent:row["PARENT"],remark:row["remark"],qualifier:row["QUALIFIER"])
+    borehole.save
+  end
 end
 
 def rank_duplicates
