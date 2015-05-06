@@ -163,9 +163,12 @@ def read_spreadsheet
     eno = sheet.row(row)[1]
     olr = sheet.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
+    if borehole.exists?
     borehole.handler.olr_comment = olr
-    puts olr
+ 
     borehole.handler.save
+  else
+    puts "#{eno}, #{olr}"
   end
 end
 
