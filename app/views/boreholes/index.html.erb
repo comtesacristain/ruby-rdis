@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Boreholes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Entity ID</th>
+      <th>Entity Type</th>
+      <th>Parent</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @boreholes.each do |borehole| %>
+      <tr>
+        <td><%= borehole.eno %></td>
+        <td><%= borehole.entityid %></td>
+        <td><%= borehole.entity_type %></td>
+         <td><%= borehole.parent %></td>
+       <!-- <td><%= link_to 'Destroy', borehole, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= will_paginate @boreholes %>
+
+<!--<%= link_to 'New Borehole', new_borehole_path %>-->

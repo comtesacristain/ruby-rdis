@@ -1,0 +1,17 @@
+<%= form_for(@borehole) do |f| %>
+  <% if @borehole.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@borehole.errors.count, "error") %> prohibited this borehole from being saved:</h2>
+
+      <ul>
+      <% @borehole.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

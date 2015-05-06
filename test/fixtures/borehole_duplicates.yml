@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  borehole_id: 
+  duplicate_group_id: 
+  action: MyString
+
+two:
+  borehole_id: 
+  duplicate_group_id: 
+  action: MyString

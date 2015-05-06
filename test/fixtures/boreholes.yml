@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eno: 
+  entityid: 
+  entity_type: 
+  x: 
+  'y': 
+  z: 
+  access_code: 
+  confid_until: 
+  qa_status_code: 
+  qadate: 
+  acquisition_methodno: 
+  geom_original: 
+  parent: 
+  remark: MyString
+
+two:
+  eno: 
+  entityid: 
+  entity_type: 
+  x: 
+  'y': 
+  z: 
+  access_code: 
+  confid_until: 
+  qa_status_code: 
+  qadate: 
+  acquisition_methodno: 
+  geom_original: 
+  parent: 
+  remark: MyString
