@@ -4,7 +4,22 @@ class DuplicatesController < ApplicationController
   # GET /duplicates
   # GET /duplicates.json
   def index
-    @duplicates = Duplicate.all
+    scope = Duplicate
+    unless params[:kind].nil?
+      scope=scope.where(:kind=>params[:kind])
+    end
+    unless params[:has_resolution].nil?
+      scope=scope.where(:has_resolution=>params[:has_resolution])
+    end
+    if request.format =='html'
+    @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
+else
+    @duplicates = scope.all
+end
+        respond_to do |format|
+      format.html
+      format.xlsx
+    end
   end
 
   # GET /duplicates/1
