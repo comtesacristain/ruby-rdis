@@ -5,7 +5,7 @@ namespace :duplicate_manager do
   end
 
   desc "TODO"
-  task update_duplicates :environment do
+  task update_duplicates: :environment do
     update_duplicates
   end
 
@@ -72,7 +72,6 @@ def insert_duplicates(duplicates,kind) #kind
 end
 
 def update_duplicates
-  
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   boreholes = Borehole.all
   boreholes.each do |borehole|
