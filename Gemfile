@@ -9,7 +9,11 @@ gem 'sqlite3'
 gem 'ruby-oci8'
 #gem 'activerecord-oracle_enhanced-adapter', '~> 1.5.0'
 #gem 'activerecord-oracle_enhanced-adapter', github: 'yahonda/oracle-enhanced', branch: 'rails42_fk_with_other_adapters' 
-gem 'activerecord-oracle_enhanced-adapter', git: 'git@github.com/yahonda/oracle-enhanced.git', branch: 'rails42_fk_with_other_adapters' 
+gem 'activerecord-oracle_enhanced-adapter', git: 'git@github.com:yahonda/oracle-enhanced.git', branch: 'rails42_fk_with_other_adapters' 
+gem 'will_paginate'
+
+gem 'axlsx_rails'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
