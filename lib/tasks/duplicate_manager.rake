@@ -72,6 +72,7 @@ def insert_duplicates(duplicates,kind) #kind
 end
 
 def update_duplicates
+    db=YAML.load_file('config/database.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   boreholes = Borehole.all
   boreholes.each do |borehole|
