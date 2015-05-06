@@ -158,10 +158,10 @@ end
 def read_spreadsheet 
   spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
   wb =Roo::Spreadsheet.open(spreadsheet)
-  wb.default_sheet = wb.sheet(0)
-  ((wb.first_row + 1)..wb.last_row).each do |row|
-    eno = wb.row(row)[1]
-    olr = wb.row(row)[4]
+  sheet = wb.sheet(0)
+  ((sheet.first_row + 1)..sheet.last_row).each do |row|
+    eno = sheet.row(row)[1]
+    olr = sheet.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
     borehole.handler.olr_comment = olr
     puts olr
