@@ -11,9 +11,13 @@ namespace :duplicate_manager do
 
 end
 
+def query_terms
+  return "eno, entityid, entity_type, geom, access_code,confid_until,qa_status_code,qadate,acquisition_methodno,geom_original,parent,remark"
+end
+
 def spatial_queries 
-  exact = "select eno, entityid, geom, entity_type from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
-  hundred_metres = "select eno, entityid, geom, entity_type from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+  exact = "select #{query_terms} from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+  hundred_metres = "select #{query_terms} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
   return {:exact=>exact,:hundred_metres=>hundred_metres}
 end
 
@@ -37,76 +41,91 @@ end
 
 def insert_duplicates(duplicates,kind) #kind 
   enos = duplicates.map{|d| d["ENO"]}
-  duplicate_groups = DuplicateGroup.includes(:duplicates).where(duplicates:{eno:enos},kind:kind) #
+  duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos},kind:kind) #
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
-    duplicate_group = DuplicateGroup.create(kind:kind)
+    duplicate_group = Duplicate.create(kind:kind)
     duplicate_group.save
-    duplicates.each do | d |
-      duplicate_set = duplicate_group.duplicates.where(eno:d["ENO"])
-      if duplicate_set.exists?
-        duplicate = duplicate_set.first
+  end
+  duplicates.each do | d |
+      boreholes = Borehole.where(eno:d["ENO"])
+      if boreholes.exists?
+        borehole = boreholes.first
       else
         geometry=d["GEOM"].instance_variable_get("@attributes")
-        duplicate=Duplicate.create(eno:d["ENO"],entityid:d["ENTITYID"],entity_type:d["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],duplicate_group:duplicate_group)
-        duplicate.save
+        borehole=Borehole.create(eno:d["ENO"],entityid:d["ENTITYID"],entity_type:d["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],access_code:d["ACCESS_CODE"],confid_until:d["CONFID_UNTIL"],qa_status_code:d["qa_status_code"],qadate:d["QADATE"],acquisition_methodno:d["ACQUISITION_METHODNO"],geom_original:to_sdo_string(d["GEOM_ORIGINAL"]),parent:d["PARENT"],remark:d["remark"])
+      end
+      borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
+      if borehole_duplicates.empty?
+        borehole_duplicate = borehole.borehole_duplicates.build(duplicate:duplicate_group)
+        borehole_duplicate.save
       end
     end
     duplicate_group.save
-  end
+  
 end
 
 def rank_duplicates
-  duplicate_groups=DuplicateGroup.all
+  duplicate_groups=Duplicate.all
   duplicate_groups.each do |duplicate_group|
-    duplicates = duplicate_group.duplicates
-    type_set=duplicates.pluck(:entity_type)
+    boreholes = duplicate_group.boreholes
+    type_set=boreholes.pluck(:entity_type)
     if type_set.size == 2
-      rank_well_and_drillhole(duplicates)
+      rank_well_and_drillhole(boreholes)
     elsif type_set.first =="WELL"
-      rank_wells(duplicates)
+      rank_wells(boreholes)
     elsif type_set.first =="DRILLHOLE"
-      rank_drillholes(duplicates)
+      rank_drillholes(boreholes)
     end
+    actions = duplicate_group.boreholes.pluck(:action)
+      if "DELETE".in?(actions)
+                duplicate_group.has_resolution = 'Y'
+                duplicate_group.save
+              end
   end
 end
 
-def rank_well_and_drillhole(duplicates)
-  well_set = duplicates.where(:entity_type=>"WELL")
-  drillhole_set = duplicates.where(:entity_type=>"DRILLHOLE")
+def rank_well_and_drillhole(boreholes)
+  well_set = boreholes.where(:entity_type=>"WELL")
+  drillhole_set = boreholes.where(:entity_type=>"DRILLHOLE")
   if well_set.size == 1
     well=well_set.first
-    well.action_status='KEEP'
+    well.action='KEEP'
   else
     rank_wells(well_set)
 	return
   end
   drillhole_names = drillhole_set.pluck(:entityid)
   if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
-    drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action_status=>'DELETE',:data_transferred_to=>well.eno)
+    drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action=>'DELETE',:data_transferred_to=>well.eno)
   else
     return
   end
   well.save
 end
 
-def rank_wells(duplicates)
+def rank_wells(boreholes)
   return
 end
-def rank_drillholes(duplicates)
-  names = names_hash(duplicates.pluck(:entityid))
+
+def rank_drillholes(boreholes)
+  names = names_hash(boreholes.pluck(:entityid))
   if names.size > 1
     names.each do |k,v|
       if v.size > 1
-        rank_drillholes(duplicates.where(:entityid=>v))
+        rank_drillholes(boreholes.where(:entityid=>v))
       end
     end 
   elsif names.size ==1 
-    dates = Hash[duplicates.map {|d| [d.eno, d.entity.entrydate]}]
+    dates = Hash[boreholes.map {|d| [d.eno, d.entity.entrydate]}]
     eno = dates.key(dates.values.min)
-    duplicates.where(:eno=>eno).update_all(:action_status=>'KEEP')
-    duplicates.where(Duplicate.arel_table[:eno].not_in eno).update_all(:action_status=>'DELETE',:data_transferred_to=>eno)
+    puts boreholes.pluck(:entityid)
+    keep=boreholes.where(:eno=>eno).update_all(:action=>'KEEP')
+    print keep
+    delete=boreholes.where(Borehole.arel_table[:eno].not_in eno).update_all(:action=>'DELETE',:data_transferred_to=>eno)
+    print delete
+    boreholes.each {|b| b.save}
   end
 end
 
