@@ -11,30 +11,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150501105233) do
+ActiveRecord::Schema.define(version: 20150506061605) do
 
-  create_table "duplicate_groups", force: :cascade do |t|
-    t.string   "kind"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "borehole_duplicates", force: :cascade do |t|
+    t.integer  "borehole_id"
+    t.integer  "duplicate_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
-  create_table "duplicates", force: :cascade do |t|
+  add_index "borehole_duplicates", ["borehole_id"], name: "index_borehole_duplicates_on_borehole_id"
+  add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
+
+  create_table "boreholes", force: :cascade do |t|
     t.integer  "eno"
-    t.string   "entity_type"
     t.string   "entityid"
+    t.string   "entity_type"
     t.float    "x"
     t.float    "y"
     t.float    "z"
-    t.string   "has_well"
-    t.string   "has_samples"
-    t.integer  "no_samples"
+    t.string   "access_code"
+    t.date     "confid_until"
+    t.string   "qa_status_code"
+    t.string   "qadate"
+    t.integer  "acquisition_methodno"
+    t.string   "geom_original"
+    t.integer  "parent"
+    t.string   "remark"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.string   "action"
-    t.integer  "duplicate_group_id"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.integer  "data_transferred_to"
+    t.string   "eid_qualifier"
   end
 
-  add_index "duplicates", ["duplicate_group_id"], name: "index_duplicates_on_duplicate_group_id"
+  create_table "duplicates", force: :cascade do |t|
+    t.string   "kind"
+    t.string   "has_resolution"
+    t.string   "qaed"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
 
 end
