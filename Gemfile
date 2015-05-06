@@ -13,7 +13,7 @@ gem 'activerecord-oracle_enhanced-adapter', git: 'git@github.com:yahonda/oracle-
 gem 'will_paginate'
 
 gem 'axlsx_rails'
-
+gem 'roo'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
