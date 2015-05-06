@@ -65,7 +65,7 @@ def insert_duplicates(duplicates,kind) #kind
       else
         geometry=d["GEOM"].instance_variable_get("@attributes")
         #TODO Add format row for insert routine
-        borehole=Borehole.create(eno:d["ENO"],entityid:d["ENTITYID"],entity_type:d["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],access_code:d["ACCESS_CODE"],confid_until:d["CONFID_UNTIL"],qa_status_code:d["QA_STATUS_CODE"],qadate:d["QADATE"],acquisition_methodno:d["ACQUISITION_METHODNO"],geom_original:to_sdo_string(d["GEOM_ORIGINAL"]),parent:d["PARENT"],remark:d["remark"],eid_qualifier:row["EID_QUALIFIER"])
+        borehole=Borehole.create(eno:d["ENO"],entityid:d["ENTITYID"],entity_type:d["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],access_code:d["ACCESS_CODE"],confid_until:d["CONFID_UNTIL"],qa_status_code:d["QA_STATUS_CODE"],qadate:d["QADATE"],acquisition_methodno:d["ACQUISITION_METHODNO"],geom_original:to_sdo_string(d["GEOM_ORIGINAL"]),parent:d["PARENT"],remark:d["remark"],eid_qualifier:d["EID_QUALIFIER"])
       end
       borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
       if borehole_duplicates.empty?
