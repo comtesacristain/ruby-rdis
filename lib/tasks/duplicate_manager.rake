@@ -155,7 +155,7 @@ def rank_drillholes(boreholes)
 end
 
 def read_spreadsheet 
-  spreadsheet = '/nas/energy/ideas/RDIS/duplicate boreholes remediation/duplicate_boreholes_analysis_Jan2015.xlsx'
+  spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
   xlsx =Roo::Spreadsheet.open(spreadsheet)
 end
 
