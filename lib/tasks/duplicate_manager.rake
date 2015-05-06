@@ -156,7 +156,14 @@ end
 
 def read_spreadsheet 
   spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
-  xlsx =Roo::Spreadsheet.open(spreadsheet)
+  wb =Roo::Spreadsheet.open(spreadsheet)
+  wb.default_sheet = wb.sheet(0)
+  ((wb.first_row + 1)..wb.last_row).each do |row|
+    eno = wb.row(row)[1]
+    olr = wb.row(row)[4]
+    borehole = Borehole.where(:eno=>eno).first
+    borehole.handler.olr_comment = olr
+  end
 end
 
 def names_hash(names)
