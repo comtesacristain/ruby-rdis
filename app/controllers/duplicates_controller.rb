@@ -5,11 +5,8 @@ class DuplicatesController < ApplicationController
   # GET /duplicates.json
   def index
     scope = Duplicate
-    unless params[:kind].nil?
-      scope=scope.where(:kind=>params[:kind])
-    end
-    unless params[:has_resolution].nil?
-      scope=scope.where(:has_resolution=>params[:has_resolution])
+    unless params[:has_remediation].nil?
+      scope=scope.where(:has_remediation=>params[:has_remediation])
     end
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
