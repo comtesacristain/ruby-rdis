@@ -146,7 +146,7 @@ def rank_drillholes(boreholes)
   elsif names.size ==1 
     dates = Hash[boreholes.map {|d| [d.eno, d.entity.entrydate]}]
     eno = dates.key(dates.values.min)
-    puts boreholes.pluck(:entityid)
+    puts boreholes.pluck(:entityid)/Users/michael/Desktop/Screen Shot 2015-05-07 at 10.53.52 am.png
     keep=boreholes.where(:eno=>eno).update_all(:action=>'KEEP')
     print keep
     delete=boreholes.where(Borehole.arel_table[:eno].not_in eno).update_all(:action=>'DELETE',:data_transferred_to=>eno)
@@ -164,12 +164,14 @@ def read_spreadsheet
     olr = sheet.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
     unless borehole.nil?
-      if borehole.handler.nil?
-        borehole.handler.create
-      end
-    borehole.handler.olr_comment = olr
+        if borehole.handler.nil?
+          handler=Handler.new
+        else
+          handler = borehole.handler
+        end
+    handler.olr_comment = olr
  
-    borehole.handler.sa nve
+    handler.save
     else
       puts "#{eno}, #{olr}"
     end
