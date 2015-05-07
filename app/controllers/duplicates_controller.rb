@@ -8,6 +8,9 @@ class DuplicatesController < ApplicationController
     unless params[:has_remediation].nil?
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
+    unless params[:olr_comment].nil?
+      scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_comment=>"#{params[:olr_comment]}"})
+    end
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
 else
