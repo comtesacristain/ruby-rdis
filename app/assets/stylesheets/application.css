@@ -385,3 +385,28 @@ td.number { white-space: nowrap; overflow: hidden; }
     white-space: nowrap; overflow: hidden;
     vertical-align: top;
 }
+
+
+#action_content {
+  overflow: -moz-scrollbars-horizontal;
+  overflow-x: auto;
+  overflow-y: hidden; }
+
+#content {
+  float: left;
+  background: white url(/assets/threecolbg.gif) repeat-y 66% 0;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px; }
+
+#main {
+  font-size: 90%;
+  float: left;
+  width: 65%;
+  padding-right: 2px; }
+
+#sidebar {
+  width: 33%;
+  float: right;
+  font-size: 0.8em;
+  color: #777777; }
