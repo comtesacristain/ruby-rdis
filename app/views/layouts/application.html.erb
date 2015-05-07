@@ -9,7 +9,7 @@
 <body>
 <div id='container'>
 	<div id='banner'></div>
-	<div id='topbar'></div>
+	<div id='topbar'><%= content_for :topbar %></div>
 	<div id='header'></div>
 	<div id='nav'></div>
 	<div id='content'>
@@ -20,7 +20,7 @@
 		  	</div>
   	  	</div>
 		<div id='sidebar'>
-<%= content_for :sidebar %>
+			<%= content_for :sidebar %>
 		</div>
 	</div>
 	<div id='footer'>
