@@ -21,4 +21,9 @@
 </table>
 
 <br>
+<% content_for(:sidebar) do %>
+    <p>
+		<%= render :partial => "duplicates/query" %>
+	</p>
+<% end %>
 <%= will_paginate @duplicates %>
