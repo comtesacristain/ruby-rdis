@@ -43,7 +43,9 @@
   </tr>
 <% end %>
 </table>
-
+<% content_for(:head) do %>
+  <%= stylesheet_link_tag    'duplicates', media: 'all', 'data-turbolinks-track' => true %>
+  <% end %>
 
 <%= link_to 'Edit', edit_duplicate_path(@duplicate) %> |
 <%= link_to 'Back', duplicate_path %>
