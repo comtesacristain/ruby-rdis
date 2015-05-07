@@ -146,7 +146,7 @@ def rank_drillholes(boreholes)
   elsif names.size ==1 
     dates = Hash[boreholes.map {|d| [d.eno, d.entity.entrydate]}]
     eno = dates.key(dates.values.min)
-    puts boreholes.pluck(:entityid)/Users/michael/Desktop/Screen Shot 2015-05-07 at 10.53.52 am.png
+    puts boreholes.pluck(:entityid)
     keep=boreholes.where(:eno=>eno).update_all(:action=>'KEEP')
     print keep
     delete=boreholes.where(Borehole.arel_table[:eno].not_in eno).update_all(:action=>'DELETE',:data_transferred_to=>eno)
