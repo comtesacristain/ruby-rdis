@@ -6,7 +6,7 @@
 		</tr>
 		<tr>
 			<td><%= label_tag :has_remediation, "Has remdiation:" %></td>
-			<td><%td= select_tag :has_remediation, {"All"=>nil,"Yes"=>"Y","No"=>"N"}]%></td>		
+			<td><%= select_tag :has_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:has_remediation])%></td>		
 		</tr>
 		<tr>
 			<td><%= label_tag :olr_comment, "OLR Comment:" %></td>
