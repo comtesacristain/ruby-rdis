@@ -167,8 +167,9 @@ def read_spreadsheet
     borehole.handler.olr_comment = olr
  
     borehole.handler.save
-  else
-    puts "#{eno}, #{olr}"
+    else
+      puts "#{eno}, #{olr}"
+    end
   end
 end
 
