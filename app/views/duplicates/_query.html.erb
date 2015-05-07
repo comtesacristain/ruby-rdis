@@ -4,6 +4,15 @@
 			<td><%= label_tag :name, "Borehole name:" %></td>
 			<td><%= text_field_tag :borehole_name, params[:borehole_name]%></td>
 		</tr>
+		<tr>
+			<td><%= label_tag :has_remediation, "Has remdiation:" %></td>
+			<td><%td= select_tag :has_remediation, {"All"=>nil,"Yes"=>"Y","No"=>"N"}]%></td>		
+		</tr>
+		<tr>
+			<td><%= label_tag :olr_comment, "OLR Comment:" %></td>
+			<td><%= text_field_tag :olr_comment, params[:olr_comment]%></td>		
+		</tr>
 	</table>
+	<%=submit_tag "Search", :name=>nil %>
 <% end %>
-blablabla
+
