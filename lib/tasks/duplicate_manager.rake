@@ -118,26 +118,26 @@ def rank_boreholes(boreholes)
   puts "Sorting the following: #{names}"
   if names.size > 1
     names.each do |k,v|
-      puts "#{name.size} duplicates detected. Splitting ..."
+      puts "#{names.size} duplicates detected. Splitting ..."
       rank_boreholes(boreholes.where(:entityid=>v))
     end
   else
+    puts "1 duplicate detected"
     if boreholes.size > 1
       puts "#{boreholes.size} boreholes detected ..."
       types =  boreholes.pluck(:entity_type).uniq
       puts "Types: #{types}"
       if types.size > 1
-        
+        puts "#{types.size} types detected" 
         well_set = boreholes.where(:entity_type=>'WELL')
-        drillhole_set = boreholes.where(:entity_type=>'WELL')
+        drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
         if well_set.size > 1
           well = rank_boreholes(well_set)
         else
           well = well_set.first
         end
         drillhole_set.each {|b| b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>well.eno})}
-        well.handler.auto_remediation='KEEP'
-        well.save
+        well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
         return well
       else
         dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
