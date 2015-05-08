@@ -24,7 +24,7 @@
 	  </tr>
   
   <% @duplicate.boreholes.each do |borehole| %>
-  <% row_class = get_row_class(borehole.action) %>
+  <% row_class = get_row_class(borehole.handler.auto_remediation) %>
   <tr class='<%= row_class%>'>
 	  <td><%=borehole.eno%></td>
 	  <td><%=borehole.entityid%></td>
@@ -36,8 +36,8 @@
 
 	  <td><%=borehole.entity.samples.count%></td>
 
-	  <td><%=borehole.action%></td>
-	  <td><%=borehole.data_transferred_to%></td>
+	  <td><%=borehole.handler.auto_remediation%></td>
+	  <td><%=borehole.handler.auto_transfer%></td>
 	  <td><%=borehole.handler.olr_comment unless borehole.handler.nil?%>
 	  
   </tr>
