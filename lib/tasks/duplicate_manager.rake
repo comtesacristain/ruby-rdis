@@ -52,8 +52,7 @@ end
 def find_duplicates
   db=YAML.load_file('config/database.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null and rownum <1000
-  ") 
+  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null ") 
   cursor.fetch_hash do |row|
     geom = to_sdo_string(row["GEOM"])
     statement=spatial_query % {:geom=>geom,:eno=>row["ENO"]}
@@ -72,7 +71,7 @@ def insert_duplicates(duplicates)
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
-    duplicate_group = Duplicate.new
+    duplicate_group = Duplicate.new(:has_remediation=>'N')
   end
   duplicates.each do | d |
       boreholes = Borehole.where(eno:d["ENO"])
