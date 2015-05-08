@@ -32,7 +32,7 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
     row_style=row_style[:middle]
   	end
 
-    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,borehole.action,borehole.data_transferred_to], style:row_style
+    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,borehole.handler.auto_remediation,borehole.handler.auto_transfer], style:row_style
     end
   end
 end
