@@ -110,32 +110,24 @@ def rank_duplicates
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
     puts rank_boreholes(boreholes)
-    # type_set=boreholes.pluck(:entity_type)
-#     if type_set.size == 2
-#       rank_well_and_drillhole(boreholes)
-#     elsif type_set.first =="WELL"
-#       rank_wells(boreholes)
-#     elsif type_set.first =="DRILLHOLE"
-#       rank_drillholes(boreholes)
-#     end
-    # actions = duplicate_group.boreholes.pluck(:action)
-    #   if "DELETE".in?(actions)
-    #             duplicate_group.has_resolution = 'Y'
-    #             duplicate_group.save
-    #           end
   end
 end
 
 def rank_boreholes(boreholes)
   names = names_hash(boreholes.pluck(:entityid).uniq)
+  puts "Sorting the following: #{names}"
   if names.size > 1
     names.each do |k,v|
+      puts "#{name.size} duplicates detected. Splitting ..."
       rank_boreholes(boreholes.where(:entityid=>v))
     end
   else
     if boreholes.size > 1
+      puts "#{boreholes.size} boreholes detected ..."
       types =  boreholes.pluck(:entity_type).uniq
+      puts "Types: #{types}"
       if types.size > 1
+        
         well_set = boreholes.where(:entity_type=>'WELL')
         drillhole_set = boreholes.where(:entity_type=>'WELL')
         if well_set.size > 1
