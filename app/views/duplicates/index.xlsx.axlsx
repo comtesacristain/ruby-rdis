@@ -18,7 +18,7 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
   @duplicates.each.with_index(1) do |duplicate|
   	boreholes= duplicate.boreholes
   	boreholes.each_with_index do |borehole,i|
-  	case borehole.action
+  	case borehole.handler.auto_remediation
   	when "DELETE"
   	  row_style= styles[:delete]
   	when "KEEP"
