@@ -22,51 +22,63 @@ namespace :duplicate_manager do
 end
 
 def query_terms
-  return "eno, entityid, entity_type, geom, access_code,confid_until,qa_status_code,qadate,acquisition_methodno,geom_original,parent,remark,eid_qualifier"
+  return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
 end
 
-def spatial_queries 
-  exact = "select #{query_terms} from a.entities e where sdo_equal(e.geom,%{geom})='TRUE' and entity_type in ('DRILLHOLE','WELL') "
-  hundred_metres = "select #{query_terms} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
-  return {:hundred_metres=>hundred_metres}
+def query_string
+  return query_terms.join(",")
+end
+
+def borehole_attr_hash(row)
+  h =Hash.new
+  query_terms.each do |qt|
+    if qt == :geom
+      geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
+      geom_hash = {:x=>geometry[:sdo_point].instance_variable_get("@attributes")[:x],:y=>geometry[:sdo_point].instance_variable_get("@attributes")[:y],:z=>geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
+      h.merge!(geom_hash)
+    elsif qt == :geom_original
+      h[qt] = to_sdo_string(row[qt.to_s.upcase])
+    else
+      h[qt] = row[qt.to_s.upcase]
+    end
+  end
+  return h
+end
+
+def spatial_query
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
 end
 
 def find_duplicates
   db=YAML.load_file('config/database.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null") 
+  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null <20") 
   cursor.fetch_hash do |row|
-    spatial_queries.each_key do |k|
-      geom = to_sdo_string(row["GEOM"])
-      statement=spatial_queries[k] % {:geom=>geom,:eno=>row["ENO"]}
-      results=connection.exec(statement)
-      duplicates = Array.new
-      results.fetch_hash{ |r| duplicates.push(r)}
-      if duplicates.count > 1
-        insert_duplicates(duplicates,k)
-      end
+    geom = to_sdo_string(row["GEOM"])
+    statement=spatial_query % {:geom=>geom,:eno=>row["ENO"]}
+    results=connection.exec(statement)
+    duplicates = Array.new
+    results.fetch_hash{ |r| duplicates.push(r)}
+    if duplicates.count > 1
+      insert_duplicates(duplicates)
     end
   end
 end
 
-def insert_duplicates(duplicates,kind) #kind 
+def insert_duplicates(duplicates) 
   enos = duplicates.map{|d| d["ENO"]}
-  duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos},kind:kind) #
+  duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
-    duplicate_group = Duplicate.create(kind:kind)
-    
-    duplicate_group.save
+    duplicate_group = Duplicate.new
   end
   duplicates.each do | d |
       boreholes = Borehole.where(eno:d["ENO"])
       if boreholes.exists?
         borehole = boreholes.first
       else
-        geometry=d["GEOM"].instance_variable_get("@attributes")
-        #TODO Add format row for insert routine
-        borehole=Borehole.create(eno:d["ENO"],entityid:d["ENTITYID"],entity_type:d["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],access_code:d["ACCESS_CODE"],confid_until:d["CONFID_UNTIL"],qa_status_code:d["QA_STATUS_CODE"],qadate:d["QADATE"],acquisition_methodno:d["ACQUISITION_METHODNO"],geom_original:to_sdo_string(d["GEOM_ORIGINAL"]),parent:d["PARENT"],remark:d["remark"],eid_qualifier:d["EID_QUALIFIER"])
+        borehole=Borehole.create(borehole_attr_hash(d))
       end
       borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
       if borehole_duplicates.empty?
@@ -83,11 +95,10 @@ def update_duplicates
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   boreholes = Borehole.all
   boreholes.each do |borehole|
-    statement = "select #{query_terms} from a.entities e where eno =#{borehole.eno}"
+    statement = "select #{query_string} from a.entities e where eno =#{borehole.eno}"
     cursor=connection.exec(statement)
     row = cursor.fetch_hash
-    geometry = row["GEOM"].instance_variable_get("@attributes")
-    borehole.update(eno:row["ENO"],entityid:row["ENTITYID"],entity_type:row["ENTITY_TYPE"],x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z],access_code:row["ACCESS_CODE"],confid_until:row["CONFID_UNTIL"],qa_status_code:row["qa_status_code"],qadate:row["QADATE"],acquisition_methodno:row["ACQUISITION_METHODNO"],geom_original:to_sdo_string(row["GEOM_ORIGINAL"]),parent:row["PARENT"],remark:row["remark"],eid_qualifier:row["EID_QUALIFIER"])
+    borehole.update(borehole_attr_hash(row))
     borehole.save
   end
 end
