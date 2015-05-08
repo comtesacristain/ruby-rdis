@@ -159,49 +159,10 @@ def rank_boreholes(boreholes)
       end
     else
       boreholes.first.handler.auto_remediation="NONE"
+      boreholes.first.handler.save
       return nil
     end
   end
-end
-
-
-def rank_drillholes(boreholes)
-  names = names_hash(boreholes.pluck(:entityid))
-  if names.size > 1
-    names.each do |k,v|
-      if v.size > 1
-        rank_drillholes(boreholes.where(:entityid=>v))
-      end
-    end 
-  elsif names.size ==1 
-    dates = Hash[boreholes.map {|d| [d.eno, d.entity.entrydate]}]
-    eno = dates.key(dates.values.min)
-    puts boreholes.pluck(:entityid)
-    keep=boreholes.where(:eno=>eno).update_all(:action=>'KEEP')
-    print keep
-    delete=boreholes.where(Borehole.arel_table[:eno].not_in eno).update_all(:action=>'DELETE',:data_transferred_to=>eno)
-    print delete
-    boreholes.each {|b| b.save}
-  end
-end
-
-def rank_well_and_drillhole(boreholes)
-  well_set = boreholes.where(:entity_type=>"WELL")
-  drillhole_set = boreholes.where(:entity_type=>"DRILLHOLE")
-  if well_set.size == 1
-    well=well_set.first
-    well.action='KEEP'
-  else
-    rank_wells(well_set)
-	return
-  end
-  drillhole_names = drillhole_set.pluck(:entityid)
-  if parse_string(well.entityid).in?(drillhole_names.map{|d| parse_string(d)} )
-    drillhole_set.where('entityid like :name',:name=>regex_string(well.entityid)).update_all(:action=>'DELETE',:data_transferred_to=>well.eno)
-  else
-    return
-  end
-  well.save
 end
 
 
