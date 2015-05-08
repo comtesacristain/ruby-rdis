@@ -15,8 +15,8 @@ module DuplicatesHelper
 
 	end
 
-	def get_row_class(action_status)
-		case action_status
+	def get_row_class(auto_remediation)
+		case auto_remediation
 		when "DELETE"
 			return :delete
 		when "KEEP"
