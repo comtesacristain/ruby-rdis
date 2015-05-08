@@ -109,7 +109,7 @@ def rank_duplicates
   duplicate_groups=Duplicate.all
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
-    rank_boreholes(boreholes)
+    puts rank_boreholes(boreholes)
     # type_set=boreholes.pluck(:entity_type)
 #     if type_set.size == 2
 #       rank_well_and_drillhole(boreholes)
@@ -130,14 +130,58 @@ def rank_boreholes(boreholes)
   names = names_hash(boreholes.pluck(:entityid).uniq)
   if names.size > 1
     names.each do |k,v|
-      rank_boreholes(borehole.where(:entityid=>v))
+      rank_boreholes(boreholes.where(:entityid=>v))
     end
   else
     if boreholes.size > 1
-    
+      types =  boreholes.pluck(:entity_type).uniq
+      if types.size > 1
+        well_set = boreholes.where(:entity_type=>'WELL')
+        drillhole_set = boreholes.where(:entity_type=>'WELL')
+        if well_set.size > 1
+          well = rank_boreholes(well_set)
+        else
+          well = well_set.first
+        end
+        drillhole_set.each {|b| b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>well.eno})}
+        well.handler.auto_remediation='KEEP'
+        well.save
+        return well
+      else
+        dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
+        eno = dates.key(dates.values.min)
+        delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
+        delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
+        keep=boreholes.where(:eno=>eno).first
+        keep.handler.auto_remediation='KEEP'
+        keep.save
+        return keep
+      end
     else
       boreholes.first.handler.auto_remediation="NONE"
+      return nil
     end
+  end
+end
+
+
+def rank_drillholes(boreholes)
+  names = names_hash(boreholes.pluck(:entityid))
+  if names.size > 1
+    names.each do |k,v|
+      if v.size > 1
+        rank_drillholes(boreholes.where(:entityid=>v))
+      end
+    end 
+  elsif names.size ==1 
+    dates = Hash[boreholes.map {|d| [d.eno, d.entity.entrydate]}]
+    eno = dates.key(dates.values.min)
+    puts boreholes.pluck(:entityid)
+    keep=boreholes.where(:eno=>eno).update_all(:action=>'KEEP')
+    print keep
+    delete=boreholes.where(Borehole.arel_table[:eno].not_in eno).update_all(:action=>'DELETE',:data_transferred_to=>eno)
+    print delete
+    boreholes.each {|b| b.save}
   end
 end
 
@@ -160,29 +204,8 @@ def rank_well_and_drillhole(boreholes)
   well.save
 end
 
-def rank_wells(boreholes)
-  return
-end
 
-def rank_drillholes(boreholes)
-  names = names_hash(boreholes.pluck(:entityid))
-  if names.size > 1
-    names.each do |k,v|
-      if v.size > 1
-        rank_drillholes(boreholes.where(:entityid=>v))
-      end
-    end 
-  elsif names.size ==1 
-    dates = Hash[boreholes.map {|d| [d.eno, d.entity.entrydate]}]
-    eno = dates.key(dates.values.min)
-    puts boreholes.pluck(:entityid)
-    keep=boreholes.where(:eno=>eno).update_all(:action=>'KEEP')
-    print keep
-    delete=boreholes.where(Borehole.arel_table[:eno].not_in eno).update_all(:action=>'DELETE',:data_transferred_to=>eno)
-    print delete
-    boreholes.each {|b| b.save}
-  end
-end
+
 
 def read_spreadsheet 
   spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
