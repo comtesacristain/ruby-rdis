@@ -109,17 +109,24 @@ def rank_duplicates
   duplicate_groups=Duplicate.all
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
-    puts rank_boreholes(boreholes)
+      auto_rank(boreholes)
+      #olr_rank(boreholes)
+      auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
+      if "DELETE".in?(auto_remediations)
+        duplicate_group.update(:has_remediation=>'Y')
+      end
+        
+
   end
 end
 
-def rank_boreholes(boreholes)
+def auto_rank(boreholes)
   names = names_hash(boreholes.pluck(:entityid).uniq)
   puts "Sorting the following: #{names}"
   if names.size > 1
     names.each do |k,v|
       puts "#{names.size} duplicates detected. Splitting ..."
-      rank_boreholes(boreholes.where(:entityid=>v))
+      auto_rank(boreholes.where(:entityid=>v))
     end
   else
     puts "1 duplicate detected"
@@ -132,7 +139,7 @@ def rank_boreholes(boreholes)
         well_set = boreholes.where(:entity_type=>'WELL')
         drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
         if well_set.size > 1
-          well = rank_boreholes(well_set)
+          well = auto_rank(well_set)
         else
           well = well_set.first
         end
