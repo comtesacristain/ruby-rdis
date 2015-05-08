@@ -80,6 +80,8 @@ def insert_duplicates(duplicates)
         borehole = boreholes.first
       else
         borehole=Borehole.create(borehole_attr_hash(d))
+        handler= Handler.new
+        borehole.handler = handler # Each borehole must come with a handler
       end
       borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
       if borehole_duplicates.empty?
@@ -88,11 +90,10 @@ def insert_duplicates(duplicates)
       end
     end
     duplicate_group.save
-  
 end
 
 def update_duplicates
-    db=YAML.load_file('config/database.yml')
+  db=YAML.load_file('config/database.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   boreholes = Borehole.all
   boreholes.each do |borehole|
@@ -108,19 +109,35 @@ def rank_duplicates
   duplicate_groups=Duplicate.all
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
-    type_set=boreholes.pluck(:entity_type)
-    if type_set.size == 2
-      rank_well_and_drillhole(boreholes)
-    elsif type_set.first =="WELL"
-      rank_wells(boreholes)
-    elsif type_set.first =="DRILLHOLE"
-      rank_drillholes(boreholes)
+    rank_boreholes(boreholes)
+    # type_set=boreholes.pluck(:entity_type)
+#     if type_set.size == 2
+#       rank_well_and_drillhole(boreholes)
+#     elsif type_set.first =="WELL"
+#       rank_wells(boreholes)
+#     elsif type_set.first =="DRILLHOLE"
+#       rank_drillholes(boreholes)
+#     end
+    # actions = duplicate_group.boreholes.pluck(:action)
+    #   if "DELETE".in?(actions)
+    #             duplicate_group.has_resolution = 'Y'
+    #             duplicate_group.save
+    #           end
+  end
+end
+
+def rank_boreholes(boreholes)
+  names = names_hash(boreholes.pluck(:entityid).uniq)
+  if names.size > 1
+    names.each do |k,v|
+      rank_boreholes(borehole.where(:entityid=>v))
     end
-    actions = duplicate_group.boreholes.pluck(:action)
-      if "DELETE".in?(actions)
-                duplicate_group.has_resolution = 'Y'
-                duplicate_group.save
-              end
+  else
+    if boreholes.size > 1
+    
+    else
+      boreholes.first.handler.auto_remediation="NONE"
+    end
   end
 end
 
@@ -191,6 +208,7 @@ def read_spreadsheet
   end
 end
 
+#TODO: Refactor this
 def names_hash(names)
   return names.group_by {|n| strip_leading_zeros(n) }
 end
