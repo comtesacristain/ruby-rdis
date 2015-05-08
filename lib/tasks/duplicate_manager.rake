@@ -152,8 +152,7 @@ def auto_rank(boreholes)
         delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
         delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
         keep=boreholes.where(:eno=>eno).first
-        keep.handler.auto_remediation='KEEP'
-        keep.save
+        keep.handler.update(:auto_remediation=>'KEEP')
         return keep
       end
     else
