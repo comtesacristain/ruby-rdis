@@ -5,10 +5,10 @@ class DuplicatesController < ApplicationController
   # GET /duplicates.json
   def index
     scope = Duplicate
-    unless params[:has_remediation].nil?
+    unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
-    unless params[:olr_comment].nil?
+    unless params[:olr_comment].blank?
       scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_comment=>"#{params[:olr_comment]}"})
     end
     if request.format =='html'
