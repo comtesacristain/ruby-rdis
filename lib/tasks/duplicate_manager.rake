@@ -126,9 +126,27 @@ def rank_duplicates
       auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
       if "DELETE".in?(auto_remediations)
         duplicate_group.update(:has_remediation=>'Y')
+      else
+        duplicate_group.update(:has_remediation=>'N')
       end
         
 
+  end
+  duplicates=Duplicate.where(:has_remediation=>'N')
+  duplicates.each do |d|
+    boreholes=d.boreholes
+    if boreholes.count ==2 
+      statuses =boreholes.includes(:handler).pluck(:olr_status)
+      if !"no".in?(statuses)  or "duplicate".in(statuses)
+        rank_set(boreholes)
+      end
+    end
+    auto_remediations = d.boreholes.includes(:handler).pluck(:auto_remediation)
+    if "DELETE".in?(auto_remediations)
+      duplicate_group.update(:has_remediation=>'Y')
+    else
+      duplicate_group.update(:has_remediation=>'N')
+    end
   end
 end
 
@@ -187,8 +205,61 @@ def auto_rank(boreholes)
   end
 end
 
+def rank_set(boreholes)
+  puts "1 duplicate detected"
+  if boreholes.size > 1
+    puts "#{boreholes.size} boreholes detected ..."
+    types =  boreholes.pluck(:entity_type).uniq
+    puts "Types: #{types}"
+    if types.size > 1
+      puts "#{types.size} types detected" 
+      well_set = boreholes.where(:entity_type=>'WELL')
+      drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
+      if well_set.size > 1
+        well = rank_set(well_set)
+      else
+        well = well_set.first
+      end
+      drillhole_set.each {|b| b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>well.eno})}
+      well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
+      return well
+    else
+      dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
+      eno = dates.key(dates.values.min)
+      delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
+      delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
+      keep=boreholes.where(:eno=>eno).first
+      keep.handler.update(:auto_remediation=>'KEEP')
+      return keep
+    end
+  else
+    boreholes.first.handler.auto_remediation="NONE"
+    boreholes.first.handler.save
+    return nil
+  end
+end
+=begin
+dup=Duplicate.joins(:boreholes=>:handler).where(:handlers=>{:olr_status=>"duplicate"})
+dup.each do |d|
+puts d.id
+if d.boreholes.count ==2
+  rank_set(d.boreholes)
+end
+end
 
 
+
+  duplicates=Duplicate.where(:has_remediation=>'N')
+  duplicates.each do |d|
+    boreholes=d.boreholes
+    if boreholes.count ==2 
+      statuses =boreholes.includes(:handler).pluck(:olr_status)
+      if !"no".in?(statuses)  or "duplicate".in(statuses)
+        rank_set(boreholes)
+      end
+    end
+  end
+=end
 
 def read_spreadsheet 
   spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
@@ -206,11 +277,41 @@ def read_spreadsheet
           handler = borehole.handler
         end
     handler.olr_comment = olr
- 
+    case olr
+    when /duplicate/i
+      handler.olr_status = "duplicate"
+    when /possibl|probabl/i
+      handler.olr_status = "possibly"
+    when "no"
+      handler.olr_status = "no"
+    when nil
+      handler.olr_status = "none"
+    else
+      handler.olr_status = "other"
+    end
     handler.save
     else
       puts "#{eno}, #{olr}"
     end
+  end
+end
+
+def load_olr_status
+  handlers = Handler.all
+  handlers.each do |h|
+    case h.olr_comment
+    when /duplicate/i
+      h.olr_status = "duplicate"
+    when /possibl|probabl/i
+      h.olr_status = "possibly"
+    when "no"
+      h.olr_status="no"
+    when nil
+      h.olr_status = "none"
+    else
+      h.olr_status = "other"
+    end
+    h.save
   end
 end
 
