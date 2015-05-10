@@ -1,8 +1,12 @@
 <%= form_tag url_for(params), :method => :get do%>
 	<table>
 		<tr>
-			<td><%= label_tag :name, "Borehole name:" %></td>
+			<td><%= label_tag :borehole_name, "Borehole name:" %></td>
 			<td><%= text_field_tag :borehole_name, params[:borehole_name]%></td>
+		</tr>
+		<tr>
+			<td><%= label_tag :borehole_eno, "Borehole ENO:" %></td>
+			<td><%= text_field_tag :borehole_eno, params[:borehole_eno]%></td>
 		</tr>
 		<tr>
 			<td><%= label_tag :has_remediation, "Has remdiation:" %></td>

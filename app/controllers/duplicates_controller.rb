@@ -5,11 +5,15 @@ class DuplicatesController < ApplicationController
   # GET /duplicates.json
   def index
     scope = Duplicate
+    unless params[:borehole_eno].blank?
+      scope=scope.includes(:boreholes).where(:borehole_eno=>params[:borehole_eno])
+    unless params[:borehole_name].blank?
+      scope=scope.includes(:boreholes).where(:borehole_name=>params[:borehole_name])
     unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
     unless params[:olr_comment].blank?
-      scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
+      scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_status=>params[:olr_status]})
     end
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
