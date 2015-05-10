@@ -11,8 +11,8 @@
     </div>
   <% end %>
   <table><tr>
-	<td><%= f.label_tag :qaed, "Approve Automatic Remediation?" %></td>
-	<td><%= f.select_tag :qaed, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
+	<td><%= f.label :qaed, "Approve Automatic Remediation?" %></td>
+	<td><%= f.select :qaed, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
   </tr></table>
 
   <div class="actions">
