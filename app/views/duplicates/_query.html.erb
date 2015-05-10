@@ -9,8 +9,8 @@
 			<td><%= select_tag :has_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:has_remediation])%></td>		
 		</tr>
 		<tr>
-			<td><%= label_tag :olr_comment, "OLR Comment:" %></td>
-			<td><%= text_field_tag :olr_comment, params[:olr_comment]%></td>		
+			<td><%= label_tag :olr_status, "OLR Status:" %></td>
+			<td><%= select_tag :olr_status, options_for_select(Handler.pluck(:olr_status).uniq,params[:olr_status])%</td>		
 		</tr>
 	</table>
 	<%=submit_tag "Search", :name=>nil %>

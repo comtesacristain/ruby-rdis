@@ -9,7 +9,7 @@ class DuplicatesController < ApplicationController
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
     unless params[:olr_comment].blank?
-      scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_comment=>"#{params[:olr_comment]}"})
+      scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
     end
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
