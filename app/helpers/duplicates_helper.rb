@@ -24,5 +24,20 @@ module DuplicatesHelper
 		when nil
 			return :unknown
 		end
-	end 
+	end
+  
+  
+  def create_duplicate_pattern(boreholes)
+    ary=Array.new
+    keep = boreholes.joins(:handler).where(:handlers=>{:auto_remediation => 'KEEP'})
+    keep.each do |k|
+      h=Hash.new
+      delete = boreholes.joins(:handler).where(:handlers=>{:auto_transfer => k.eno})
+      h[:keep] = k
+      h[:delete] =delete
+      ary.push(h)
+    end
+    return ary
+    
+  end 
 end
