@@ -7,9 +7,11 @@ class DuplicatesController < ApplicationController
     scope = Duplicate
     unless params[:borehole_eno].blank?
       scope=scope.includes(:boreholes).where(:borehole_eno=>params[:borehole_eno])
+end
     unless params[:borehole_name].blank?
       scope=scope.includes(:boreholes).where(:borehole_name=>params[:borehole_name])
-    unless params[:has_remediation].blank?
+end   
+ unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
     unless params[:olr_status].blank?
