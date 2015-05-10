@@ -91,6 +91,19 @@ def insert_duplicates(duplicates)
     duplicate_group.save
 end
 
+def load_boreholes 
+  connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
+  statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
+  cursor=connection.exec(statement)
+  cursor.fetch_hash do |row|
+    
+    borehole=Borehole.new(borehole_attr_hash(row))
+    borehole.save
+  end
+end
+
+
+
 def update_duplicates
   db=YAML.load_file('config/database.yml')
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
@@ -118,6 +131,18 @@ def rank_duplicates
 
   end
 end
+
+
+
+=begin
+  TODO: List of duplicate_ids to test: 
+  2: Palmerston 1 - Case check
+  11: Jamison-1 - remove hyphen
+  90: BMR Mount Whelan 1 - drop BMR, excpand Mt
+  1334: SH 5302 - search only on number
+  1372: BMR Winning Pool No. 1 - remove space 
+ 
+=end
 
 def auto_rank(boreholes)
   names = names_hash(boreholes.pluck(:entityid).uniq)
@@ -191,7 +216,7 @@ end
 
 #TODO: Refactor this
 def names_hash(names)
-  return names.group_by {|n| strip_leading_zeros(n) }
+  return names.group_by {|n| parse_string(n) }
 end
 
 def strip_leading_zeros(s)
@@ -199,12 +224,26 @@ def strip_leading_zeros(s)
 end
   
 def parse_string(s)
-    return s.downcase.gsub(/[\W_]+/,' ')
+  case s
+  when /BMR/
+    s=s.gsub(/BMR /,'')
+  when /Mt/
+    s=s.gsub(/Mt/, 'Mount')
+  when /[\W_]+/
+    s=s.gsub(/[\W_]+/,' ')
+  when /(?<=[A-Z])+0+/
+    s=s.gsub(/(?<=[A-Z])+0+/,'')
+  when /no\. ?/i
+    s=s.gsub(/no\. ?/i,'')
+  end
+  return s.downcase.gsub(/ /,'')
 end
 
 def regex_string(s)
     return s.gsub(/[\W_]+/,'%')
 end
+
+
 
 def to_sdo_string(sdo)
   if sdo.nil?
