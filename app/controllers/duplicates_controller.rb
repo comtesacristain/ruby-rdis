@@ -64,7 +64,17 @@ end
   # PATCH/PUT /duplicates/1
   # PATCH/PUT /duplicates/1.json
   def update
+    if duplicate_params[:qaed]=='Y'
+      @duplicate.boreholes.where(Borehole.arel_table).each do |b|
+        handler=b.handler
+        handler.manual_remediation=handler.auto_remediation 
+        handler.manual_transfer=handler.auto_transfer
+        handler.save
+      end
+    end
     respond_to do |format|
+      
+      
       if @duplicate.update(duplicate_params)
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
         format.json { render :show, status: :ok, location: @duplicate }
