@@ -2,5 +2,51 @@
 
 <%= render 'form' %>
 
+
+<table class='duplicates'>
+	<tr>
+	  <th>Primary Key</th>
+	  <th>Name</th>
+	  <th>Entity Type</th>
+	  <th>Longitude (x)</th>
+	  <th>Latitude (y)</th>
+	  <th>Height (z)</th>
+	  <th>Well Type</th>
+	  <th>Operator</th>
+	  <th>Purpose</th>
+	  <th>Status</th>
+	  <th>Classification</th>
+	  <th>Start Date</th>
+	  <th>Completion Date</th>
+	  <th>Originator</th>
+	  <th>Total Depth</th>
+	  <th>Number of Samples</th>
+	  <th>Action Status</th>
+	  <th>Move Data To</th>
+	  <th>OLR Comment</th>
+	  </tr>
+  
+  <% @duplicate.boreholes.each do |borehole| %>
+  <% row_class = get_row_class(borehole.handler.auto_remediation) %>
+  <tr class='<%= row_class%>'>
+	  <td><%=borehole.eno%></td>
+	  <td><%=borehole.entityid%></td>
+	  <td><%=borehole.entity_type%></td>
+	   <td><%=borehole.x%></td>
+	    <td><%=borehole.y%></td>
+		 <td><%=borehole.z%></td>
+	  <%=print_wells(borehole.entity.well)%>
+
+	  <td><%=borehole.entity.samples.count%></td>
+
+	  <td><%=borehole.handler.auto_remediation%></td>
+	  <td><%=borehole.handler.auto_transfer%></td>
+	  <td><%=borehole.handler.olr_comment unless borehole.handler.nil?%>
+	  
+  </tr>
+<% end %>
+</table>
+
+
 <%= link_to 'Show', @duplicate %> |
 <%= link_to 'Back', duplicates_path %>
