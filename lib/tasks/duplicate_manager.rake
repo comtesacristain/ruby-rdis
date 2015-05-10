@@ -137,7 +137,7 @@ def rank_duplicates
     boreholes=d.boreholes
     if boreholes.count ==2 
       statuses =boreholes.includes(:handler).pluck(:olr_status)
-      if !"no".in?(statuses)  or "duplicate".in(statuses)
+      if !statuses.include?("no")  or statuses.include?("no")
         rank_set(boreholes)
       end
     end
@@ -199,7 +199,6 @@ def auto_rank(boreholes)
       end
     else
       boreholes.first.handler.update({:auto_remediation=>"NONE",:auto_transfer=>nil})}
-      boreholes.first.handler.save
       return nil
     end
   end
