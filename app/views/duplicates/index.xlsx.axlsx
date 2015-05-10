@@ -31,8 +31,9 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
       else
     row_style=row_style[:middle]
   	end
-
-    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,borehole.handler.auto_remediation,borehole.handler.auto_transfer,borehole.handler.olr_status,borehole.handler.olr_transfer,borehole.handler.olr_comment], style:row_style
+    wells_row =get_wells_row(well)
+    row =[borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,wells_row,borehole.handler.auto_remediation,borehole.handler.auto_transfer,borehole.handler.olr_status,borehole.handler.olr_transfer,borehole.handler.olr_comment].flatten
+    sheet.add_row row, style:row_style
     end
   end
 end

@@ -15,7 +15,7 @@ module DuplicatesHelper
 
 	end
   
-	def wells_row(well)
+	def get_wells_row(well)
     if well.nil?
       row=  Array.new(9)
 		else
