@@ -137,7 +137,7 @@ def rank_duplicates
     boreholes=d.boreholes
     if boreholes.count ==2 
       statuses =boreholes.includes(:handler).pluck(:olr_status)
-      if !statuses.include?("no")  or statuses.include?("no")
+      if !statuses.include?("no")  and statuses.include?("duplicate")
         rank_set(boreholes)
       end
     end
