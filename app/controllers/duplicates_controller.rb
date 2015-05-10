@@ -9,7 +9,7 @@ class DuplicatesController < ApplicationController
       scope=scope.includes(:boreholes).where(:boreholes=>{:eno=>params[:borehole_eno]})
     end
     unless params[:borehole_name].blank?
-      scope=scope.includes(:boreholes).where(:boreholes=>{:entityid=>params[:borehole_name]})
+      scope=scope.includes(:boreholes).where(:boreholes=>{"entityid= like '%#{params[:borehole_name]}%'")
     end
     unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
