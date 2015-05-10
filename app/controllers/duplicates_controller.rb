@@ -93,6 +93,6 @@ end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
-      params.permit(:qaed)
+      params.require(:duplicate).permit(:qaed)
     end
 end
