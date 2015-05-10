@@ -234,7 +234,7 @@ def parse_string(s)
   when /[\W_]+/
     s=s.gsub(/[\W_]+/," ")
   when /O(?=[0-9])/
-    s=s.gsub((/O(?=[0-9])/,"0")
+    s=s.gsub(/O(?=[0-9])/,"0")
   when /(?<=[A-Z])+0+/
     s=s.gsub(/(?<=[A-Z])+0+/,"")
   
