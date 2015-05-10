@@ -6,7 +6,7 @@ class DuplicatesController < ApplicationController
   def index
     scope = Duplicate
     unless params[:borehole_eno].blank?
-      scope=scope.includes(:boreholes).where(:boreholes=>{:eno=>params[:borehole_eno]})
+      scope=scope.joins(:boreholes).where(:boreholes=>{:eno=>params[:borehole_eno]})
     end
     unless params[:borehole_name].blank?
 
@@ -14,12 +14,12 @@ class DuplicatesController < ApplicationController
 
     end
     unless params[:has_remediation].blank?
-      scope=scope.where(:has_remediation=>params[:has_remediation])
+      scope=scope.joins(:has_remediation=>params[:has_remediation])
     end
     unless params[:olr_status].blank?
-      scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
+      scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
     end
-scope=scope.uniq
+    scope=scope.uniq
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
 else
