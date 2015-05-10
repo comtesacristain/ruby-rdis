@@ -9,7 +9,9 @@ class DuplicatesController < ApplicationController
       scope=scope.includes(:boreholes).where(:boreholes=>{:eno=>params[:borehole_eno]})
     end
     unless params[:borehole_name].blank?
-      scope=scope.includes(:boreholes).where(:boreholes=>{"upper(entityid)= like upper('%#{params[:borehole_name]}%')")
+
+      scope=scope.joins(:boreholes).where("boreholes.entityid like '%#{params[:borehole_name]}%'")
+
     end
     unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
@@ -17,6 +19,7 @@ class DuplicatesController < ApplicationController
     unless params[:olr_status].blank?
       scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
     end
+scope=scope.uniq
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
 else
