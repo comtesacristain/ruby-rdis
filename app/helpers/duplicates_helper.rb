@@ -14,6 +14,16 @@ module DuplicatesHelper
 
 
 	end
+  
+	def wells_row(well)
+    if well.nil?
+      row=  Array.new(9)
+		else
+			row = [well.welltype,well.operator,well.purpose,well.status,well.classification,well.start_date, well.completion_date, well.originator, well.total_depth]
+			
+		end
+    return row
+	end
 
 	def get_row_class(auto_remediation)
 		case auto_remediation
