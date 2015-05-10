@@ -14,7 +14,7 @@ styles[k][:middle]=wb.styles.add_style v
 
 
 wb.add_worksheet(name: "Duplicates") do |sheet|
-  sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","ACTION","TRANSFER DATA TO"], style: wb.styles.add_style(header_style)
+  sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","AUTO_REMEDIATION","AUTO_TRANSFER","OLR_REMEDIATION","OLR_TRANSFER","OLR_COMMENT","FINAL_REMEDIATION","FINAL TRANSFER"], style: wb.styles.add_style(header_style)
   @duplicates.each.with_index(1) do |duplicate|
   	boreholes= duplicate.boreholes
   	boreholes.each_with_index do |borehole,i|
@@ -32,7 +32,7 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
     row_style=row_style[:middle]
   	end
 
-    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,borehole.handler.auto_remediation,borehole.handler.auto_transfer], style:row_style
+    sheet.add_row [borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,borehole.handler.auto_remediation,borehole.handler.auto_transfer,borehole.handler.olr_status,borehole.handler.olr_transfer,borehole.handler.olr_comment], style:row_style
     end
   end
 end
