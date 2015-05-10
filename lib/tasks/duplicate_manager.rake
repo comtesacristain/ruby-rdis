@@ -228,13 +228,14 @@ def parse_string(s)
   when /BMR/
     s=s.gsub(/BMR /,'')
   when /Mt/
-    s=s.gsub(/Mt/, 'Mount')
+    s=s.gsub(/Mt/,'Mount')
+  when /no\. ?/i
+    s=s.gsub(/no\. ?/i,'')
   when /[\W_]+/
     s=s.gsub(/[\W_]+/,' ')
   when /(?<=[A-Z])+0+/
     s=s.gsub(/(?<=[A-Z])+0+/,'')
-  when /no\. ?/i
-    s=s.gsub(/no\. ?/i,'')
+  
   end
   return s.downcase.gsub(/ /,'')
 end
