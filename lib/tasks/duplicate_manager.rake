@@ -226,15 +226,17 @@ end
 def parse_string(s)
   case s
   when /BMR/
-    s=s.gsub(/BMR /,'')
+    s=s.gsub(/BMR /,"")
   when /Mt/
-    s=s.gsub(/Mt/,'Mount')
+    s=s.gsub(/Mt/,"Mount")
   when /no\. ?/i
-    s=s.gsub(/no\. ?/i,'')
+    s=s.gsub(/no\. ?/i,"")
   when /[\W_]+/
-    s=s.gsub(/[\W_]+/,' ')
+    s=s.gsub(/[\W_]+/," ")
+  when /O(?=[0-9])/
+    s=s.gsub((/O(?=[0-9])/,"0")
   when /(?<=[A-Z])+0+/
-    s=s.gsub(/(?<=[A-Z])+0+/,'')
+    s=s.gsub(/(?<=[A-Z])+0+/,"")
   
   end
   return s.downcase.gsub(/ /,'')
