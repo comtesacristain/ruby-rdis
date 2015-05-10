@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508074738) do
+ActiveRecord::Schema.define(version: 20150510233509) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -54,12 +54,12 @@ ActiveRecord::Schema.define(version: 20150508074738) do
   create_table "handlers", force: :cascade do |t|
     t.string   "auto_remediation"
     t.string   "auto_transfer"
-    t.string   "olr_status"
-    t.string   "olr_comment"
+    t.string   "or_status"
+    t.string   "or_comment"
     t.integer  "borehole_id"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
-    t.integer  "olr_transfer"
+    t.integer  "or_transfer"
     t.string   "manual_remediation"
     t.integer  "manual_transfer"
   end
