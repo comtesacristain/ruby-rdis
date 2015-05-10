@@ -198,7 +198,7 @@ def auto_rank(boreholes)
         return keep
       end
     else
-      boreholes.first.handler.auto_remediation="NONE"
+      boreholes.first.handler.update({:auto_remediation=>"NONE",:auto_transfer=>nil})}
       boreholes.first.handler.save
       return nil
     end
