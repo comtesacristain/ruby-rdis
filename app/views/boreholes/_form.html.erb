@@ -10,6 +10,10 @@
       </ul>
     </div>
   <% end %>
+  <table><tr>
+	<td><%= label_tag :qaed, "Approve Automatic Remediation?" %></td>
+	<td><%= select_tag :qaed, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
+  </tr></table>
 
   <div class="actions">
     <%= f.submit %>
