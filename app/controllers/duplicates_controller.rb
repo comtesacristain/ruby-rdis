@@ -8,7 +8,7 @@ class DuplicatesController < ApplicationController
     unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
-    unless params[:olr_comment].blank?
+    unless params[:olr_status].blank?
       scope=scope.includes(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
     end
     if request.format =='html'
