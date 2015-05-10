@@ -65,7 +65,7 @@ end
   # PATCH/PUT /duplicates/1.json
   def update
     if duplicate_params[:qaed]=='Y'
-      @duplicate.boreholes.where(Borehole.arel_table).each do |b|
+      @duplicate.boreholes.each do |b|
         handler=b.handler
         handler.manual_remediation=handler.auto_remediation 
         handler.manual_transfer=handler.auto_transfer
