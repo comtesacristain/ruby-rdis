@@ -14,7 +14,7 @@ styles[k][:middle]=wb.styles.add_style v
 
 
 wb.add_worksheet(name: "Duplicates") do |sheet|
-  sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","AUTO_REMEDIATION","AUTO_TRANSFER","OLR_REMEDIATION","OLR_TRANSFER","OLR_COMMENT","FINAL_REMEDIATION","FINAL TRANSFER"], style: wb.styles.add_style(header_style)
+  sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","QUALIFIER","AUTO_REMEDIATION","AUTO_TRANSFER","OLR_REMEDIATION","OLR_TRANSFER","OLR_COMMENT","FINAL_REMEDIATION","FINAL TRANSFER"], style: wb.styles.add_style(header_style)
   @duplicates.each.with_index(1) do |duplicate|
   	boreholes= duplicate.boreholes
   	boreholes.each_with_index do |borehole,i|
