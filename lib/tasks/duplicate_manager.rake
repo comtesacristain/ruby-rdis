@@ -143,9 +143,9 @@ def rank_duplicates
     end
     auto_remediations = d.boreholes.includes(:handler).pluck(:auto_remediation)
     if "DELETE".in?(auto_remediations)
-      duplicate_group.update(:has_remediation=>'Y')
+      d.update(:has_remediation=>'Y')
     else
-      duplicate_group.update(:has_remediation=>'N')
+      d.update(:has_remediation=>'N')
     end
   end
 end
