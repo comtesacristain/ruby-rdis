@@ -14,12 +14,12 @@ styles[k][:middle]=wb.styles.add_style v
 
 
 wb.add_worksheet(name: "Duplicates") do |sheet|
-  sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","QUALIFIER", "WELL TYPE",  "OPERATOR",  "PURPOSE",  "STATUS",  "CLASSIFICATION",  "START DATE",  "COMPLETION DATE",  "ORIGINATOR",  "TOTAL DEPTH","AUTO_REMEDIATION","AUTO_TRANSFER","OLR_REMEDIATION","OLR_TRANSFER","OLR_COMMENT","FINAL_REMEDIATION","FINAL TRANSFER"], style: wb.styles.add_style(header_style)
+  sheet.add_row ["ENO", "ENTITYID", "ENTITY_TYPE","LONGITUDE","LATITUDE","HEIGHT (Z)","QUALIFIER", "WELL TYPE",  "OPERATOR",  "PURPOSE",  "STATUS",  "CLASSIFICATION",  "START DATE",  "COMPLETION DATE",  "ORIGINATOR",  "TOTAL DEPTH","AUTO_REMEDIATION","AUTO_TRANSFER","OR_REMEDIATION","OR_TRANSFER","OR_COMMENT","FINAL_REMEDIATION","FINAL TRANSFER"], style: wb.styles.add_style(header_style)
  
  
  
   @duplicates.each.with_index(1) do |duplicate|
-  	boreholes= duplicate.boreholes
+  	boreholes= duplicate.boreholes.order(:entityid)
   	boreholes.each_with_index do |borehole,i|
   	case borehole.handler.auto_remediation
   	when "DELETE"
@@ -34,7 +34,7 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
       else
     row_style=row_style[:middle]
   	end
-    wells_row =get_wells_row(well)
+    wells_row =get_wells_row(borehole.entity.well)
     row =[borehole.eno, borehole.entityid, borehole.entity_type,borehole.x, borehole.y, borehole.z,borehole.eid_qualifier,wells_row,borehole.handler.auto_remediation,borehole.handler.auto_transfer,borehole.handler.olr_status,borehole.handler.olr_transfer,borehole.handler.olr_comment,borehole.handler.manual_remediation,borehole.handler.manual_transfer].flatten
     sheet.add_row row, style:row_style
     end
