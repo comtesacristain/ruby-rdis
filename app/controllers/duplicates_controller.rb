@@ -14,12 +14,12 @@ class DuplicatesController < ApplicationController
 
     end
     unless params[:has_remediation].blank?
-      scope=scope.joins(:has_remediation=>params[:has_remediation])
+      scope=scope.where(:has_remediation=>params[:has_remediation])
     end
     unless params[:olr_status].blank?
       scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
     end
-    scope=scope.uniq
+scope=scope.uniq
     if request.format =='html'
     @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
 else
