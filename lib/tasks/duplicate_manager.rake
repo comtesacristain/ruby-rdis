@@ -97,8 +97,10 @@ def load_boreholes
     
     borehole=Borehole.find_or_initialize_by(eno:row["eno"])
     borehole.update(borehole_attr_hash(row))
-    handler = Handler.new
-    borehole.handler = handler
+    if borehole.handler.nil?
+      handler= = Handler.new
+      borehole.handler = handler
+    end
     borehole.save
   end
 end
@@ -150,29 +152,7 @@ def rank_duplicates
   end
 end
 
-=begin
 
-def check_relations(boreholes)
-  enos = boreholes.pluck(:eno)
-  parents = boreholes.pluck(:parent).compact
-  if !parents.empty? and parents.all?{|e| enos.include?(e)}
-    return parents.all?{|e| enos.include?(e)}
-  end
-  associated_well_enos =Array.new
-  parents =Array.new
-  boreholes.each do |b|
-    puts b.entity.well.well_confids.pluck(:associated_well_eno)
-    associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
-  end
-  associated_well_enos.flatten!.compact!
-  unless associated_well_enos.empty?
-    associated_well_enos.map!{|e| e.to_i}
-    return associated_well_enos.all?{|e| enos.include?(e)}
-  else
-    return false
-  end
-end
-=end
 
 =begin
   TODO: List of duplicate_ids to test: 
@@ -245,18 +225,19 @@ def read_spreadsheet
     orc = sheet.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
     unless borehole.nil?
-        if borehole.handler.nil?
-          handler=Handler.new
-          handler.borehole=borehole
-        else
-          handler = borehole.handler
-        end
+      if borehole.handler.nil?
+        handler=Handler.new
+        handler.borehole=borehole
+      else
+        handler = borehole.handler
+      end
+    end
     handler.or_comment = orc
     case orc
-    when /duplicate/i
-      handler.or_status = "duplicate"
     when /possibl|probabl/i
       handler.or_status = "possibly"
+    when /duplicate/i
+      handler.or_status = "duplicate"
     when "no"
       handler.or_status = "no"
     when nil
