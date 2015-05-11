@@ -252,6 +252,29 @@ def read_spreadsheet
   end
 end
 
+
+def has_relations(boreholes)
+  enos = boreholes.pluck(:eno)
+  parents = boreholes.pluck(:parent).compact
+  if !parents.empty? and parents.all?{|e| enos.include?(e)}
+    return parents.all?{|e| enos.include?(e)}
+  end
+  associated_well_enos =Array.new
+  parents =Array.new
+  boreholes.each do |b|
+    puts b.entity.well.well_confids.pluck(:associated_well_eno)
+    associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
+  end
+  associated_well_enos.flatten!.compact!
+  unless associated_well_enos.empty?
+    associated_well_enos.map!{|e| e.to_i}
+    return associated_well_enos.all?{|e| enos.include?(e)}
+  else
+    return false
+  end
+end
+
+
 def names_hash(names)
   return names.group_by {|n| parse_string(n) }
 end
