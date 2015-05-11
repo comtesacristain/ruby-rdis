@@ -74,7 +74,7 @@ def find_duplicates
       duplicates = Array.new
       results.fetch_hash{ |r| duplicates.push(r)}
       if duplicates.count > 1
-        insert_duplicates(borehole,duplicates)
+        insert_duplicates(duplicates)
       end
     end
   end
