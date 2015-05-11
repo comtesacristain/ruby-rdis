@@ -98,7 +98,7 @@ def load_boreholes
     borehole=Borehole.find_or_initialize_by(eno:row["eno"])
     borehole.update(borehole_attr_hash(row))
     if borehole.handler.nil?
-      handler= = Handler.new
+      handler = Handler.new
       borehole.handler = handler
     end
     borehole.save
