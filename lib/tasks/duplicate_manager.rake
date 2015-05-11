@@ -262,8 +262,10 @@ def has_relations(boreholes)
   associated_well_enos =Array.new
   parents =Array.new
   boreholes.each do |b|
-    puts b.entity.well.well_confids.pluck(:associated_well_eno)
-    associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
+    unless b.entity.well.nil?
+      puts b.entity.well.well_confids.pluck(:associated_well_eno)
+      associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
+    end
   end
   associated_well_enos.flatten!.compact!
   unless associated_well_enos.empty?
