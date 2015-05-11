@@ -42,15 +42,15 @@
 	<h2>Well data</h2>
   <% well = @borehole.entity.well %>
   <table class='duplicates'>
-	  <tr><td>WELL TYPE</td>
-		  <td>OPERATOR</td>
-		  <td>PURPOSE</td>
-		  <td>STATUS</td>
-		  <td>CLASSIFICATION</td>
-		  <td>START DATE</td>
-		  <td>COMPLETION DATE</td>
-		  <td>ORIGINATOR</td>
-		  <td>TOTAL DEPTH</td>
+	  <tr><th>Well Type</th>
+		  <th>Operator</th>
+		  <th>Purpose</th>
+		  <th>Status</th>
+		  <th>Classification</th>
+		  <th>Start Date</th>
+		  <th>Completion Date</th>
+		  <th>Originator</th>
+		  <th>Total Depth</th>
 		  
 	  </tr>
 	  <tr><%= print_wells(well)%></tr>
