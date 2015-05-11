@@ -43,18 +43,19 @@
   <% well = @borehole.entity.well %>
   <table>
 	  <tr><tr>
+	  <tr><%= print_wells(well)%></tr>
   </table>
-  
+  <!-->
   <% samples = @borehole.entity.samples %>
   <table>
   	<tr><th>SAMPLENO</th><th>SAMPLEID</th><th></th></tr>
 	<% samples.each do |sample|%>
 		<tr>
-			<td>sample.sampleno</td>
-			<td>sample.sampleid</td>
+			<td><%= sample.sampleno %></td>
+			<td><%= sample.sampleid %></td>
 		</tr>
 	<% end %>
-  </table>
+  </table> -->
 
 
 <% content_for(:head) do %>
