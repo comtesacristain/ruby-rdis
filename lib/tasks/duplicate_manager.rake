@@ -59,7 +59,7 @@ def borehole_attr_hash(row)
 end
 
 def spatial_query
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
 
 def find_duplicates
@@ -68,7 +68,7 @@ def find_duplicates
     cursor.fetch_hash do |row|
       puts row["ENO"]
       geom = to_sdo_string(row["GEOM"])
-      statement=spatial_query % {:geom=>geom,:eno=>row["ENO"]}
+      statement=spatial_query % {:geom=>geom}
       results=connection.exec(statement)
       duplicates = Array.new
       results.fetch_hash{ |r| duplicates.push(r)}
@@ -95,9 +95,8 @@ def insert_duplicates(duplicates)
         borehole=Borehole.create(borehole_attr_hash(d))
         handler= Handler.new
         borehole.handler = handler # Each borehole must come with a handler
+        borehole.save
       end
-    handler= Handler.new
-    borehole.handler = handler # Each borehole must come with a handler
     borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
     if borehole_duplicates.empty?
       borehole_duplicate = borehole.borehole_duplicates.build(duplicate:duplicate_group)
@@ -208,6 +207,8 @@ def auto_rank(boreholes)
         well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
         return well
       else
+
+        
         dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
         eno = dates.key(dates.values.min)
         delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
@@ -222,6 +223,7 @@ def auto_rank(boreholes)
     end
   end
 end
+
 
 def rank_set(boreholes)
   puts "1 duplicate detected"
