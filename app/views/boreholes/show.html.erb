@@ -39,5 +39,8 @@
 	  
   </tr>
 
+<% content_for(:head) do %>
+  <%= stylesheet_link_tag    'boreholes', media: 'all', 'data-turbolinks-track' => true %>
+  <% end %>
 
 <%= link_to 'Back', boreholes_path %>
