@@ -85,6 +85,7 @@ def insert_duplicates(duplicates)
     duplicate_group = Duplicate.new(:has_remediation=>'N')
   end
   duplicates.each do | d |
+
     boreholes = Borehole.where(eno:d["ENO"])
       if boreholes.exists?
         borehole = boreholes.first
@@ -282,7 +283,7 @@ def read_spreadsheet
   sheet = wb.sheet(0)
   ((sheet.first_row + 1)..sheet.last_row).each do |row|
     eno = sheet.row(row)[1]
-    or = sheet.row(row)[4]
+    orc = sheet.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
     unless borehole.nil?
         if borehole.handler.nil?
@@ -291,8 +292,8 @@ def read_spreadsheet
         else
           handler = borehole.handler
         end
-    handler.or_comment = or
-    case or
+    handler.or_comment = orc
+    case orc
     when /duplicate/i
       handler.or_status = "duplicate"
     when /possibl|probabl/i
@@ -306,7 +307,7 @@ def read_spreadsheet
     end
     handler.save
     else
-      puts "#{eno}, #{or}"
+      puts "#{eno}, #{orc}"
     end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150510233509) do
+ActiveRecord::Schema.define(version: 20150511015853) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20150510233509) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.string   "eid_qualifier"
+    t.string   "geom"
   end
 
   create_table "duplicates", force: :cascade do |t|
