@@ -59,18 +59,16 @@ def borehole_attr_hash(row)
 end
 
 def spatial_query
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 250,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
 end
 
 def find_duplicates
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   Borehole.all.each do |borehole|
-    if borehole.geom_original == "NULL"
+    if borehole.geom == "NULL"
       puts borehole.id
     else
-      cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and eno = #{borehole.eno} ") 
-      row= cursor.fetch_hash 
-      geom = to_sdo_string(row["GEOM"])
+      geom = borehole.geom
       statement=spatial_query % {:geom=>geom}
       results=connection.exec(statement)
       duplicates = Array.new
@@ -111,6 +109,8 @@ def load_boreholes
   cursor.fetch_hash do |row|
     
     borehole=Borehole.new(borehole_attr_hash(row))
+    handler = Handler.new
+    borehole.handler = handler
     borehole.save
   end
 end
