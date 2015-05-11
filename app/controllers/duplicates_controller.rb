@@ -72,7 +72,6 @@ end
         handler.manual_transfer=handler.auto_transfer
         handler.save
       end
-    end
   elsif duplicate_params[:qaed]=='N'
     @duplicate.boreholes.each do |b|
       handler=b.handler
@@ -119,6 +118,6 @@ end
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
       params.require(:duplicate).permit(:qaed)
-      params.require(:handler).permit(:manual_remediation,:manual_transfer)
+      params.permit(:manual_remediation,:manual_transfer)
     end
 end
