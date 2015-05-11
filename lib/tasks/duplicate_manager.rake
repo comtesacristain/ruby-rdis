@@ -59,7 +59,7 @@ def borehole_attr_hash(row)
 end
 
 def spatial_query
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 250,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
 
 def find_duplicates
