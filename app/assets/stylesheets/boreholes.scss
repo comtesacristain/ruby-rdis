@@ -1,3 +1,33 @@
 // Place all the styles related to the boreholes controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+table.duplicates {
+	background: #dddddd;
+	border: black 1px;
+}
+
+table.duplicates td {
+	text-align: center;
+}
+
+table.duplicates td.nowell {
+	font-weight: bold
+}
+
+tr.delete {
+	
+	background: #ffdddd;
+}
+
+tr.keep {
+	
+	background: #ddffdd;
+}
+
+tr.unknown {
+	
+	background: #dddddd;
+}
+
+#sidebar {display: none;}
+#main {width:100%;}
