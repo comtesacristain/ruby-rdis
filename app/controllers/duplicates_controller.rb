@@ -64,6 +64,7 @@ end
   # PATCH/PUT /duplicates/1
   # PATCH/PUT /duplicates/1.json
   def update
+    puts duplicate_params
     if duplicate_params[:qaed]=='Y'
       @duplicate.boreholes.each do |b|
         handler=b.handler
@@ -72,6 +73,20 @@ end
         handler.save
       end
     end
+  elsif duplicate_params[:qaed]=='N'
+    @duplicate.boreholes.each do |b|
+      handler=b.handler
+      handler.manual_remediation="NONE"
+      handler.manual_transfer=nil
+      handler.save
+    end
+  else @duplicate.boreholes.each do |b|
+      handler=b.handler
+      handler.manual_remediation=nil
+      handler.manual_transfer=nil
+      handler.save
+    end
+  end
     respond_to do |format|
       
       
@@ -104,5 +119,6 @@ end
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
       params.require(:duplicate).permit(:qaed)
+      params.require(:handler).permit(:manual_remediation,:manual_transfer)
     end
 end
