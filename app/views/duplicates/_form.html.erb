@@ -10,6 +10,30 @@
       </ul>
     </div>
   <% end %>
+    <% @duplicate.boreholes.each do |borehole| %>
+    <% row_class = get_row_class(borehole.handler.auto_remediation) %>
+    <tr class='<%= row_class%>'>
+  	  <td><%=borehole.eno%></td>
+  	  <td><%=borehole.entityid%></td>
+  	  <td><%=borehole.entity_type%></td>
+  	   <td><%=borehole.x%></td>
+  	    <td><%=borehole.y%></td>
+  		 <td><%=borehole.z%></td>
+	
+
+  	  <td><%=borehole.handler.auto_remediation%></td>
+  	  <td><%=borehole.handler.auto_transfer%></td>
+  	  <td><%=borehole.handler.or_status%></td>
+  	  <td><%=borehole.handler.or_transfer%></td>
+  	  <td><%=borehole.handler.or_comment%></td>
+  	  <td><%=f.select :manual_remediation, options_for_select([nil,"KEEP","DELETE","NONE"])%></td>
+  	  <td><%=f.select :manual_transfer, options_for_select(boreholes.where.not(:eno=>borehole.eno).pluck(:eno) %></td>
+	  
+    </tr>
+  <% end %>
+  </table>
+
+  <%= render 'form' %>
   <table><tr>
 	<td><%= f.label :qaed, "Approve Automatic Remediation?" %></td>
 	<td><%= f.select :qaed, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
