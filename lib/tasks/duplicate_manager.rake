@@ -231,21 +231,20 @@ def read_spreadsheet
       else
         handler = borehole.handler
       end
-    end
-    handler.or_comment = orc
-    case orc
-    when /possibl|probabl/i
-      handler.or_status = "possibly"
-    when /duplicate/i
-      handler.or_status = "duplicate"
-    when "no"
-      handler.or_status = "no"
-    when nil
-      handler.or_status = "none"
-    else
-      handler.or_status = "other"
-    end
-    handler.save
+      handler.or_comment = orc
+      case orc
+      when /possibl|probabl/i
+        handler.or_status = "possibly"
+      when /duplicate/i
+        handler.or_status = "duplicate"
+      when "no"
+        handler.or_status = "no"
+      when nil
+        handler.or_status = "none"
+      else
+        handler.or_status = "other"
+      end
+      handler.save
     else
       puts "#{eno}, #{orc}"
     end
