@@ -13,8 +13,8 @@
 			<td><%= select_tag :has_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:has_remediation])%></td>		
 		</tr>
 		<tr>
-			<td><%= label_tag :olr_status, "OLR Status:" %></td>
-			<td><%= select_tag :olr_status, options_for_select(Handler.pluck(:olr_status).uniq.push(nil),params[:olr_status]) %></td>		
+			<td><%= label_tag :or_status, "OR Status:" %></td>
+			<td><%= select_tag :or_status, options_for_select(Handler.pluck(:or_status).uniq.push(nil),params[:or_status]) %></td>		
 		</tr>
 	</table>
 	<%=submit_tag "Search", :name=>nil %>

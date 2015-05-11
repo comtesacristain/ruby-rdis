@@ -3,11 +3,11 @@
 one:
   action: MyString
   data_transferred_to: MyString
-  olr_status: MyString
-  olr_comment: MyString
+  or_status: MyString
+  or_comment: MyString
 
 two:
   action: MyString
   data_transferred_to: MyString
-  olr_status: MyString
-  olr_comment: MyString
+  or_status: MyString
+  or_comment: MyString

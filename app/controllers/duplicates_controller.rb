@@ -16,8 +16,8 @@ class DuplicatesController < ApplicationController
     unless params[:has_remediation].blank?
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
-    unless params[:olr_status].blank?
-      scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:olr_status=>"#{params[:olr_status]}"})
+    unless params[:or_status].blank?
+      scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
     end
 scope=scope.uniq
     if request.format =='html'

@@ -122,7 +122,7 @@ def rank_duplicates
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
       auto_rank(boreholes)
-      #olr_rank(boreholes)
+      #or_rank(boreholes)
       auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
       if "DELETE".in?(auto_remediations)
         duplicate_group.update(:has_remediation=>'Y')
@@ -136,7 +136,7 @@ def rank_duplicates
   duplicates.each do |d|
     boreholes=d.boreholes
     if boreholes.count ==2 
-      statuses =boreholes.includes(:handler).pluck(:olr_status)
+      statuses =boreholes.includes(:handler).pluck(:or_status)
       if !statuses.include?("no")  and statuses.include?("duplicate")
         rank_set(boreholes)
       end
@@ -238,7 +238,7 @@ def rank_set(boreholes)
   end
 end
 =begin
-dup=Duplicate.joins(:boreholes=>:handler).where(:handlers=>{:olr_status=>"duplicate"})
+dup=Duplicate.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"duplicate"})
 dup.each do |d|
 puts d.id
 if d.boreholes.count ==2
@@ -252,7 +252,7 @@ end
   duplicates.each do |d|
     boreholes=d.boreholes
     if boreholes.count ==2 
-      statuses =boreholes.includes(:handler).pluck(:olr_status)
+      statuses =boreholes.includes(:handler).pluck(:or_status)
       if !"no".in?(statuses)  or "duplicate".in(statuses)
         rank_set(boreholes)
       end
@@ -266,7 +266,7 @@ def read_spreadsheet
   sheet = wb.sheet(0)
   ((sheet.first_row + 1)..sheet.last_row).each do |row|
     eno = sheet.row(row)[1]
-    olr = sheet.row(row)[4]
+    or = sheet.row(row)[4]
     borehole = Borehole.where(:eno=>eno).first
     unless borehole.nil?
         if borehole.handler.nil?
@@ -275,40 +275,40 @@ def read_spreadsheet
         else
           handler = borehole.handler
         end
-    handler.olr_comment = olr
-    case olr
+    handler.or_comment = or
+    case or
     when /duplicate/i
-      handler.olr_status = "duplicate"
+      handler.or_status = "duplicate"
     when /possibl|probabl/i
-      handler.olr_status = "possibly"
+      handler.or_status = "possibly"
     when "no"
-      handler.olr_status = "no"
+      handler.or_status = "no"
     when nil
-      handler.olr_status = "none"
+      handler.or_status = "none"
     else
-      handler.olr_status = "other"
+      handler.or_status = "other"
     end
     handler.save
     else
-      puts "#{eno}, #{olr}"
+      puts "#{eno}, #{or}"
     end
   end
 end
 
-def load_olr_status
+def load_or_status
   handlers = Handler.all
   handlers.each do |h|
-    case h.olr_comment
+    case h.or_comment
     when /duplicate/i
-      h.olr_status = "duplicate"
+      h.or_status = "duplicate"
     when /possibl|probabl/i
-      h.olr_status = "possibly"
+      h.or_status = "possibly"
     when "no"
-      h.olr_status="no"
+      h.or_status="no"
     when nil
-      h.olr_status = "none"
+      h.or_status = "none"
     else
-      h.olr_status = "other"
+      h.or_status = "other"
     end
     h.save
   end
