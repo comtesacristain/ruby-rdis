@@ -1,5 +1,5 @@
 <p id="notice"><%= notice %></p>
-
+<h1>Duplicates detected</h1>
 <table class='duplicates'>
 	<tr>
 	  <th>Primary Key</th>
@@ -8,19 +8,15 @@
 	  <th>Longitude (x)</th>
 	  <th>Latitude (y)</th>
 	  <th>Height (z)</th>
-	  <th>Well Type</th>
-	  <th>Operator</th>
-	  <th>Purpose</th>
-	  <th>Status</th>
-	  <th>Classification</th>
-	  <th>Start Date</th>
-	  <th>Completion Date</th>
-	  <th>Originator</th>
-	  <th>Total Depth</th>
-	  <th>Number of Samples</th>
-	  <th>Action Status</th>
+	  <th>Auto Remediation</th>
+	  <th>Auto Transfer</th>
+	  
 	  <th>Move Data To</th>
-	  <th>OR Comment</th>
+	  <th>OR remediation</th>
+	  <th>OR transfer</th>
+	   <th>OR comment</th>
+	   <th>Manual remediation</th>
+	   <th>Manual transfer</th>
 	  </tr>
   
   <% @duplicate.boreholes.each do |borehole| %>
@@ -38,7 +34,11 @@
 
 	  <td><%=borehole.handler.auto_remediation%></td>
 	  <td><%=borehole.handler.auto_transfer%></td>
-	  <td><%=borehole.handler.or_comment unless borehole.handler.nil?%>
+	  <td><%=borehole.handler.or_status%></td>
+	  <td><%=borehole.handler.or_transfer%></td>
+	  <td><%=borehole.handler.or_comment%></td>
+	  <td><%=borehole.handler.manual_remediation%></td>
+	  <td><%=borehole.handler.manual_transfer%></td>
 	  
   </tr>
 <% end %>
