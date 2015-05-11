@@ -42,8 +42,12 @@ def borehole_attr_hash(row)
   h =Hash.new
   query_terms.each do |qt|
     if qt == :geom
-      geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
-      geom_hash = {:x=>geometry[:sdo_point].instance_variable_get("@attributes")[:x],:y=>geometry[:sdo_point].instance_variable_get("@attributes")[:y],:z=>geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
+      if geom.nil?
+        geom_hash = {x:nil,y:nil,z:nil}
+      else
+        geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
+        geom_hash = {:x=>geometry[:sdo_point].instance_variable_get("@attributes")[:x],:y=>geometry[:sdo_point].instance_variable_get("@attributes")[:y],:z=>geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
+      end
       h.merge!(geom_hash)
     elsif qt == :geom_original
       h[qt] = to_sdo_string(row[qt.to_s.upcase])
@@ -139,9 +143,8 @@ def rank_duplicates
       else
         duplicate_group.update(:has_remediation=>'N')
       end
-        
-
   end
+  
   duplicates=Duplicate.where(:has_remediation=>'N')
   duplicates.each do |d|
     boreholes=d.boreholes
