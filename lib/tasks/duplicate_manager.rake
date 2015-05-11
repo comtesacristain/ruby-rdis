@@ -38,28 +38,10 @@ def query_string
   return query_terms.join(",")
 end
 
-def borehole_attr_hash(row)
-  h =Hash.new
-  query_terms.each do |qt|
-    if qt == :geom
-      if row[qt.to_s.upcase].nil?
-        geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:nil,y:nil,z:nil}
-      else
-        geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
-        geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
-      end
-      h.merge!(geom_hash)
-    elsif qt == :geom_original
-      h[qt] = to_sdo_string(row[qt.to_s.upcase])
-    else
-      h[qt] = row[qt.to_s.upcase]
-    end
-  end
-  return h
-end
+
 
 def spatial_query
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 250,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
 
 def find_duplicates
@@ -168,7 +150,29 @@ def rank_duplicates
   end
 end
 
+=begin
 
+def check_relations(boreholes)
+  enos = boreholes.pluck(:eno)
+  parents = boreholes.pluck(:parent).compact
+  if !parents.empty? and parents.all?{|e| enos.include?(e)}
+    return parents.all?{|e| enos.include?(e)}
+  end
+  associated_well_enos =Array.new
+  parents =Array.new
+  boreholes.each do |b|
+    puts b.entity.well.well_confids.pluck(:associated_well_eno)
+    associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
+  end
+  associated_well_enos.flatten!.compact!
+  unless associated_well_enos.empty?
+    associated_well_enos.map!{|e| e.to_i}
+    return associated_well_enos.all?{|e| enos.include?(e)}
+  else
+    return false
+  end
+end
+=end
 
 =begin
   TODO: List of duplicate_ids to test: 
@@ -189,38 +193,7 @@ def auto_rank(boreholes)
       auto_rank(boreholes.where(:entityid=>v))
     end
   else
-    puts "1 duplicate detected"
-    if boreholes.size > 1
-      puts "#{boreholes.size} boreholes detected ..."
-      types =  boreholes.pluck(:entity_type).uniq
-      puts "Types: #{types}"
-      if types.size > 1
-        puts "#{types.size} types detected" 
-        well_set = boreholes.where(:entity_type=>'WELL')
-        drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
-        if well_set.size > 1
-          well = auto_rank(well_set)
-        else
-          well = well_set.first
-        end
-        drillhole_set.each {|b| b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>well.eno})}
-        well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
-        return well
-      else
-
-        
-        dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
-        eno = dates.key(dates.values.min)
-        delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
-        delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
-        keep=boreholes.where(:eno=>eno).first
-        keep.handler.update(:auto_remediation=>'KEEP')
-        return keep
-      end
-    else
-      boreholes.first.handler.update({:auto_remediation=>"NONE",:auto_transfer=>nil})
-      return nil
-    end
+    rank_set(boreholes)
   end
 end
 
@@ -244,13 +217,17 @@ def rank_set(boreholes)
       well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
       return well
     else
-      dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
-      eno = dates.key(dates.values.min)
-      delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
-      delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
-      keep=boreholes.where(:eno=>eno).first
-      keep.handler.update(:auto_remediation=>'KEEP')
-      return keep
+      if has_relations(boreholes)
+        boreholes.each { |b| b.handler.update({:auto_remediation=>"NONE",:auto_transfer=>nil})}
+        return nil
+      else
+        dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
+        eno = dates.key(dates.values.min)
+        delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
+        delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
+        keep=boreholes.where(:eno=>eno).first
+        keep.handler.update(:auto_remediation=>'KEEP')
+        return keep
     end
   else
     boreholes.first.handler.auto_remediation="NONE"
@@ -258,28 +235,6 @@ def rank_set(boreholes)
     return nil
   end
 end
-=begin
-dup=Duplicate.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"duplicate"})
-dup.each do |d|
-puts d.id
-if d.boreholes.count ==2
-  rank_set(d.boreholes)
-end
-end
-
-
-
-  duplicates=Duplicate.where(:has_remediation=>'N')
-  duplicates.each do |d|
-    boreholes=d.boreholes
-    if boreholes.count ==2 
-      statuses =boreholes.includes(:handler).pluck(:or_status)
-      if !"no".in?(statuses)  or "duplicate".in(statuses)
-        rank_set(boreholes)
-      end
-    end
-  end
-=end
 
 def read_spreadsheet 
   spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
@@ -316,34 +271,10 @@ def read_spreadsheet
   end
 end
 
-def load_or_status
-  handlers = Handler.all
-  handlers.each do |h|
-    case h.or_comment
-    when /duplicate/i
-      h.or_status = "duplicate"
-    when /possibl|probabl/i
-      h.or_status = "possibly"
-    when "no"
-      h.or_status="no"
-    when nil
-      h.or_status = "none"
-    else
-      h.or_status = "other"
-    end
-    h.save
-  end
-end
-
-#TODO: Refactor this
 def names_hash(names)
   return names.group_by {|n| parse_string(n) }
 end
 
-def strip_leading_zeros(s)
-    return s.gsub(/(?<=[A-Z])+0+/,'')
-end
-  
 def parse_string(s)
   case s
   when /BMR/
@@ -362,12 +293,6 @@ def parse_string(s)
   end
   return s.downcase.gsub(/ /,'')
 end
-
-def regex_string(s)
-    return s.gsub(/[\W_]+/,'%')
-end
-
-
 
 def to_sdo_string(sdo)
   if sdo.nil?
@@ -391,4 +316,24 @@ def to_sdo_string(sdo)
       end
     end
   end
+end
+
+def borehole_attr_hash(row)
+  h =Hash.new
+  query_terms.each do |qt|
+    if qt == :geom
+      if row[qt.to_s.upcase].nil?
+        geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:nil,y:nil,z:nil}
+      else
+        geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
+        geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
+      end
+      h.merge!(geom_hash)
+    elsif qt == :geom_original
+      h[qt] = to_sdo_string(row[qt.to_s.upcase])
+    else
+      h[qt] = row[qt.to_s.upcase]
+    end
+  end
+  return h
 end
