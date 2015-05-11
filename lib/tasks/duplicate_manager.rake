@@ -26,6 +26,10 @@ namespace :duplicate_manager do
 
 end
 
+def db
+  return YAML.load_file('config/database.yml')
+end
+
 def query_terms
   return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
 end
@@ -55,7 +59,7 @@ def spatial_query
 end
 
 def find_duplicates
-  db=YAML.load_file('config/database.yml')
+
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null ") 
   cursor.fetch_hash do |row|
@@ -96,6 +100,7 @@ def insert_duplicates(duplicates)
     duplicate_group.save
 end
 
+
 def load_boreholes 
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
@@ -110,7 +115,7 @@ end
 
 
 def update_duplicates
-  db=YAML.load_file('config/database.yml')
+
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
   boreholes = Borehole.all
   boreholes.each do |borehole|
