@@ -28,7 +28,7 @@
   	  <td><%=borehole.handler.or_transfer%></td>
   	  <td><%=borehole.handler.or_comment%></td>
   	  <td><%=select_tag :manual_remediation, options_for_select([nil,"KEEP","DELETE","NONE"])%></td>
-  	  <td><%=select_tag :manual_transfer, options_for_select(@duplicate.boreholes.where.not(:eno=>borehole.eno).pluck(:eno)) %></td>
+  	  <td><%=select_tag :manual_transfer, options_for_select([nil,@duplicate.boreholes.where.not(:eno=>borehole.eno).pluck(:eno)]) %></td>
 	  
     </tr>
   <% end %>
