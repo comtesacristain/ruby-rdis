@@ -59,12 +59,12 @@ def borehole_attr_hash(row)
 end
 
 def spatial_query
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 250,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL') "
 end
 
 def find_duplicates
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null ") 
+  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null order by eno") 
     cursor.fetch_hash do |row|
       puts row["ENO"]
       geom = to_sdo_string(row["GEOM"])
