@@ -30,7 +30,7 @@
 
 	  <%= f.fields_for :handlers, borehole.handler do |field| %>
   	  <td><%=field.select :manual_remediation, options_for_select([nil,"KEEP","DELETE","NONE"],borehole.handler.manual_remediation)%></td>
-  	  <td><%=field.select :manual_transfer, options_for_select([nil,@duplicate.boreholes.where.not(:eno=>borehole.eno).pluck(:eno)],borehole.handler.manual_transfer) %></td>
+  	  <td><%=field.select :manual_transfer, options_for_select([nil,@duplicate.boreholes.where.not(:eno=>borehole.eno).pluck(:eno)].flatten,borehole.handler.manual_transfer) %></td>
 	  <% end %>
     </tr>
   <% end %>
