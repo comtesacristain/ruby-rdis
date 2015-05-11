@@ -89,7 +89,7 @@ def insert_duplicates(duplicates)
     duplicate_group = Duplicate.new(:has_remediation=>'N')
   end
   duplicates.each do | d |
-    boreholes = Borehole.where(eno:d["ENO"]).first
+    borehole = Borehole.where(eno:d["ENO"]).first
     handler= Handler.new
     borehole.handler = handler # Each borehole must come with a handler
     borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
