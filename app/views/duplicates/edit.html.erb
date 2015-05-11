@@ -26,28 +26,6 @@
 	  <th>OR Comment</th>
 	  </tr>
   
-  <% @duplicate.boreholes.each do |borehole| %>
-  <% row_class = get_row_class(borehole.handler.auto_remediation) %>
-  <tr class='<%= row_class%>'>
-	  <td><%=borehole.eno%></td>
-	  <td><%=borehole.entityid%></td>
-	  <td><%=borehole.entity_type%></td>
-	   <td><%=borehole.x%></td>
-	    <td><%=borehole.y%></td>
-		 <td><%=borehole.z%></td>
-	
-
-	  <td><%=borehole.handler.auto_remediation%></td>
-	  <td><%=borehole.handler.auto_transfer%></td>
-	  <td><%=borehole.handler.or_status%></td>
-	  <td><%=borehole.handler.or_transfer%></td>
-	  <td><%=borehole.handler.or_comment%></td>
-	  <td><%=borehole.handler.manual_remediation%></td>
-	  <td><%=borehole.handler.manual_transfer%></td>
-	  
-  </tr>
-<% end %>
-</table>
 
 <%= render 'form' %>
 
