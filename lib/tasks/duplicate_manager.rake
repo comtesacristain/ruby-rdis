@@ -43,10 +43,10 @@ def borehole_attr_hash(row)
   query_terms.each do |qt|
     if qt == :geom
       if row[qt.to_s.upcase].nil?
-        geom_hash = {x:nil,y:nil,z:nil}
+        geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:nil,y:nil,z:nil}
       else
         geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
-        geom_hash = {:x=>geometry[:sdo_point].instance_variable_get("@attributes")[:x],:y=>geometry[:sdo_point].instance_variable_get("@attributes")[:y],:z=>geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
+        geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:geometry[:sdo_point].instance_variable_get("@attributes")[:x],y:geometry[:sdo_point].instance_variable_get("@attributes")[:y],z:geometry[:sdo_point].instance_variable_get("@attributes")[:z]}
       end
       h.merge!(geom_hash)
     elsif qt == :geom_original
@@ -63,17 +63,21 @@ def spatial_query
 end
 
 def find_duplicates
-
   connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null ") 
-  cursor.fetch_hash do |row|
-    geom = to_sdo_string(row["GEOM"])
-    statement=spatial_query % {:geom=>geom,:eno=>row["ENO"]}
-    results=connection.exec(statement)
-    duplicates = Array.new
-    results.fetch_hash{ |r| duplicates.push(r)}
-    if duplicates.count > 1
-      insert_duplicates(duplicates)
+  Borehole.all.each do |borehole|
+    if borehole.geom_original == "NULL"
+      puts borehole.id
+    else
+      cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and eno = #{borehole.eno} ") 
+      row= cursor.fetch_hash 
+      geom = to_sdo_string(row["GEOM"])
+      statement=spatial_query % {:geom=>geom}
+      results=connection.exec(statement)
+      duplicates = Array.new
+      results.fetch_hash{ |r| duplicates.push(r)}
+      if duplicates.count > 1
+        insert_duplicates(borehole,duplicates)
+      end
     end
   end
 end
@@ -87,21 +91,16 @@ def insert_duplicates(duplicates)
     duplicate_group = Duplicate.new(:has_remediation=>'N')
   end
   duplicates.each do | d |
-      boreholes = Borehole.where(eno:d["ENO"])
-      if boreholes.exists?
-        borehole = boreholes.first
-      else
-        borehole=Borehole.create(borehole_attr_hash(d))
-        handler= Handler.new
-        borehole.handler = handler # Each borehole must come with a handler
-      end
-      borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
-      if borehole_duplicates.empty?
-        borehole_duplicate = borehole.borehole_duplicates.build(duplicate:duplicate_group)
-        borehole_duplicate.save
-      end
+    boreholes = Borehole.where(eno:d["ENO"]).first
+    handler= Handler.new
+    borehole.handler = handler # Each borehole must come with a handler
+    borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
+    if borehole_duplicates.empty?
+      borehole_duplicate = borehole.borehole_duplicates.build(duplicate:duplicate_group)
+      borehole_duplicate.save
     end
-    duplicate_group.save
+  end
+  duplicate_group.save
 end
 
 
