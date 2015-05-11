@@ -42,7 +42,7 @@ def borehole_attr_hash(row)
   h =Hash.new
   query_terms.each do |qt|
     if qt == :geom
-      if geom.nil?
+      if row[qt.to_s.upcase].nil?
         geom_hash = {x:nil,y:nil,z:nil}
       else
         geometry=row[qt.to_s.upcase].instance_variable_get("@attributes")
