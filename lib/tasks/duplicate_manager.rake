@@ -63,13 +63,10 @@ def spatial_query
 end
 
 def find_duplicates
-  connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
-  Borehole.all.each do |borehole|
-    if borehole.geom == "NULL"
-      puts borehole.id
-    else
-      geom = borehole.geom
-      statement=spatial_query % {:geom=>geom}
+  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null ") 
+    cursor.fetch_hash do |row|
+      geom = to_sdo_string(row["GEOM"])
+      statement=spatial_query % {:geom=>geom,:eno=>row["ENO"]}
       results=connection.exec(statement)
       duplicates = Array.new
       results.fetch_hash{ |r| duplicates.push(r)}
@@ -77,7 +74,6 @@ def find_duplicates
         insert_duplicates(duplicates)
       end
     end
-  end
 end
 
 def insert_duplicates(duplicates) 
@@ -89,7 +85,14 @@ def insert_duplicates(duplicates)
     duplicate_group = Duplicate.new(:has_remediation=>'N')
   end
   duplicates.each do | d |
-    boreholes = Borehole.where(eno:d["ENO"]).first
+    boreholes = Borehole.where(eno:d["ENO"])
+      if boreholes.exists?
+        borehole = boreholes.first
+      else
+        borehole=Borehole.create(borehole_attr_hash(d))
+        handler= Handler.new
+        borehole.handler = handler # Each borehole must come with a handler
+      end
     handler= Handler.new
     borehole.handler = handler # Each borehole must come with a handler
     borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
@@ -108,7 +111,8 @@ def load_boreholes
   cursor=connection.exec(statement)
   cursor.fetch_hash do |row|
     
-    borehole=Borehole.new(borehole_attr_hash(row))
+    borehole=Borehole.find_or_initialize_by(eno:row["eno"])
+    borehole.update(borehole_attr_hash(row))
     handler = Handler.new
     borehole.handler = handler
     borehole.save
