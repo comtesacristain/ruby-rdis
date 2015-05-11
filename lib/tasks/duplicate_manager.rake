@@ -208,6 +208,7 @@ def rank_set(boreholes)
         keep=boreholes.where(:eno=>eno).first
         keep.handler.update(:auto_remediation=>'KEEP')
         return keep
+      end
     end
   else
     boreholes.first.handler.auto_remediation="NONE"
