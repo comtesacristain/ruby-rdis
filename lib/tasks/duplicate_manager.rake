@@ -1,5 +1,10 @@
 namespace :duplicate_manager do
   desc "TODO"
+  task load_boreholes: :environment do
+    load_boreholes
+  end
+  
+  desc "TODO"
   task find_duplicates: :environment do
     find_duplicates
   end
