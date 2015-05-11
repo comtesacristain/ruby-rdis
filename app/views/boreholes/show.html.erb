@@ -38,6 +38,21 @@
 	  <td><%=transfer_link(@borehole.handler.manual_transfer)%></td>
 	  
   </tr>
+  <% well = @borehole.entity.well %>
+  <table>
+	  <tr><tr>
+  </table>
+  
+  <% samples = @borehole.entity.samples %>
+  <table>
+  	<tr><th>SAMPLENO</th><th>SAMPLEID</th><th></th></tr>
+	<% samples.each do |sample|%>
+		<tr>
+			<td>sample.sampleno</td>
+			<td>sample.sampleid</td>
+		</tr>
+	<% end %>
+  </table>
 
 <% content_for(:head) do %>
   <%= stylesheet_link_tag    'boreholes', media: 'all', 'data-turbolinks-track' => true %>
