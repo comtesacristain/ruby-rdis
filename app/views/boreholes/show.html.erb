@@ -1,4 +1,44 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_borehole_path(@borehole) %> |
+<table class='duplicates'>
+	<tr>
+	  <th>Primary Key</th>
+	  <th>Name</th>
+	  <th>Entity Type</th>
+	  <th>Longitude (x)</th>
+	  <th>Latitude (y)</th>
+	  <th>Height (z)</th>
+	  <th>Auto Remediation</th>
+	  <th>Auto Transfer</th>
+	  
+	  <th>OR remediation</th>
+	  <th>OR transfer</th>
+	   <th>OR comment</th>
+	   <th>Manual remediation</th>
+	   <th>Manual transfer</th>
+	  </tr>
+  
+
+  <% row_class = get_row_class(@borehole.handler.auto_remediation) %>
+  <tr class='<%= row_class%>'>
+	  <td><%=@borehole.eno%></td>
+	  <td><%=@borehole.entityid%></td>
+	  <td><%=@borehole.entity_type%></td>
+	   <td><%=@borehole.x%></td>
+	    <td><%=@borehole.y%></td>
+		 <td><%=@borehole.z%></td>
+	
+
+	  <td><%=@borehole.handler.auto_remediation%></td>
+	  <td><%=transfer_link(@borehole.handler.auto_transfer)%></td>
+	  <td><%=@borehole.handler.or_status%></td>
+	  <td><%=@borehole.handler.or_transfer%></td>
+	  <td><%=@borehole.handler.or_comment%></td>
+	  <td><%=@borehole.handler.manual_remediation%></td>
+	  <td><%=transfer_link(@borehole.handler.manual_transfer)%></td>
+	  
+  </tr>
+<% end %>
+
+
 <%= link_to 'Back', boreholes_path %>
