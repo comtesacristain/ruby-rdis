@@ -1,6 +1,6 @@
 namespace :duplicate_manager do
   desc "TODO"
-  task run_all :environment do
+  task run_all: :environment do
     run_all
   end
   
