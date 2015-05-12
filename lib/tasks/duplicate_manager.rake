@@ -36,7 +36,7 @@ end
 
 def run_all
   load_boreholes
-  #load_spreadhseet
+  load_spreadhseet
   #distance_queries.each do |d|
   #  find_duplicates(d)
   #  rank_duplicates
@@ -56,7 +56,7 @@ def load_boreholes(n=num)
     handler = Handler.new
     borehole.handler = handler
     borehole.save
-    puts "Loaded borehole: #{row["eno"]}"
+    puts "Loaded borehole: %s" % row["eno"]
   end
 end
 
