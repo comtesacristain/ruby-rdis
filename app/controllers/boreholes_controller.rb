@@ -4,7 +4,30 @@ class BoreholesController < ApplicationController
   # GET /boreholes
   # GET /boreholes.json
   def index
-    @boreholes = Borehole.paginate(:page => params[:page], :per_page => 20)
+    scope =Borehole
+    unless params[:borehole_eno].blank?
+      scope=scope.where(eno:params[:borehole_eno])
+    unless params[:borehole_name].blank?
+      scope.where(Borehole.arel_table[:entityid].matches("%#{params[:borehole_name]}%"))
+
+    end
+    unless params[:auto_remediation].blank?
+      scope=scope.joins(:handler).where(:handlers=>{:auto_remediation=>"#{params[:auto_remediation]}"})
+    end
+    unless params[:manual_remediation].blank?
+      scope=scope.joins(:handler).where(:handlers=>{:manual_remediation=>"#{params[:manual_remediation]}"})
+    end
+    unless params[:or_status].blank?
+      scope=scope.joins(:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
+    end
+    scope=scope.uniq
+    
+    
+    if request.format =='html'
+      @boreholes = scope.paginate(:page => params[:page], :per_page => 20)
+    else
+      @boreholes = scope.all
+    end
   end
 
   # GET /boreholes/1
