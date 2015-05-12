@@ -266,7 +266,7 @@ def has_relations(boreholes)
       associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
     end
   end
-  associated_well_enos.flatten.compact!
+  associated_well_enos = associated_well_enos.flatten.compact
   unless associated_well_enos.empty?
     associated_well_enos.map!{|e| e.to_i}
     return associated_well_enos.all?{|e| enos.include?(e)}
