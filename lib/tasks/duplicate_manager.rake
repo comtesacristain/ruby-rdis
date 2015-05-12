@@ -4,8 +4,8 @@ namespace :duplicate_manager do
     run_all
   end
   
-  task run_rank: :environment do
-    run_rank
+  task find_and_rank: :environment do
+    find_and_rank
   end
   
   desc "TODO"
@@ -42,10 +42,10 @@ def run_all
   if Handler.where.not(:or_status=>nil).empty?
     load_spreadsheet
   end
-  run_rank
+  find_and_rank
 end
 
-def run_rank
+def find_and_rank
   distance_queries.each do |d|
      find_duplicates(d)
      rank_duplicates
@@ -119,7 +119,7 @@ def find_duplicates(d=0)
       
       cursor = connection.exec(statement)
       duplicates = Array.new
-      results.fetch_hash{ |r| duplicates.push(r)}
+      cursor.fetch_hash{ |r| duplicates.push(r)}
       if duplicates.count > 1
         
         insert_duplicates(duplicates,kind)
