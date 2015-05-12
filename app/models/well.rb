@@ -1,4 +1,5 @@
 class Well < ActiveRecord::Base
+  establish_connection "oracle_#{Rails.env}"
 
 	self.table_name = "npm.wells"
     self.primary_key = :eno

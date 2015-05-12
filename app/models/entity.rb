@@ -1,5 +1,5 @@
 class Entity < ActiveRecord::Base
-
+  establish_connection "oracle_#{Rails.env}"
 
 	self.table_name = "a.entities"
     self.primary_key = :eno

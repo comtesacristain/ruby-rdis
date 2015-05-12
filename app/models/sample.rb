@@ -1,4 +1,5 @@
 class Sample < ActiveRecord::Base
+  establish_connection "oracle_#{Rails.env}"
 
 	self.table_name = "a.samples"
     self.primary_key = :sampleno
