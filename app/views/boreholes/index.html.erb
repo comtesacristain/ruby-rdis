@@ -5,10 +5,15 @@
 <table>
   <thead>
     <tr>
-      <th></th>
+      <th>ENO</th>
       <th>Entity ID</th>
       <th>Entity Type</th>
-      <th>Parent</th>
+      <th>Auto Remediation</th>
+	  <th>Auto Transfer</th>
+	  <th>OR Remediation</th>
+	  <th>OR Transfer</th>
+	  <th>Final Remediation</th>
+	   <th>Final Transfer</th>
     </tr>
   </thead>
 
@@ -18,7 +23,12 @@
         <td><%= borehole.eno %></td>
         <td><%= borehole.entityid %></td>
         <td><%= borehole.entity_type %></td>
-         <td><%= borehole.parent %></td>
+        <td><%= borehole.handler.auto_remediation %></td>
+		<td><%= borehole.handler.auto_transfer %></td>
+		<td><%= borehole.handler.or_status %></td>
+		<td><%= borehole.handler.or_transfer %></td>
+		<td><%= borehole.handler.manual_transfer %></td>
+		<td><%= borehole.handler.manual_remediation %></td>
        <!-- <td><%= link_to 'Destroy', borehole, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
       </tr>
     <% end %>
