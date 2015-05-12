@@ -35,6 +35,12 @@
   </tbody>
 </table>
 
+<% content_for(:sidebar) do %>
+    <p>
+		<%= render :partial => "query" %>
+	</p>
+<% end %>
+
 <br>
 
 <%= will_paginate @boreholes %>
