@@ -42,12 +42,30 @@ end
 
 def run_all
   puts num
-  #load_boreholes
+  load_boreholes
   #load_spreadhseet
   #distance_queries.each do |d|
   #  find_duplicates(d)
   #  rank_duplicates
   #end
+end
+
+def load_boreholes(num=num)
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
+  unless num.nil?
+    statement = statement + " and rownum < #{num}"
+  end
+  statement += " order by eno"
+  cursor=connection.exec(statement)
+  cursor.fetch_hash do |row|
+  borehole=Borehole.find_or_initialize_by(eno:row["eno"])
+  borehole.update(borehole_attr_hash(row))
+  handler = Handler.new
+  borehole.handler = handler
+  borehole.save
+  puts "Loaded borehole: #{row["eno"]}"
+  end
 end
 
 def db
