@@ -36,7 +36,7 @@ end
 
 def run_all
   load_boreholes
-  load_spreadhseet
+  load_spreadsheet
   #distance_queries.each do |d|
   #  find_duplicates(d)
   #  rank_duplicates
@@ -51,12 +51,12 @@ def load_boreholes(n=num)
   statement += " order by eno"
   cursor=connection.exec(statement)
   cursor.fetch_hash do |row|
-    borehole=Borehole.find_or_initialize_by(eno:row["eno"])
+    borehole=Borehole.find_or_initialize_by(eno:row["ENO"])
     borehole.update(borehole_attr_hash(row))
     handler = Handler.new
     borehole.handler = handler
     borehole.save
-    puts "Loaded borehole: %s" % row["eno"]
+    puts "Loaded borehole: %s" % row["ENO"]
   end
 end
 
