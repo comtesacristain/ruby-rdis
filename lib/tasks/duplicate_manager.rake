@@ -31,17 +31,10 @@ namespace :duplicate_manager do
 
 end
 
-def num
-  if Rails.env == "development"
-    return 1000
-  else 
-    return nil
-  end
-end
+
   
 
 def run_all
-  puts num
   load_boreholes
   #load_spreadhseet
   #distance_queries.each do |d|
@@ -50,22 +43,36 @@ def run_all
   #end
 end
 
-def load_boreholes(num=num)
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+def load_boreholes(n=num)
   statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
-  unless num.nil?
-    statement = statement + " and rownum < #{num}"
+  unless n.nil?
+    statement = statement + " and rownum < #{n}"
   end
   statement += " order by eno"
-  cursor=connection.exec(statement)
+  puts statement
+  #cursor=connection.exec(statement)
+=begin 
   cursor.fetch_hash do |row|
-  borehole=Borehole.find_or_initialize_by(eno:row["eno"])
-  borehole.update(borehole_attr_hash(row))
-  handler = Handler.new
-  borehole.handler = handler
-  borehole.save
-  puts "Loaded borehole: #{row["eno"]}"
+    borehole=Borehole.find_or_initialize_by(eno:row["eno"])
+    borehole.update(borehole_attr_hash(row))
+    handler = Handler.new
+    borehole.handler = handler
+    borehole.save
+    puts "Loaded borehole: #{row["eno"]}"
   end
+=end
+end
+
+def num
+  if Rails.env == "development"
+    return 1000
+  else 
+    return nil
+  end
+end
+
+def connection
+  return OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
 end
 
 def db
