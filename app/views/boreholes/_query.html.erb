@@ -18,7 +18,7 @@
 		</tr>
 		<tr>
 			<td><%= label_tag :final_remediation, "Final remediation:" %></td>
-			<td><%= select_tag :final_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:final_remediation] %></td>		
+			<td><%= select_tag :final_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:final_remediation]) %></td>		
 		</tr>
 	</table>
 	<%=submit_tag "Search", :name=>nil %>
