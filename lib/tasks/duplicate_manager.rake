@@ -53,6 +53,7 @@ def find_and_rank
 end
 
 def load_boreholes(n=num)
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
   unless n.nil?
     statement = statement + " and rownum < #{n}"
@@ -260,7 +261,6 @@ end
 
 def has_relations(boreholes)
   enos = boreholes.pluck(:eno)
-  puts enos
   parents = boreholes.pluck(:parent).compact
   if !parents.empty? and parents.all?{|e| enos.include?(e)}
     return parents.all?{|e| enos.include?(e)}
