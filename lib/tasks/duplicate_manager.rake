@@ -143,29 +143,6 @@ def insert_duplicates(duplicates,kind='100m')
   duplicate_group.save
 end
 
-
-def load_boreholes(num=nil)
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
-  unless num.nil?
-    statement = statement + " and rownum < #{num}"
-  end
-  statement += " order by eno"
-  cursor=connection.exec(statement)
-  cursor.fetch_hash do |row|
-    
-    borehole=Borehole.find_or_initialize_by(eno:row["eno"])
-    borehole.update(borehole_attr_hash(row))
-    if borehole.handler.nil?
-      handler = Handler.new
-      borehole.handler = handler
-    end
-    borehole.save
-  end
-end
-
-
-
 def update_duplicates
 
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
