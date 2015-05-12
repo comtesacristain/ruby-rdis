@@ -1,5 +1,10 @@
 namespace :duplicate_manager do
   desc "TODO"
+  task run_all :environment do
+    run_all
+  end
+  
+  desc "TODO"
   task load_boreholes: :environment do
     load_boreholes
   end
@@ -26,13 +31,23 @@ namespace :duplicate_manager do
 
 end
 
-def run_all
-  load_boreholes
-  load_spreadhseet
-  distance_queries.each do |d|
-    find_duplicates(d)
-    rank_duplicates
+def num
+  if Rails.env == "development"
+    return 1000
+  else 
+    return nil
   end
+end
+  
+
+def run_all
+  return num
+  #load_boreholes
+  #load_spreadhseet
+  #distance_queries.each do |d|
+  #  find_duplicates(d)
+  #  rank_duplicates
+  #end
 end
 
 def db
