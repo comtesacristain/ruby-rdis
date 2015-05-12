@@ -26,6 +26,15 @@ namespace :duplicate_manager do
 
 end
 
+def run_all
+  load_boreholes
+  load_spreadhseet
+  distance_queries.each do |d|
+    find_duplicates(d)
+    rank_duplicates
+  end
+end
+
 def db
   return YAML.load_file('config/database.yml')
 end
@@ -39,18 +48,18 @@ def query_string
 end
 
 
+def spatial_query(geom,d=100)
 
-def spatial_query
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,%{geom},'distance= 100,units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
 
 def find_duplicates
-  connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null order by eno") 
     cursor.fetch_hash do |row|
       puts row["ENO"]
       geom = to_sdo_string(row["GEOM"])
-      statement=spatial_query % {:geom=>geom}
+      statement=spatial_query(geom)
       results=connection.exec(statement)
       duplicates = Array.new
       results.fetch_hash{ |r| duplicates.push(r)}
@@ -60,13 +69,19 @@ def find_duplicates
     end
 end
 
-def insert_duplicates(duplicates) 
+def distance_queries 
+  return [0,100,500,1000,2500,5000]
+end
+
+
+
+def insert_duplicates(duplicates,kind='100m') 
   enos = duplicates.map{|d| d["ENO"]}
   duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
-    duplicate_group = Duplicate.new(:has_remediation=>'N')
+    duplicate_group = Duplicate.new(:has_remediation=>'N',:kind=>kind)
   end
   duplicates.each do | d |
 
@@ -89,9 +104,13 @@ def insert_duplicates(duplicates)
 end
 
 
-def load_boreholes 
-  connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
+def load_boreholes(num=nil)
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
+  unless num.nil?
+    statement = statement + " and rownum < #{num}"
+  end
+  statement += " order by eno"
   cursor=connection.exec(statement)
   cursor.fetch_hash do |row|
     
@@ -109,7 +128,7 @@ end
 
 def update_duplicates
 
-  connection=OCI8.new(db["production"]["username"],db["production"]["password"],db["production"]["database"])
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   boreholes = Borehole.all
   boreholes.each do |borehole|
     statement = "select #{query_string} from a.entities e where eno =#{borehole.eno}"
@@ -252,6 +271,19 @@ def read_spreadsheet
   end
 end
 
+# [0, 100, 500, 1000, 2500, 5000]
+
+def duplicate_remainders(d=1000)
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  boreholes=Borehole.includes(:handler).where(handlers:{auto_remediation:'NONE',or_status:'duplicate'}).all
+  boreholes.each do |borehole|
+    statement=spatial_query(borehole.geom, d)
+    cursor=connection.exec(statement)
+    duplicates = Array.new
+    cursor.fetch_hash{ |r| duplicates.push(r)}
+    insert_duplicates(duplicates,d)
+  end
+end
 
 def has_relations(boreholes)
   enos = boreholes.pluck(:eno)
