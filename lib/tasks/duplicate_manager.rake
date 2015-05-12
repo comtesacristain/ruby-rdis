@@ -49,9 +49,7 @@ def load_boreholes(n=num)
     statement = statement + " and rownum < #{n}"
   end
   statement += " order by eno"
-  puts statement
-  #cursor=connection.exec(statement)
-=begin 
+  cursor=connection.exec(statement)
   cursor.fetch_hash do |row|
     borehole=Borehole.find_or_initialize_by(eno:row["eno"])
     borehole.update(borehole_attr_hash(row))
@@ -60,7 +58,6 @@ def load_boreholes(n=num)
     borehole.save
     puts "Loaded borehole: #{row["eno"]}"
   end
-=end
 end
 
 def num
