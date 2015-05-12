@@ -25,8 +25,8 @@ namespace :duplicate_manager do
   end
   
   desc "TODO"
-  task read_spreadsheet: :environment do
-    read_spreadsheet
+  task load_spreadsheet: :environment do
+    load_spreadsheet
   end
 
 end
@@ -57,6 +57,41 @@ def load_boreholes(n=num)
     borehole.handler = handler
     borehole.save
     puts "Loaded borehole: %s" % row["eno"]
+  end
+end
+
+def load_spreadsheet 
+  spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
+  wb =Roo::Spreadsheet.open(spreadsheet)
+  sheet = wb.sheet(0)
+  ((sheet.first_row + 1)..sheet.last_row).each do |row|
+    eno = sheet.row(row)[1]
+    orc = sheet.row(row)[4]
+    borehole = Borehole.where(:eno=>eno).first
+    unless borehole.nil?
+      if borehole.handler.nil?
+        handler=Handler.new
+        handler.borehole=borehole
+      else
+        handler = borehole.handler
+      end
+      handler.or_comment = orc
+      case orc
+      when /possibl|probabl/i
+        handler.or_status = "possibly"
+      when /duplicate/i
+        handler.or_status = "duplicate"
+      when "no"
+        handler.or_status = "no"
+      when nil
+        handler.or_status = "none"
+      else
+        handler.or_status = "other"
+      end
+      handler.save
+    else
+      puts "#{eno}, #{orc}"
+    end
   end
 end
 
@@ -250,40 +285,7 @@ def rank_set(boreholes)
   end
 end
 
-def read_spreadsheet 
-  spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
-  wb =Roo::Spreadsheet.open(spreadsheet)
-  sheet = wb.sheet(0)
-  ((sheet.first_row + 1)..sheet.last_row).each do |row|
-    eno = sheet.row(row)[1]
-    orc = sheet.row(row)[4]
-    borehole = Borehole.where(:eno=>eno).first
-    unless borehole.nil?
-      if borehole.handler.nil?
-        handler=Handler.new
-        handler.borehole=borehole
-      else
-        handler = borehole.handler
-      end
-      handler.or_comment = orc
-      case orc
-      when /possibl|probabl/i
-        handler.or_status = "possibly"
-      when /duplicate/i
-        handler.or_status = "duplicate"
-      when "no"
-        handler.or_status = "no"
-      when nil
-        handler.or_status = "none"
-      else
-        handler.or_status = "other"
-      end
-      handler.save
-    else
-      puts "#{eno}, #{orc}"
-    end
-  end
-end
+
 
 # [0, 100, 500, 1000, 2500, 5000]
 
