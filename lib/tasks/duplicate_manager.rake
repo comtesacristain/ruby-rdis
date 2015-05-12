@@ -255,20 +255,18 @@ end
 
 def has_relations(boreholes)
   enos = boreholes.pluck(:eno)
+  puts enos
   parents = boreholes.pluck(:parent).compact
   if !parents.empty? and parents.all?{|e| enos.include?(e)}
     return parents.all?{|e| enos.include?(e)}
   end
   associated_well_enos =Array.new
   boreholes.each do |b|
-    puts b.eno
     unless b.entity.well.nil?
-      puts b.entity.well.well_confids.pluck(:associated_well_eno)
       associated_well_enos.push(b.entity.well.well_confids.pluck(:associated_well_eno).uniq)
     end
   end
   associated_well_enos.flatten.compact!
-  puts associated_Well_enos
   unless associated_well_enos.empty?
     associated_well_enos.map!{|e| e.to_i}
     return associated_well_enos.all?{|e| enos.include?(e)}
