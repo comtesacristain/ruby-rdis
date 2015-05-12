@@ -1,0 +1,22 @@
+<%= form_tag url_for(params), :method => :get do%>
+	<table>
+		<tr>
+			<td><%= label_tag :borehole_name, "Borehole name:" %></td>
+			<td><%= text_field_tag :borehole_name, params[:borehole_name]%></td>
+		</tr>
+		<tr>
+			<td><%= label_tag :borehole_eno, "Borehole ENO:" %></td>
+			<td><%= text_field_tag :borehole_eno, params[:borehole_eno]%></td>
+		</tr>
+		<tr>
+			<td><%= label_tag :auto_remediation, "Auto remediation:" %></td>
+			<td><%= select_tag :auto_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:auto_remediation])%></td>		
+		</tr>
+		<tr>
+			<td><%= label_tag :or_status, "OR Status:" %></td>
+			<td><%= select_tag :or_status, options_for_select(Handler.pluck(:or_status).uniq.push(nil),params[:or_status]) %></td>		
+		</tr>
+	</table>
+	<%=submit_tag "Search", :name=>nil %>
+<% end %>
+
