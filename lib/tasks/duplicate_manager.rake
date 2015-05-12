@@ -41,7 +41,7 @@ end
   
 
 def run_all
-  return num
+  puts num
   #load_boreholes
   #load_spreadhseet
   #distance_queries.each do |d|
