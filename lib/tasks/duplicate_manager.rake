@@ -4,6 +4,10 @@ namespace :duplicate_manager do
     run_all
   end
   
+  task run_rank: :environment do
+    run_rank
+  end
+  
   desc "TODO"
   task load_boreholes: :environment do
     load_boreholes
@@ -38,6 +42,10 @@ def run_all
   if Handler.where.not(:or_status=>nil).empty?
     load_spreadsheet
   end
+  run_rank
+end
+
+def run_rank
   distance_queries.each do |d|
      find_duplicates(d)
      rank_duplicates
