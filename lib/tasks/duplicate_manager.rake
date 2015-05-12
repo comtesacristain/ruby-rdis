@@ -31,16 +31,17 @@ namespace :duplicate_manager do
 
 end
 
-
   
 
 def run_all
   load_boreholes
-  load_spreadsheet
-  #distance_queries.each do |d|
-  #  find_duplicates(d)
-  #  rank_duplicates
-  #end
+  if Handler.where.not(:or_status=>nil).empty?
+    load_spreadsheet
+  end
+  distance_queries.each do |d|
+     find_duplicates(d)
+     rank_duplicates
+  end
 end
 
 def load_boreholes(n=num)
@@ -67,7 +68,7 @@ def load_spreadsheet
   ((sheet.first_row + 1)..sheet.last_row).each do |row|
     eno = sheet.row(row)[1]
     orc = sheet.row(row)[4]
-    borehole = Borehole.where(:eno=>eno).first
+    borehole = Borehole.find_by(:eno=>eno)
     unless borehole.nil?
       if borehole.handler.nil?
         handler=Handler.new
@@ -84,88 +85,37 @@ def load_spreadsheet
       when "no"
         handler.or_status = "no"
       when nil
-        handler.or_status = "none"
+        handler.or_status = "undetermined"
       else
         handler.or_status = "other"
       end
       handler.save
     else
-      puts "#{eno}, #{orc}"
-    end
-  end
-end
-
-def num
-  if Rails.env == "development"
-    return 1000
-  else 
-    return nil
-  end
-end
-
-def connection
-  return OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-end
-
-def db
-  return YAML.load_file('config/database.yml')
-end
-
-def query_terms
-  return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
-end
-
-def query_string
-  return query_terms.join(",")
-end
-
-
-def spatial_query(geom,d=100)
-
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
-end
-
-def find_duplicates
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  cursor=connection.exec("select eno, entityid, geom, entity_type from a.entities where entity_type in ('DRILLHOLE', 'WELL') and geom is not null order by eno") 
-    cursor.fetch_hash do |row|
-      puts row["ENO"]
-      geom = to_sdo_string(row["GEOM"])
-      statement=spatial_query(geom)
-      results=connection.exec(statement)
-      duplicates = Array.new
-      results.fetch_hash{ |r| duplicates.push(r)}
-      if duplicates.count > 1
-        insert_duplicates(duplicates)
+      if Rails.env == "production"
+        puts "Borehole #{eno} not a DRILLHOLE or WELL"
+      else
+        puts "#{eno}, #{orc}"
       end
     end
+  end
 end
-
-def distance_queries 
-  return [0,100,500,1000,2500,5000]
-end
-
-
 
 def insert_duplicates(duplicates,kind='100m') 
   enos = duplicates.map{|d| d["ENO"]}
-  duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #
+  duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #,kind:kind
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
   else
     duplicate_group = Duplicate.new(:has_remediation=>'N',:kind=>kind)
   end
   duplicates.each do | d |
-
-    boreholes = Borehole.where(eno:d["ENO"])
-      if boreholes.exists?
-        borehole = boreholes.first
-      else
-        borehole=Borehole.create(borehole_attr_hash(d))
-        handler= Handler.new
-        borehole.handler = handler # Each borehole must come with a handler
-        borehole.save
-      end
+    borehole = Borehole.find_by(eno:d["ENO"])
+    if borehole.nil?
+      borehole=Borehole.create(borehole_attr_hash(d))
+      handler= Handler.new
+      borehole.handler = handler # Each borehole must come with a handler
+      borehole.save
+    end
     borehole_duplicates=borehole.borehole_duplicates.where(duplicate:duplicate_group)
     if borehole_duplicates.empty?
       borehole_duplicate = borehole.borehole_duplicates.build(duplicate:duplicate_group)
@@ -192,8 +142,7 @@ def rank_duplicates
   duplicate_groups=Duplicate.all
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
-      auto_rank(boreholes)
-      #or_rank(boreholes)
+      name_sort(boreholes)
       auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
       if "DELETE".in?(auto_remediations)
         duplicate_group.update(:has_remediation=>'Y')
@@ -201,7 +150,7 @@ def rank_duplicates
         duplicate_group.update(:has_remediation=>'N')
       end
   end
-  
+=begin  
   duplicates=Duplicate.where(:has_remediation=>'N')
   duplicates.each do |d|
     boreholes=d.boreholes
@@ -218,6 +167,7 @@ def rank_duplicates
       d.update(:has_remediation=>'N')
     end
   end
+=end
 end
 
 
@@ -232,13 +182,11 @@ end
  
 =end
 
-def auto_rank(boreholes)
+def name_sort(boreholes)
   names = names_hash(boreholes.pluck(:entityid).uniq)
-  puts "Sorting the following: #{names}"
   if names.size > 1
     names.each do |k,v|
-      puts "#{names.size} duplicates detected. Splitting ..."
-      auto_rank(boreholes.where(:entityid=>v))
+      name_sort(boreholes.where(:entityid=>v))
     end
   else
     rank_set(boreholes)
@@ -247,13 +195,9 @@ end
 
 
 def rank_set(boreholes)
-  puts "1 duplicate detected"
   if boreholes.size > 1
-    puts "#{boreholes.size} boreholes detected ..."
     types =  boreholes.pluck(:entity_type).uniq
-    puts "Types: #{types}"
     if types.size > 1
-      puts "#{types.size} types detected" 
       well_set = boreholes.where(:entity_type=>'WELL')
       drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
       if well_set.size > 1
@@ -285,21 +229,6 @@ def rank_set(boreholes)
   end
 end
 
-
-
-# [0, 100, 500, 1000, 2500, 5000]
-
-def duplicate_remainders(d=1000)
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  boreholes=Borehole.includes(:handler).where(handlers:{auto_remediation:'NONE',or_status:'duplicate'}).all
-  boreholes.each do |borehole|
-    statement=spatial_query(borehole.geom, d)
-    cursor=connection.exec(statement)
-    duplicates = Array.new
-    cursor.fetch_hash{ |r| duplicates.push(r)}
-    insert_duplicates(duplicates,d)
-  end
-end
 
 def has_relations(boreholes)
   enos = boreholes.pluck(:eno)
@@ -389,4 +318,36 @@ def borehole_attr_hash(row)
     end
   end
   return h
+end
+
+def num
+  if Rails.env == "development"
+    return 1000
+  else 
+    return nil
+  end
+end
+
+def db
+  return YAML.load_file('config/database.yml')
+end
+
+def query_terms
+  return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
+end
+
+def query_string
+  return query_terms.join(",")
+end
+
+
+def spatial_query(geom,d=100)
+
+  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+end
+
+
+
+def distance_queries 
+  return [0,100,500,1000,2500,5000]
 end
