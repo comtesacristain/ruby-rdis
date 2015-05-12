@@ -268,6 +268,7 @@ def has_relations(boreholes)
     end
   end
   associated_well_enos.flatten.compact!
+  puts associated_Well_enos
   unless associated_well_enos.empty?
     associated_well_enos.map!{|e| e.to_i}
     return associated_well_enos.all?{|e| enos.include?(e)}
