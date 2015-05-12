@@ -100,6 +100,26 @@ def load_spreadsheet
   end
 end
 
+def find_duplicates(d=0)
+  kind = "#{d}m"
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  boreholes=Borehole.joins(:handler).where(Handler.arel_table[:or_status].not_eq("no"))
+  boreholes.each do |borehole|
+    geom = borehole.geom
+    unless geom == "NULL"
+      statement=spatial_query(geom,d)
+      
+      cursor = connection.exec(statement)
+      duplicates = Array.new
+      results.fetch_hash{ |r| duplicates.push(r)}
+      if duplicates.count > 1
+        
+        insert_duplicates(duplicates,kind)
+      end
+    end
+  end
+end
+
 def insert_duplicates(duplicates,kind='100m') 
   enos = duplicates.map{|d| d["ENO"]}
   duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #,kind:kind
