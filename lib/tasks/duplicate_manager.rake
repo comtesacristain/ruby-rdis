@@ -112,7 +112,7 @@ end
 def find_duplicates(d=0)
   kind = "#{d}m"
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  boreholes=Borehole.joins(:handler).where(Handler.arel_table[:or_status].not_eq("no"))
+  boreholes=Borehole.joins(:handler).where(Handler.arel_table[:or_status].not_eq("no").and(Handler.arel_table[:auto_remediation].eq(nil)))
   boreholes.each do |borehole|
     puts "Searching for duplicates around borehole #{borehole.eno} with within #{d} metres"
     geom = borehole.geom
@@ -400,5 +400,5 @@ end
 
 
 def distance_queries 
-  return [0,100,500,1000,2500,5000]
+  return [0,100,1000,5000]
 end
