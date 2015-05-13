@@ -122,7 +122,7 @@ def find_duplicates(d=0)
       cursor = connection.exec(statement)
       duplicates = Array.new
       cursor.fetch_hash{ |r| duplicates.push(r)}
-      if duplictes.size >1
+      if duplicates.size >1
         name_duplicates = group_by_name(duplicates)
         name_duplicates.each do |nd|
           insert_duplicates(nd,kind)
