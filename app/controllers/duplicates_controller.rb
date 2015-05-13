@@ -64,6 +64,17 @@ end
   # PATCH/PUT /duplicates/1
   # PATCH/PUT /duplicates/1.json
   def update
+    if duplicate_params[:qaed]=='Y'
+      @duplicate.handlers.each do |handler|
+        handler.manual_remediation = handler.auto_remediation 
+        handler.manual_transfer = handler.auto_transfer
+        handler.save
+      end
+    else
+      if 
+      elsif duplicate_params[:qaed]=='N'
+        @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
+=begin
     puts duplicate_params
     if duplicate_params[:qaed]=='Y'
       @duplicate.boreholes.each do |b|
@@ -86,11 +97,9 @@ end
       handler.save
     end
   end
+=end
     respond_to do |format|
-      puts duplicate_params
-      
-      
-      if @duplicate.update(duplicate_params)
+      if @duplicate.update(duplicate_params[:qaed])
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
         format.json { render :show, status: :ok, location: @duplicate }
       else
@@ -118,6 +127,6 @@ end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
-      params.require(:duplicate).permit(:qaed,handlers_attributes:[:manual_remediation,:manual_transfer])
+      params.require(:duplicate).permit(:qaed,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
     end
 end
