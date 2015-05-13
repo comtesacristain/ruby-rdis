@@ -123,7 +123,7 @@ def find_duplicates(d=0)
       cursor.fetch_hash{ |r| duplicates.push(r)}
       name_duplicates = group_by_name(duplicates)
       name_duplicates.each do |nd|
-        insert_duplicates(duplicates,kind)
+        insert_duplicates(nd,kind)
       end
     end
   end
