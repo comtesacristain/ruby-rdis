@@ -296,6 +296,12 @@ def parse_string(s)
   if s =~ /Mt/
     s=s.gsub(/Mt/,"Mount")
   end
+  if s =~ /( rock| soil)/i
+    s=s.gsub(/( rock| soil)/i,"")
+  end
+  if s =~ /( 0\.25| surface)/i
+    s=s.gsub(/( 0\.25| surface)/i,"")
+  end
   if s =~ /no\. ?/i
     s=s.gsub(/no\. ?/i,"")
   end
@@ -385,5 +391,5 @@ end
 
 
 def distance_queries 
-  return [0,100,1000,5000]
+  return [0,500,1500,5000,15000]
 end
