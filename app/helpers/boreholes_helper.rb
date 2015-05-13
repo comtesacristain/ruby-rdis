@@ -6,7 +6,7 @@ module BoreholesHelper
     when nil
       return number
     else
-      borehole = try  Borehole.find(number.to_i)
+      borehole = Borehole.find(number.to_i)
       unless borehole.nil?
         return link_to number, borehole
       else
