@@ -9,7 +9,7 @@ class BoreholesController < ApplicationController
       scope=scope.where(eno:params[:borehole_eno])
     end
     unless params[:borehole_name].blank?
-      scope.where(Borehole.arel_table[:entityid].matches("%#{params[:borehole_name]}%"))
+      scope=scope.where(Borehole.arel_table[:entityid].matches("%#{params[:borehole_name]}%"))
     end
     unless params[:auto_remediation].blank?
       scope=scope.joins(:handler).where(:handlers=>{:auto_remediation=>"#{params[:auto_remediation]}"})
