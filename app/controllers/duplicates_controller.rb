@@ -74,6 +74,8 @@ end
       if params["handlers_attributes"].map{|k,x| x["manual_remediation"]}.uniq.include?("")
       elsif duplicate_params[:qaed]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
+      end
+    end
 =begin
     puts duplicate_params
     if duplicate_params[:qaed]=='Y'
