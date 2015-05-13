@@ -118,6 +118,6 @@ end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
-      params.require(:duplicate).permit(:qaed,:handlers_attributes)
+      params.require(:duplicate).permit(:qaed,handlers_attributes:[:manual_remediation,:manual_transfer])
     end
 end
