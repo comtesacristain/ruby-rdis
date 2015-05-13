@@ -2,7 +2,7 @@ wb = xlsx_package.workbook
 border_color = '000000'
 
 header_style= {  :alignment => { :horizontal => :center }, :bold => true, :b=>true }
- styles_hash = {:delete=>{ :bold => false,:b => false},:keep=>{ :bold => true,:b => true},:unknown=>{ :bg_color =>'ffdddd'}} 4
+ styles_hash = {:delete=>{ :bold => false,:b => false},:keep=>{ :bold => true,:b => true},:unknown=>{ :bg_color =>'ffdddd'}}
  styles={}                             
 styles_hash.each {|k,v| 
 styles[k]=Hash.new
