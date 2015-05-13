@@ -297,7 +297,7 @@ end
 =end
 
 
-def 
+def names_hash(names)
   return names.group_by {|n| parse_string(n) }
 end
 
