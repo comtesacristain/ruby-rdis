@@ -87,6 +87,7 @@ end
     end
   end
     respond_to do |format|
+      puts duplicate_params
       
       
       if @duplicate.update(duplicate_params)
