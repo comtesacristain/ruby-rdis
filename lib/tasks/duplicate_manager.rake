@@ -121,13 +121,25 @@ def find_duplicates(d=0)
       cursor = connection.exec(statement)
       duplicates = Array.new
       cursor.fetch_hash{ |r| duplicates.push(r)}
-      if duplicates.count > 1
-        
+      name_duplicates = group_by_name(duplicates)
+      name_duplicates.each do |nd|
         insert_duplicates(duplicates,kind)
       end
     end
   end
 end
+
+def group_by_name(duplicates)
+  names=duplicates.map{|d| d["ENTITYID"]}
+  nh = names_hash(names)
+  grouped_names = nh.values.select{|v| v.size > 1}
+  named_duplicates =Array.new
+  grouped_names.each do |n|
+    named_duplicates.push(duplicates.select{|hash| n.include?(hash["ENTITYID"])})
+  end
+  return named_duplicates
+end
+  
 
 def insert_duplicates(duplicates,kind='100m') 
   enos = duplicates.map{|d| d["ENO"]}
@@ -280,24 +292,32 @@ def has_relations(boreholes)
   end
 end
 
+=begin
 
-def names_hash(names)
+=end
+
+
+def 
   return names.group_by {|n| parse_string(n) }
 end
 
 def parse_string(s)
-  case s
-  when /BMR/
+  if s =~ /BMR/
     s=s.gsub(/BMR /,"")
-  when /Mt/
+  end
+  if s =~ /Mt/
     s=s.gsub(/Mt/,"Mount")
-  when /no\. ?/i
+  end
+  if s =~ /no\. ?/i
     s=s.gsub(/no\. ?/i,"")
-  when /[\W_]+/
+  end
+  if s =~ /[\W_]+/
     s=s.gsub(/[\W_]+/," ")
-  when /O(?=[0-9])/
+  end
+  if s =~ /O(?=[0-9])/
     s=s.gsub(/O(?=[0-9])/,"0")
-  when /(?<=[A-Z])+0+/
+  end
+  if s =~ /(?<=[A-Z])+0+/
     s=s.gsub(/(?<=[A-Z])+0+/,"")
   
   end
