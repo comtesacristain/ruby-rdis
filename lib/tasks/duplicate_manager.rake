@@ -103,8 +103,9 @@ def load_spreadsheet
       if Rails.env == "production"
         puts "Borehole #{eno} not a DRILLHOLE or WELL"
       end
-      puts "#{eno}, #{orc}"
+      
     end
+    puts "#{eno}, #{orc}"
   end
 end
 
@@ -195,24 +196,7 @@ def rank_duplicates
         duplicate_group.update(:has_remediation=>'N')
       end
   end
-=begin  
-  duplicates=Duplicate.where(:has_remediation=>'N')
-  duplicates.each do |d|
-    boreholes=d.boreholes
-    if boreholes.count ==2 
-      statuses =boreholes.includes(:handler).pluck(:or_status)
-      if !statuses.include?("no")  and statuses.include?("duplicate")
-        rank_set(boreholes)
-      end
-    end
-    auto_remediations = d.boreholes.includes(:handler).pluck(:auto_remediation)
-    if "DELETE".in?(auto_remediations)
-      d.update(:has_remediation=>'Y')
-    else
-      d.update(:has_remediation=>'N')
-    end
-  end
-=end
+
 end
 
 
