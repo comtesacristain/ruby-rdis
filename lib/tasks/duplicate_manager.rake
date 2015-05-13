@@ -143,8 +143,9 @@ def group_by_name(duplicates)
 end
   
 
-def insert_duplicates(duplicates,kind='100m') 
+def insert_duplicates(duplicates,kind='100m')
   enos = duplicates.map{|d| d["ENO"]}
+  puts "Inserting boreholes into database with enos #{enos.join(',')}"
   duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #,kind:kind
   if duplicate_groups.exists?
     duplicate_group=duplicate_groups.first
