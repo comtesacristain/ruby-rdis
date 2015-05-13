@@ -102,9 +102,8 @@ def load_spreadsheet
     else
       if Rails.env == "production"
         puts "Borehole #{eno} not a DRILLHOLE or WELL"
-      else
-        puts "#{eno}, #{orc}"
       end
+      puts "#{eno}, #{orc}"
     end
   end
 end
@@ -122,9 +121,11 @@ def find_duplicates(d=0)
       cursor = connection.exec(statement)
       duplicates = Array.new
       cursor.fetch_hash{ |r| duplicates.push(r)}
-      name_duplicates = group_by_name(duplicates)
-      name_duplicates.each do |nd|
-        insert_duplicates(nd,kind)
+      if duplictes.size >1
+        name_duplicates = group_by_name(duplicates)
+        name_duplicates.each do |nd|
+          insert_duplicates(nd,kind)
+        end
       end
     end
   end
