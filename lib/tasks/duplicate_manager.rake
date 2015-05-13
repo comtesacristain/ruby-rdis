@@ -114,7 +114,7 @@ def find_duplicates(d=0)
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   boreholes=Borehole.joins(:handler).where(Handler.arel_table[:or_status].not_eq("no"))
   boreholes.each do |borehole|
-    puts "Searching for duplicates around borehole: #{borehole.eno}"
+    puts "Searching for duplicates around borehole #{borehole.eno} with within #{d} metres"
     geom = borehole.geom
     unless geom == "NULL"
       statement=spatial_query(geom,d)
