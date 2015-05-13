@@ -20,7 +20,7 @@ class BoreholesController < ApplicationController
     unless params[:or_status].blank?
       scope=scope.joins(:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
     end
-    scope=scope.uniq
+    scope=scope.uniq.order(:entityid)
     
     
     if request.format =='html'
