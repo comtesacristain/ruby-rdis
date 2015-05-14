@@ -72,13 +72,13 @@ end
       end
     else
       if !handlers_attributes.nil?
-        #handlers_attributes.each do |key,hash|
-        #  borehole = Borehole.find(key)
-        #  hash.each do |k,v|
-        #    hash[k].blank? ? borehole.handler[k] = "NONE" : borehole.handler[k] = v
-        #    borehole.handler.save
-        #  end
-        #end
+        handlers_attributes.each do |key,hash|
+          borehole = Borehole.find(key)
+          hash.each do |k,v|
+            hash[k].blank? ? borehole.handler[k] = "NONE" : borehole.handler[k] = v
+            borehole.handler.save
+          end
+        end
       elsif duplicate_params["qaed"]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
       end
@@ -122,13 +122,11 @@ end
       end
       remediations = duplicate_params["handlers_attributes"].map{|k,h| h["manual_remediation"]}
       if remediations.uniq.size == 1 and remediations.uniq.first.blank?
-        return nil
+        return nil     
+      else
+        ha = Hash.new
+        duplicate_params["handlers_attributes"].each{|k,h| ha[h["id"]]={"manual_remediation"=>h["manual_remediation"],"manual_transfer"=>h["manual_transfer"]}}
+        return ha
       end
-      #else
-      #  ha = Hash.new
-      #  duplicate_params["handlers_attributes"].each{|k,h| handlers_attributes[h["id"]]={"manual_remediation"=>h["manual_remediation"],"manual_transfer"=>h["manual_transfer"]}}
-        #return ha
-        #end
-        return nil
     end
 end
