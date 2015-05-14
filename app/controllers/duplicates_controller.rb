@@ -75,7 +75,8 @@ end
         handlers_attributes.each do |key,hash|
           borehole = Borehole.find(key)
           hash.each do |k,v|
-            hash[k].blank? ? borehole.handler[k] = "NONE" : borehole.handler[k] = v
+
+            hash[k].blank? ? borehole.handler[k] = (k=="manual_remediation" ? "NONE" : nil) : borehole.handler[k] = v
             borehole.handler.save
           end
         end
