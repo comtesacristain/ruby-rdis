@@ -9,10 +9,6 @@
 			<td><%= text_field_tag :borehole_eno, params[:borehole_eno]%></td>
 		</tr>
 		<tr>
-			<td><%= label_tag :has_remediation, "Has remediation:" %></td>
-			<td><%= select_tag :has_remediation, options_for_select({"All"=>nil,"Yes"=>"Y","No"=>"N"},params[:has_remediation])%></td>		
-		</tr>
-		<tr>
 			<td><%= label_tag :or_status, "OR Status:" %></td>
 			<td><%= select_tag :or_status, options_for_select(Handler.pluck(:or_status).uniq.push(nil),params[:or_status]) %></td>		
 		</tr>
