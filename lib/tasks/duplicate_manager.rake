@@ -133,13 +133,24 @@ def find_duplicates(d=0)
 end
 
 def group_by_name(duplicates)
-  names=duplicates.map{|d| d["ENTITYID"]}
+  duplicate_attr = "ENTITYID"
+  names=duplicates.map{|d| d[duplicate_attr]}
+  sampleno_names=names.select{|n| n.match(/\A[0-9]{14}\z/) } # Check if array of ENTITYIDs contains 14 character strings completely composed of numbers
+  unless sampleno_names.empty?
+    if (names-sampleno_names).empty?
+      "Grouping by EID_QUALIFIER ..."
+      duplicate_attr = "EID_QUALIFIER"
+      names=duplicates.map{|d| d[duplicate_attr]}
+    else
+      names=names-sampleno_names
+    end
+  end
   puts "Grouping names: #{names.join(',')}"
   nh = names_hash(names)
   grouped_names = nh.values.select{|v| v.size > 1}
   named_duplicates =Array.new
   grouped_names.each do |n|
-    named_duplicates.push(duplicates.select{|hash| n.include?(hash["ENTITYID"])})
+    named_duplicates.push(duplicates.select{|hash| n.include?(hash[duplicate_attr])})
   end
   return named_duplicates
 end
@@ -188,7 +199,8 @@ def rank_duplicates
   duplicate_groups=Duplicate.all
   duplicate_groups.each do |duplicate_group|
     boreholes = duplicate_group.boreholes
-      name_sort(boreholes)
+      #name_sort(boreholes)
+      rank_set(boreholes)
       auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
       if "DELETE".in?(auto_remediations)
         duplicate_group.update(:has_remediation=>'Y')
