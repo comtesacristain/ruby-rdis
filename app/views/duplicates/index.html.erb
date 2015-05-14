@@ -25,6 +25,7 @@
 <% content_for(:sidebar) do %>
     <p>
 		<%= render :partial => "query" %>
+		<%= render :partial => "format" %>
 	</p>
 <% end %>
 <%= will_paginate @duplicates %>
