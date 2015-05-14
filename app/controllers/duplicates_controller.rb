@@ -72,13 +72,13 @@ end
       end
     else
       if !handlers_attributes.nil?
-        handlers_attributes.each do |key,hash|
-          borehole = Borehole.find(key)
-          hash.each do |k,v|
-            hash[k].blank? ? borehole.handler[k] = "NONE" : borehole.handler[k] = v
-            borehole.handler.save
-          end
-        end
+        #handlers_attributes.each do |key,hash|
+        #  borehole = Borehole.find(key)
+        #  hash.each do |k,v|
+        #    hash[k].blank? ? borehole.handler[k] = "NONE" : borehole.handler[k] = v
+        #    borehole.handler.save
+        #  end
+        #end
       elsif duplicate_params["qaed"]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
       end
