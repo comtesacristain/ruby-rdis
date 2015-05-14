@@ -85,7 +85,7 @@ end
     end
 
     respond_to do |format|
-      if @duplicate.update(duplicate_params["qaed]")
+      if @duplicate.update(duplicate_params["qaed"])
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
         format.json { render :show, status: :ok, location: @duplicate }
       else
