@@ -120,14 +120,15 @@ end
       if duplicate_params["handlers_attributes"].nil?
         return nil
       end
-      #remediations = duplicate_params["handlers_attributes"].map{|k,h| h["manual_remediation"]}
-      #if remediations.uniq.size == 1 and remediations.uniq.first.blank?
-      #  return nil
+      remediations = duplicate_params["handlers_attributes"].map{|k,h| h["manual_remediation"]}
+      if remediations.uniq.size == 1 and remediations.uniq.first.blank?
+        return nil
+      end
       #else
       #  ha = Hash.new
       #  duplicate_params["handlers_attributes"].each{|k,h| handlers_attributes[h["id"]]={"manual_remediation"=>h["manual_remediation"],"manual_transfer"=>h["manual_transfer"]}}
         #return ha
         #end
-        return nil 
+        return nil
     end
 end
