@@ -71,35 +71,19 @@ end
         handler.save
       end
     else
-      if params["handlers_attributes"].map{|k,x| x["manual_remediation"]}.uniq.include?("")
+      if !handlers_attributes.nil?
+        handlers_attributes.each do |key,hash|
+          borehole = Borehole.find(key)
+          hash.each do |k,v|
+            hash[k].blank? ? borehole.handler[k] = "NONE" : borehole.handler[k] = v
+            borehole.handler.save
+          end
+        end
       elsif duplicate_params[:qaed]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
       end
     end
-=begin
-    puts duplicate_params
-    if duplicate_params[:qaed]=='Y'
-      @duplicate.boreholes.each do |b|
-        handler=b.handler
-        handler.manual_remediation=handler.auto_remediation 
-        handler.manual_transfer=handler.auto_transfer
-        handler.save
-      end
-  elsif duplicate_params[:qaed]=='N'
-    @duplicate.boreholes.each do |b|
-      handler=b.handler
-      handler.manual_remediation="NONE"
-      handler.manual_transfer=nil
-      handler.save
-    end
-  else @duplicate.boreholes.each do |b|
-      handler=b.handler
-      handler.manual_remediation=nil
-      handler.manual_transfer=nil
-      handler.save
-    end
-  end
-=end
+
     respond_to do |format|
       if @duplicate.update(duplicate_params[:qaed])
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
@@ -130,5 +114,19 @@ end
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
       params.require(:duplicate).permit(:qaed,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
+    end
+    
+    def handlers_attributes
+      if duplicate_params["handlers_attributes"].nil?
+        return nil
+      end
+      remediations = duplicate_params["handlers_attributes"].map{|k,h| h["manual_remediation"]}
+      if remediations.uniq.size == 1 and remediations.uniq.first.blank?
+        return nil
+      else
+        ha = Hash.new
+        duplicate_params["handlers_attributes"].each{|k,h| handlers_attributes[h["id"]]={"manual_remediation"=>h["manual_remediation"],"manual_transfer"=>h["manual_transfer"]}}
+        return ha
+      end 
     end
 end
