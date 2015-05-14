@@ -64,7 +64,7 @@ end
   # PATCH/PUT /duplicates/1
   # PATCH/PUT /duplicates/1.json
   def update
-    if duplicate_params[:qaed]=='Y'
+    if duplicate_params["qaed"]=='Y'
       @duplicate.handlers.each do |handler|
         handler.manual_remediation = handler.auto_remediation 
         handler.manual_transfer = handler.auto_transfer
@@ -79,13 +79,13 @@ end
             borehole.handler.save
           end
         end
-      elsif duplicate_params[:qaed]=='N'
+      elsif duplicate_params["qaed"]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
       end
     end
 
     respond_to do |format|
-      if @duplicate.update(duplicate_params[:qaed])
+      if @duplicate.update(duplicate_params["qaed]")
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
         format.json { render :show, status: :ok, location: @duplicate }
       else
