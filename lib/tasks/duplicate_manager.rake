@@ -118,12 +118,11 @@ def find_duplicates(d=0)
     geom = borehole.geom
     name = borehole.entityid
     if geom == "NULL"
-      puts "Searching for duplicates for borehole #{name} with name #{d}"
+      puts "Searching for duplicates for borehole #{borehole.eno} with name #{name}"
       statement = name_query(name)
       kind="name"
     else
-      puts "Searching for duplicates around borehole #{borehole.eno} within #{d} metres"
-      
+      puts "Searching for duplicates around borehole #{borehole.eno} within #{d} metres"   
       statement=spatial_query(geom,d)
       kind = "#{d}m"
     end
@@ -412,7 +411,7 @@ end
 
 def name_query(name)
 
-  return "select #{query_string} from a.entities e where upper(e.entityid) like upper('%#{name}%') and entity_type in ('DRILLHOLE','WELL')"
+  return "select #{query_string} from a.entities e where upper(e.entityid) like upper('#{name}') and entity_type in ('DRILLHOLE','WELL')"
 end
 
 
