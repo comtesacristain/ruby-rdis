@@ -323,6 +323,7 @@ def parse_string(s)
   end
   if s=~ /(?<=BH)D(?=[0-9]{3})/
     s = s.gsub(/(?<=BH)D(?=[0-9]{3})/,"O")
+  end
   if s =~ /BMR/
     s=s.gsub(/BMR /,"")
   end
