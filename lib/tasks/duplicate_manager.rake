@@ -86,7 +86,9 @@ def load_spreadsheet
         handler = borehole.handler
       end
       handler.or_comment = orc
-      eno = orc.match(/[0-9]{4,6}/)[0]
+      if orc =~ /[0-9]{4,6}/
+        eno = orc.match(/[0-9]{4,6}/)[0]
+      end
       unless eno.nil?
         handler.or_transfer = eno
       end
