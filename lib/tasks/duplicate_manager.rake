@@ -314,6 +314,8 @@ def parse_string(s)
   if s =~ /( 0\.25| surface)/i
     s=s.gsub(/( 0\.25| surface)/i,"")
   end
+  if s~= /((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/
+    s=s.match(/((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/[0]
   if s =~ /no\. ?/i
     s=s.gsub(/no\. ?/i,"")
   end
