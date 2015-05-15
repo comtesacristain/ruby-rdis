@@ -319,6 +319,7 @@ def parse_string(s)
   end
   if s =~ /((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2}Y)|(CW[0-9]{1,2}))/
     s=s.match(/((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/)[0]
+  end
   if s =~ /no\. ?/i
     s=s.gsub(/no\. ?/i,"")
   end
