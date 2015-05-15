@@ -86,6 +86,10 @@ def load_spreadsheet
         handler = borehole.handler
       end
       handler.or_comment = orc
+      eno = orc.match(/[0-9]{4,6}/)[0]
+      unless eno.nil?
+        handler.or_transfer = eno
+      end
       case orc
       when /possibl|probabl/i
         handler.or_status = "possibly"
@@ -308,6 +312,17 @@ def parse_string(s)
   if s.nil?
     return nil
   end
+  if s =~ /((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2}Y)|(CW[0-9]{1,2}))/
+    s=s.match(/((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/)[0]
+  end
+  if s =~ /Ginninderra [0-9]{1,2}/
+    s=s.match(/Ginninderra [0-9]{1,2}/)[0]
+  end
+  if s= ~ /(?<=[0-9]{4})(H|RP)(?=[0-9]{3})/
+    s=s.gsub(/(?<=[0-9]{4})(H|RP)(?=[0-9]{3})/,"")
+  end
+  if s=~ /(?<=BH)D(?=[0-9]{3})/
+    s = s.gsub(/(?<=BH)D(?=[0-9]{3})/,"O")
   if s =~ /BMR/
     s=s.gsub(/BMR /,"")
   end
@@ -319,9 +334,6 @@ def parse_string(s)
   end
   if s =~ /( 0\.25| surface)/i
     s=s.gsub(/( 0\.25| surface)/i,"")
-  end
-  if s =~ /((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2}Y)|(CW[0-9]{1,2}))/
-    s=s.match(/((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/)[0]
   end
   if s =~ /no\. ?/i
     s=s.gsub(/no\. ?/i,"")
