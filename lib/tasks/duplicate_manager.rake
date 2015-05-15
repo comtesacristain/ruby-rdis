@@ -116,7 +116,7 @@ def find_duplicates(d=0)
   boreholes.each do |borehole|
     
     geom = borehole.geom
-     = borehole.name
+    name = borehole.name
     if geom == "NULL"
       puts "Searching for duplicates for borehole #{name} with name #{d}"
       statement = name_query(name)
