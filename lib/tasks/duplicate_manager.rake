@@ -138,9 +138,9 @@ def group_by_name(duplicates)
   sampleno_names=names.select{|n| n.match(/\A[0-9]{14}\z/) } # Check if array of ENTITYIDs contains 14 character strings completely composed of numbers
   unless sampleno_names.empty?
     if (names-sampleno_names).empty?
-      "Grouping by EID_QUALIFIER ..."
+      puts "Grouping by EID_QUALIFIER ..."
       duplicate_attr = "EID_QUALIFIER"
-      names=duplicates.map{|d| d[duplicate_attr]}
+      names=duplicates.map{|d|  d[duplicate_attr]}
     else
       names=names-sampleno_names
     end
@@ -292,9 +292,6 @@ def has_relations(boreholes)
   end
 end
 
-=begin
-
-=end
 
 
 def names_hash(names)
@@ -302,6 +299,9 @@ def names_hash(names)
 end
 
 def parse_string(s)
+  if s.nil?
+    return nil
+  end
   if s =~ /BMR/
     s=s.gsub(/BMR /,"")
   end
