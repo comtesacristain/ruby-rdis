@@ -110,23 +110,26 @@ def load_spreadsheet
 end
 
 def find_duplicates(d=0)
-  kind = "#{d}m"
+  
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   boreholes=Borehole.joins(:handler).where(Handler.arel_table[:or_status].not_eq("no").and(Handler.arel_table[:auto_remediation].eq('NONE')))
   boreholes.each do |borehole|
     puts "Searching for duplicates around borehole #{borehole.eno} with within #{d} metres"
     geom = borehole.geom
-    unless geom == "NULL"
+    if geom == "NULL"
+      statement = name_query(borehole.entityid)
+      kind="name"
+    else
       statement=spatial_query(geom,d)
-      
-      cursor = connection.exec(statement)
-      duplicates = Array.new
-      cursor.fetch_hash{ |r| duplicates.push(r)}
-      if duplicates.size >1
-        name_duplicates = group_by_name(duplicates)
-        name_duplicates.each do |nd|
-          insert_duplicates(nd,kind)
-        end
+      kind = "#{d}m"
+    end
+    cursor = connection.exec(statement)
+    duplicates = Array.new
+    cursor.fetch_hash{ |r| duplicates.push(r)}
+    if duplicates.size >1
+      name_duplicates = group_by_name(duplicates)
+      name_duplicates.each do |nd|
+        insert_duplicates(nd,kind)
       end
     end
   end
@@ -314,7 +317,7 @@ def parse_string(s)
   if s =~ /( 0\.25| surface)/i
     s=s.gsub(/( 0\.25| surface)/i,"")
   end
-  if s~= /((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/
+  if s~= /((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2}Y)|(CW[0-9]{1,2}))/
     s=s.match(/((JUG[0-9]{1,2}A)|(HARD [0-9]{1,2}\/[0-9]{1,2})|(CW[0-9]{1,2}))/[0]
   if s =~ /no\. ?/i
     s=s.gsub(/no\. ?/i,"")
@@ -402,6 +405,10 @@ def spatial_query(geom,d=100)
   return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
 
+def name_query(name)
+
+  return "select #{query_string} from a.entities e where upper(e.entityid) like upper('%#{name}%') and entity_type in ('DRILLHOLE','WELL')"
+end
 
 
 def distance_queries 
