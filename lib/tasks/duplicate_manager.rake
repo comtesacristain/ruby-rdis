@@ -87,10 +87,10 @@ def load_spreadsheet
       end
       handler.or_comment = orc
       if orc =~ /[0-9]{4,6}/
-        eno = orc.match(/[0-9]{4,6}/)[0]
+        or_transfer = orc.match(/[0-9]{4,6}/)[0]
       end
-      unless eno.nil?
-        handler.or_transfer = eno
+      unless or_transfer.nil?
+        handler.or_transfer = or_transfer
       end
       case orc
       when /possibl|probabl/i
