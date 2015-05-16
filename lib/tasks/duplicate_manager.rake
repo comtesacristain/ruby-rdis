@@ -320,10 +320,10 @@ def parse_string(s)
   if s =~ /Ginninderra [0-9]{1,2}/
     s=s.match(/Ginninderra [0-9]{1,2}/)[0]
   end
-  if s= ~ /(?<=[0-9]{4})(H|RP)(?=[0-9]{3})/
+  if s =~ /(?<=[0-9]{4})(H|RP)(?=[0-9]{3})/
     s=s.gsub(/(?<=[0-9]{4})(H|RP)(?=[0-9]{3})/,"")
   end
-  if s=~ /(?<=BH)D(?=[0-9]{3})/
+  if s =~ /(?<=BH)D(?=[0-9]{3})/
     s = s.gsub(/(?<=BH)D(?=[0-9]{3})/,"O")
   end
   if s =~ /BMR/
