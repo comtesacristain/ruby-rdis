@@ -39,7 +39,7 @@ end
 
 def run_all
   load_boreholes
-  if Handler.where.not(:or_status=>nil).empty?
+  if Handler.where.not(:or_status=>'undetermined').empty?
     load_spreadsheet
   end
   find_and_rank
