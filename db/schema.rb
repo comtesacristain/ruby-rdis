@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150511015853) do
+ActiveRecord::Schema.define(version: 20150513132447) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -44,6 +44,10 @@ ActiveRecord::Schema.define(version: 20150511015853) do
     t.string   "geom"
   end
 
+  add_index "boreholes", ["eno"], name: "index_boreholes_on_eno"
+  add_index "boreholes", ["entity_type"], name: "index_boreholes_on_entity_type"
+  add_index "boreholes", ["entityid"], name: "index_boreholes_on_entityid"
+
   create_table "duplicates", force: :cascade do |t|
     t.string   "kind"
     t.string   "has_remediation"
@@ -65,6 +69,10 @@ ActiveRecord::Schema.define(version: 20150511015853) do
     t.integer  "manual_transfer"
   end
 
+  add_index "handlers", ["auto_remediation"], name: "index_handlers_on_auto_remediation"
+  add_index "handlers", ["borehole_id", "or_status"], name: "index_handlers_on_borehole_id_and_or_status"
   add_index "handlers", ["borehole_id"], name: "index_handlers_on_borehole_id"
+  add_index "handlers", ["or_status"], name: "index_handlers_on_or_status"
+  add_index "handlers", ["or_transfer"], name: "index_handlers_on_or_transfer"
 
 end
