@@ -33,10 +33,11 @@ ActiveRecord::Schema.define(version: 20150517142025) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "borehole_wells", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "borehole_samples" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
+
+# Could not dump table "borehole_wells" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
 
   create_table "boreholes", force: :cascade do |t|
     t.integer  "eno"
