@@ -1,7 +1,7 @@
 class AddColumnsToBoreholeWells < ActiveRecord::Migration
   def change
     add_column :borehole_wells, :eno, :integer
-    add_column :borehole_wells, :well_type, :string
+    add_column :borehole_wells, :welltype, :string
     add_column :borehole_wells, :purpose, :string
     add_column :borehole_wells, :on_off, :string
     add_column :borehole_wells, :title, :string
