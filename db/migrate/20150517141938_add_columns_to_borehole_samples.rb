@@ -11,7 +11,7 @@ class AddColumnsToBoreholeSamples < ActiveRecord::Migration
     add_column :borehole_samples, :acquire_date, :date
     add_column :borehole_samples, :geom_original, :string
     
-    add_column :borehole_samples, :borehole, :reference
+    add_reference :borehole_samples, :borehole
     
     add_index :borehole_samples, :eno
   end

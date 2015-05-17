@@ -20,7 +20,7 @@ class AddColumnsToBoreholeWells < ActiveRecord::Migration
     
          
     
-    add_column :borehole_wells, :borehole, :reference
+    add_reference :borehole_wells, :borehole
     
     add_index :borehole_wells, :eno
   end
