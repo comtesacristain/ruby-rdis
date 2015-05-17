@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150516005418) do
+ActiveRecord::Schema.define(version: 20150517141424) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -22,6 +22,26 @@ ActiveRecord::Schema.define(version: 20150516005418) do
 
   add_index "borehole_duplicates", ["borehole_id"], name: "index_borehole_duplicates_on_borehole_id"
   add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
+
+  create_table "borehole_entity_attributes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "borehole_mineral_attributes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "borehole_samples", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "borehole_wells", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "boreholes", force: :cascade do |t|
     t.integer  "eno"
