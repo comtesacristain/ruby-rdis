@@ -194,18 +194,6 @@ def insert_duplicates(duplicates,kind='100m')
   duplicate_group.save
 end
 
-def update_duplicates
-
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  boreholes = Borehole.all
-  boreholes.each do |borehole|
-    statement = "select #{query_string} from a.entities e where eno =#{borehole.eno}"
-    cursor=connection.exec(statement)
-    row = cursor.fetch_hash
-    borehole.update(borehole_attr_hash(row))
-    borehole.save
-  end
-end
 
 def rank_duplicates
   duplicate_groups=Duplicate.all
@@ -223,17 +211,6 @@ def rank_duplicates
 
 end
 
-
-
-=begin
-  TODO: List of duplicate_ids to test: 
-  2: Palmerston 1 - Case check
-  11: Jamison-1 - remove hyphen
-  90: BMR Mount Whelan 1 - drop BMR, excpand Mt
-  1334: SH 5302 - search only on number
-  1372: BMR Winning Pool No. 1 - remove space 
- 
-=end
 
 def name_sort(boreholes)
   names = names_hash(boreholes.pluck(:entityid).uniq)
@@ -379,8 +356,20 @@ def to_sdo_string(sdo)
 end
 
 def borehole_attr_hash(row)
-  h =Hash.new
-  query_terms.each do |qt|
+  return attr_hash(row,:borehole)
+end
+
+def sample_attr_hash(row)
+  return attr_hash(row,:sample)
+end
+
+def well_attr_hash(row)
+  return attr_hash(row,:well)
+end
+
+def attr_hash(row, type)
+  h = Hash.new
+  _query_terms(type).each do |qt|
     if qt == :geom
       if row[qt.to_s.upcase].nil?
         geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:nil,y:nil,z:nil}
@@ -391,6 +380,9 @@ def borehole_attr_hash(row)
       h.merge!(geom_hash)
     elsif qt == :geom_original
       h[qt] = to_sdo_string(row[qt.to_s.upcase])
+    elsif qt ==:attribute
+      attribute_hash = {attr:row[qt.to_s.upcase]}
+      h.merge!(attribute_hash)
     else
       h[qt] = row[qt.to_s.upcase]
     end
@@ -429,6 +421,59 @@ def name_query(name)
   return "select #{query_string} from a.entities e where upper(e.entityid) like upper('#{name}') and entity_type in ('DRILLHOLE','WELL')"
 end
 
+
+def sample_query_terms
+  return [:sampleno, :eno, :sampleid, :sample_type, :top_depth, :base_depth, :parent, :originator, :acquiredate, :geom_original]
+end
+
+
+
+def _query_terms(type)
+  case type
+  when :borehole
+    return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
+  when :sample
+    return [:sampleno, :eno, :sampleid, :sample_type, :top_depth, :base_depth, :parent, :originator, :acquiredate, :geom_original]
+  when :well
+    return [:eno, :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
+  else
+    return nil
+  end
+end
+
+def load_samples
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  duplicates = Duplicate.all
+  duplicates.each do |duplicate|
+    boreholes = duplicate.boreholes
+    boreholes.each do |borehole|
+      statement = "select #{_query_terms(:sample).join(',')} from a.samples s where eno =  #{borehole.eno}"
+      cursor=connection.exec(statement)
+      cursor.fetch_hash do |row|
+        sample = BoreholeSample.find_or_initialize_by(sampleno:row["SAMPLENO"])
+        puts "Loading sample #{sample.sampleno}"
+        sample.update(sample_attr_hash(row))
+      end
+    end
+  end
+end
+
+def load_wells
+  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  duplicates = Duplicate.all
+  duplicates.each do |duplicate|
+    boreholes = duplicate.boreholes
+    boreholes.each do |borehole|
+      statement = "select #{_query_terms(:well).join(',')} from npm.wells w where eno =  #{borehole.eno}"
+      cursor=connection.exec(statement)
+      cursor.fetch_hash do |row|
+        well = BoreholeWell.find_or_initialize_by(eno:row["ENO"])
+        puts "Loading well #{well.eno}"
+        well.update(well_attr_hash(row))
+      end
+    end
+  end
+end
 
 def distance_queries 
   return [0,500,1500,5000,15000]
