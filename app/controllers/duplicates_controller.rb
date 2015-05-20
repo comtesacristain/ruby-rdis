@@ -127,7 +127,7 @@ class DuplicatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
-      params.require(:duplicate).permit(:qaed,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
+      params.require(:duplicate).permit(:qaed,:comments,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
     end
     
     def handlers_attributes
