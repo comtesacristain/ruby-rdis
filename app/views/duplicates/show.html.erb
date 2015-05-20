@@ -40,6 +40,14 @@
   </tr>
 <% end %>
 </table>
+<div>
+	<div>
+		Comments:
+	</div>
+	<div>
+		<%= @duplicate.comments %>
+	</div>
+</div>
 <% content_for(:head) do %>
   <%= stylesheet_link_tag    'duplicates', media: 'all', 'data-turbolinks-track' => true %>
   <% end %>
