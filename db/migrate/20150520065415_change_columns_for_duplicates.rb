@@ -4,7 +4,7 @@ class ChangeColumnsForDuplicates < ActiveRecord::Migration
     rename_column :duplicates, :has_remediation, :auto_remediation
     add_column :duplicates, :auto_approved
     
-    change column :duplicates, :manual_remediation, :string, default:"N" 
+    change_column :duplicates, :manual_remediation, :string, default:"N" 
 
   end
 end
