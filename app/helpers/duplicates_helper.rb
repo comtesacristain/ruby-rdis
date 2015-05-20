@@ -35,6 +35,9 @@ module DuplicatesHelper
       ary.push(h)
     end
     return ary
-    
   end 
+  
+  def yes_no_all
+    return {"All"=>nil,"Yes"=>"Y","No"=>"N"}
+  end
 end
