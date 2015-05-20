@@ -60,8 +60,14 @@
   <% end %>
 </table>
 
-	<%= f.label :comments, "Comments:"%>
-	<%= f.text_area :comments, rows: 10, cols: 25 %>
+<div>
+	<div>
+		<%= f.label :comments, "Comments:" %>
+	</div>
+	<div>
+		<%= f.text_area :comments, rows: 10, cols: 25 %>
+	</div>
+</div>
   <table><tr>
 	<td><%= f.label :qaed, "Approve Automatic Remediation?" %></td>
 	<td><%= f.select :qaed, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
