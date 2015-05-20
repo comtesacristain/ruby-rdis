@@ -32,13 +32,13 @@ class DuplicatesController < ApplicationController
     unless params[:or_status].blank?
       scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
     end
-scope=scope.uniq
+    scope=scope.uniq
     if request.format =='html'
-    @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
-else
-    @duplicates = scope.all
-end
-        respond_to do |format|
+      @duplicates = scope.paginate(:page => params[:page], :per_page => 20)
+    else
+      @duplicates = scope.all
+    end
+    respond_to do |format|
       format.html
       format.xlsx
     end
