@@ -10,7 +10,7 @@
 		</tr>
 		<tr>
 			<td><%= label_tag :manual_remediation, "Manual Remediation:" %></td>
-			<td><%= select_tag :manual_remediation, options_for_select(yes_no_all,params[:or_status], params[:manual_remediation]) %></td>		
+			<td><%= select_tag :manual_remediation, options_for_select(yes_no_all, params[:manual_remediation]) %></td>		
 		</tr>
 		<tr>
 			<td><%= label_tag :or_status, "OR Status:" %></td>
