@@ -13,9 +13,22 @@ class DuplicatesController < ApplicationController
       scope=scope.joins(:boreholes).where("boreholes.entityid like '%#{params[:borehole_name]}%'")
 
     end
-    unless params[:has_remediation].blank?
+    # Check whether duplicate has the following:
+    # Has it been automatically remediated? Y/N
+    # Has it been qaed (manual remediation)? Y/N (default: N)
+    # Has the automatical remediation been approved? 
+    unless params[:auto_remediation].blank?
+      # TODO: Change scope to auto_remediation
       scope=scope.where(:has_remediation=>params[:has_remediation])
     end
+    unless params[:manual_remediation].blank?
+      # TODO: Change scope to manual_remediation, deal with 'Y', 'N'
+      if params[:manual_remediation] =='Y'
+        scope=scope.where(:qaed=>['Y','N'])
+      elsif params[:manual_remediation] =='N'
+        scope=scope.where(:qaed=>nil)
+      end
+    end 
     unless params[:or_status].blank?
       scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
     end
