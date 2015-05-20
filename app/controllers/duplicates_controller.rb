@@ -99,7 +99,7 @@ class DuplicatesController < ApplicationController
     end
 
     respond_to do |format|
-      if @duplicate.update(duplicate_params.slice(:qaed))
+      if @duplicate.update(duplicate_params.slice(:qaed,:comments))
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
         format.json { render :show, status: :ok, location: @duplicate }
       else
