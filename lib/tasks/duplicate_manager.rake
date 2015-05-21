@@ -35,8 +35,6 @@ namespace :duplicate_manager do
 
 end
 
-  
-
 def run_all
   load_boreholes
   if Handler.where.not(:or_status=>'undetermined').empty?
@@ -46,15 +44,16 @@ def run_all
 end
 
 def find_and_rank
+  or_duplicates
   distance_queries.each do |d|
-     find_duplicates(d)
      rank_duplicates
+     find_duplicates(d)
   end
 end
 
 def load_boreholes(n=nil)
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
+  statement = "select #{borehole_query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
   unless n.nil?
     statement = statement + " and rownum < #{n}"
   end
@@ -115,6 +114,19 @@ def load_spreadsheet
   end
 end
 
+def or_duplicates
+   boreholes=Borehole.joins(:handler).where.not(handlers:{or_transfer:nil})
+   boreholes.each do |borehole|
+     transfer_borehole = Borehole.find_by(eno:borehole.handler.or_transfer)
+     unless transfer_borehole.nil?
+       enos = [transfer_borehole.eno,borehole.eno]
+       duplicate = find_or_create_duplicate_by_boreholes(enos,"or")
+       duplicate.boreholes=[borehole,transfer_borehole]
+       duplicate.save
+     end
+   end
+end
+
 def find_duplicates(d=0)
   
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
@@ -167,16 +179,21 @@ def group_by_name(duplicates)
   return named_duplicates
 end
   
+  
+def find_or_create_duplicate_by_boreholes(enos,kind)
+  duplicates = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #,kind:kind
+  if duplicates.exists?
+    duplicate=duplicates.first
+  else
+    duplicate = Duplicate.new(:auto_remediation=>'N',:kind=>kind)
+  end
+  return duplicate
+end
 
 def insert_duplicates(duplicates,kind='100m')
   enos = duplicates.map{|d| d["ENO"]}
   puts "Inserting boreholes into database with enos #{enos.join(',')}"
-  duplicate_groups = Duplicate.includes(:boreholes).where(boreholes:{eno:enos}) #,kind:kind
-  if duplicate_groups.exists?
-    duplicate_group=duplicate_groups.first
-  else
-    duplicate_group = Duplicate.new(:has_remediation=>'N',:kind=>kind)
-  end
+  duplicate_group = find_or_create_duplicate_by_boreholes(enos,kind)
   duplicates.each do | d |
     borehole = Borehole.find_by(eno:d["ENO"])
     if borehole.nil?
@@ -203,9 +220,9 @@ def rank_duplicates
       rank_set(boreholes)
       auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
       if "DELETE".in?(auto_remediations)
-        duplicate_group.update(:has_remediation=>'Y')
+        duplicate_group.update(:auto_remediation=>'Y')
       else
-        duplicate_group.update(:has_remediation=>'N')
+        duplicate_group.update(:auto_remediation=>'N')
       end
   end
 
@@ -288,6 +305,9 @@ def names_hash(names)
 end
 
 def parse_string(s)
+  ##
+  
+  ##
   if s.nil?
     return nil
   end
@@ -302,6 +322,12 @@ def parse_string(s)
   end
   if s =~ /(?<=BH)D(?=[0-9]{3})/
     s = s.gsub(/(?<=BH)D(?=[0-9]{3})/,"O")
+  end
+  if s =~ /REVC0/
+    s=s.gsub(/REVC0/,"2446-")
+  end
+  if s =~ /^REVCH[0-9]{4}\/[0-9]/
+    s=s.gsub(/^REVCH[0-9]{4}\/[0-9]/,"2252")
   end
   if s =~ /BMR/
     s=s.gsub(/BMR /,"")
@@ -395,33 +421,20 @@ def db
   return YAML.load_file('config/database.yml')
 end
 
-def query_terms
-  return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
+
+def query_string(type=nil)
+  return query_terms(type).join(",")
 end
 
-def query_string
-  return query_terms.join(",")
+def borehole_query_string
+  return query_string(:borehole)
 end
 
-
-def spatial_query(geom,d=100)
-
-  return "select #{query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+def sample_query_string
+  return query_string(:sample)
 end
 
-def name_query(name)
-
-  return "select #{query_string} from a.entities e where upper(e.entityid) like upper('#{name}') and entity_type in ('DRILLHOLE','WELL')"
-end
-
-
-def sample_query_terms
-  return [:sampleno, :eno, :sampleid, :sample_type, :top_depth, :base_depth, :parent, :originator, :acquiredate, :geom_original]
-end
-
-
-
-def _query_terms(type)
+def query_terms(type=nil)
   case type
   when :borehole
     return [:eno, :entityid, :entity_type, :geom, :access_code, :confid_until,:qa_status_code,:qadate,:acquisition_methodno,:geom_original,:parent,:remark,:eid_qualifier]
@@ -430,8 +443,25 @@ def _query_terms(type)
   when :well
     return [:eno, :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
   else
-    return nil
+    return ["*"]
   end
+end
+
+def sample_query_terms
+  query_terms(:sample)
+end
+
+def borehole_query_terms
+  query_terms(:borehole)
+end
+
+def spatial_query(geom,d=100)
+  return "select #{borehole_query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+end
+
+def name_query(name)
+
+  return "select #{borehole_query_string} from a.entities e where upper(e.entityid) like upper('#{name}') and entity_type in ('DRILLHOLE','WELL')"
 end
 
 def load_samples
