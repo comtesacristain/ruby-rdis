@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150517142025) do
+ActiveRecord::Schema.define(version: 20150520073211) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -24,14 +24,32 @@ ActiveRecord::Schema.define(version: 20150517142025) do
   add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
 
   create_table "borehole_entity_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "attribno"
+    t.integer  "eno"
+    t.string   "attr"
+    t.float    "num_value"
+    t.string   "text_value"
+    t.date     "date_value"
+    t.integer  "borehole_id"
   end
 
+  add_index "borehole_entity_attributes", ["eno"], name: "index_borehole_entity_attributes_on_eno"
+
   create_table "borehole_mineral_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "attribno"
+    t.integer  "eno"
+    t.string   "attr"
+    t.float    "num_value"
+    t.string   "text_value"
+    t.date     "date_value"
+    t.integer  "borehole_id"
   end
+
+  add_index "borehole_mineral_attributes", ["eno"], name: "index_borehole_mineral_attributes_on_eno"
 
   create_table "borehole_samples", force: :cascade do |t|
     t.datetime "created_at",    null: false
@@ -102,10 +120,12 @@ ActiveRecord::Schema.define(version: 20150517142025) do
 
   create_table "duplicates", force: :cascade do |t|
     t.string   "kind"
-    t.string   "has_remediation"
-    t.string   "qaed"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "auto_remediation"
+    t.string   "manual_remediation", default: "N"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.string   "comments"
+    t.string   "auto_approved"
   end
 
   create_table "handlers", force: :cascade do |t|
