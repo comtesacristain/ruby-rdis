@@ -52,7 +52,7 @@ def find_and_rank
   end
 end
 
-def load_boreholes(n=num)
+def load_boreholes(n=nil)
   connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
   statement = "select #{query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
   unless n.nil?
@@ -390,13 +390,6 @@ def attr_hash(row, type)
   return h
 end
 
-def num
-  if Rails.env == "development"
-    return 1000
-  else 
-    return nil
-  end
-end
 
 def db
   return YAML.load_file('config/database.yml')
