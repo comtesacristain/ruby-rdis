@@ -138,7 +138,7 @@ class DuplicatesController < ApplicationController
         rp[:manual_remediation] ="N"
         rp[:manual_remediation] =nil
       end
-      rp.merge!(duplicate_params[:comments])
+      rp.merge!(duplicate_params.slice(:comments))
       return rp
     end
     
