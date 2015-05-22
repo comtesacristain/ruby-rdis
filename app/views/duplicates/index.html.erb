@@ -11,7 +11,7 @@
   <tbody>
     <% @duplicates.each do |duplicate| %>
       <tr>
-		<td><%= tick_or_cross(duplicate.has_remediation)%></td>
+		<td><%= raw tick_or_cross(duplicate.has_remediation)%></td>
         <td><%=duplicate.boreholes.pluck(:entityid).to_sentence%></td>
         <td><%= link_to 'Show', duplicate %></td>
         <!--<td><%= link_to 'Edit', edit_duplicate_path(duplicate) %></td>
