@@ -7,6 +7,9 @@ class Duplicate < ActiveRecord::Base
   
   accepts_nested_attributes_for :handlers
 
+  # DELETE the following when done
+  
+
   def has_remediation
     if Rails.env=="development"
       return @auto_remediation
