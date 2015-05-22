@@ -40,9 +40,9 @@ module DuplicatesHelper
   def tick_or_cross(a)
     case
     when "Y"
-      return  "&#x2717;"
+      return  "&#x2713;"
     when "N"
-      return   "&#x2713;"
+      return   "&#x2717;"
     when nil
       return "&nbsp;"
     end
