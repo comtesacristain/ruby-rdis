@@ -290,6 +290,7 @@ def rank_set(boreholes)
       delete = boreholes.where.not(eno:eno)
       delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
       keep.handler.update(:auto_remediation=>'KEEP')
+      return keep
     else
       types =  boreholes.pluck(:entity_type).uniq
       if types.size > 1
@@ -317,11 +318,11 @@ def rank_set(boreholes)
           return keep
         end
       end
-    else
-      boreholes.first.handler.auto_remediation="NONE"
-      boreholes.first.handler.save
-      return nil
     end
+  else
+    boreholes.first.handler.auto_remediation="NONE"
+    boreholes.first.handler.save
+    return nil
   end
 end
 
