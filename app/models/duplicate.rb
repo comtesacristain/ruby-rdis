@@ -14,5 +14,13 @@ class Duplicate < ActiveRecord::Base
       return @has_remediation
     end
   end
+  
+  def manual_remediation
+    if Rails.env=="development"
+      return @qaed
+    else
+      return @manual_remediation
+    end
+  end
 
 end
