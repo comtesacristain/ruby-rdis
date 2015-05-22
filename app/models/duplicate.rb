@@ -9,9 +9,9 @@ class Duplicate < ActiveRecord::Base
 
   def has_remediation
     if Rails.env=="development"
-      return auto_remediation
+      return @auto_remediation
     else
-      return has_remediation
+      return @has_remediation
     end
   end
 
