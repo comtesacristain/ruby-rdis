@@ -72,7 +72,7 @@ class DuplicatesController < ApplicationController
   # PATCH/PUT /duplicates/1
   # PATCH/PUT /duplicates/1.json
   def update
-    if duplicate_params["qaed"]=='Y'
+    if duplicate_params[:auto_approved]=='Y'
       @duplicate.handlers.each do |handler|
         handler.manual_remediation = handler.auto_remediation 
         handler.manual_transfer = handler.auto_transfer
@@ -88,7 +88,7 @@ class DuplicatesController < ApplicationController
             borehole.handler.save
           end
         end
-      elsif duplicate_params["qaed"]=='N'
+      elsif duplicate_params[:auto_approved]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
       end
     end
