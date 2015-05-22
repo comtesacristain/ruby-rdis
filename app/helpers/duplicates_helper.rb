@@ -38,7 +38,7 @@ module DuplicatesHelper
   end 
   
   def tick_or_cross(a)
-    case
+    case a
     when "Y"
       return  "&#x2713;"
     when "N"

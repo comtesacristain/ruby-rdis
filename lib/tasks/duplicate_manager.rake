@@ -114,6 +114,41 @@ def load_spreadsheet
   end
 end
 
+def load_backup
+  spreadsheet = 'backup.xlsx'
+  wb =Roo::Spreadsheet.open(spreadsheet)
+  sheet = wb.sheet(0)
+  manual_duplicates = Hash.new
+  ((sheet.first_row + 1)..sheet.last_row).each do |row|
+    manual_duplicates[sheet.row(row)[0].to_i] ||= []
+    manual=Hash.new
+    manual[:eno] = sheet.row(row)[2].to_i
+    manual[:remediation] = sheet.row(row)[23]
+    manual[:transfer] = sheet.row(row)[24].to_i
+    manual[:comments] = sheet.row(row)[25]
+    manual_duplicates[sheet.row(row)[0].to_i].push(manual)
+  end
+  manual_duplicates.each do |k,a|
+    enos = a.map{|h| h[:eno]}
+    
+    duplicate = Duplicate.includes(:boreholes).find_by(boreholes:{eno:enos})
+    duplicate.manual_remediation = "Y"
+    auto_approved = "Y"
+    a.each do |item|
+      borehole = duplicate.boreholes.find_by(eno:item[:eno])
+      borehole.handler.manual_remediation = item[:remediation]
+      borehole.handler.manual_transfer = (item[:transfer] == 0 ? nil : item[:transfer] )
+      if borehole.handler.manual_remediation != borehole.handler.auto_remediation 
+        auto_approved = "N"
+      end
+      duplicate.comments = item[:comments]
+      borehole.handler.save
+    end
+    duplicate.auto_approved = auto_approved
+    duplicate.save
+  end 
+end
+
 def or_duplicates
    boreholes=Borehole.joins(:handler).where.not(handlers:{or_transfer:nil})
    boreholes.each do |borehole|
