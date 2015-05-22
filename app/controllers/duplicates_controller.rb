@@ -87,6 +87,8 @@ class DuplicatesController < ApplicationController
             hash[k].blank? ? borehole.handler[k] = (k=="manual_remediation" ? "NONE" : nil) : borehole.handler[k] = v
             borehole.handler.save
           end
+          duplicate.auto_approved ="N"
+          duplicate.save
         end
       elsif duplicate_params[:auto_approved]=='N'
         @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
