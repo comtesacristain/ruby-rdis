@@ -122,12 +122,12 @@ class DuplicatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
-      params.require(:duplicate).permit(:qaed,:comments,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
+      params.require(:duplicate).permit(:auto_approved,:comments,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
     end
     
     def remediation_params
       rp = Hash.new
-      case duplicate_params[:qaed] 
+      case duplicate_params[:auto_approved] 
       when "Y"
         rp[:manual_remediation] ="Y"
         rp[:auto_approved] ="Y"
