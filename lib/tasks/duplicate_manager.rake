@@ -32,6 +32,11 @@ namespace :duplicate_manager do
   task load_spreadsheet: :environment do
     load_spreadsheet
   end
+  
+  desc "TODO"
+  task load_manual_backup: :environment do
+    load_manual_backup
+  end
 
 end
 
@@ -114,7 +119,7 @@ def load_spreadsheet
   end
 end
 
-def load_backup
+def load_manual_backup
   spreadsheet = 'backup.xlsx'
   wb =Roo::Spreadsheet.open(spreadsheet)
   sheet = wb.sheet(0)
