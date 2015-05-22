@@ -38,10 +38,13 @@ module DuplicatesHelper
   end 
   
   def tick_or_cross(a)
-    if a.nil?
-      return   "&#x2713;"
-    else
+    case
+    when "Y"
       return  "&#x2717;"
+    when "N"
+      return   "&#x2713;"
+    when nil
+      return "&nbsp;"
     end
   end
   
