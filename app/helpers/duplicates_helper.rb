@@ -37,6 +37,14 @@ module DuplicatesHelper
     return ary
   end 
   
+  def tick_or_cross(a)
+    if a.nil?
+      return ✓
+    else
+      return ✗
+    end
+  end
+  
   def yes_no_all
     return {"All"=>nil,"Yes"=>"Y","No"=>"N"}
   end
