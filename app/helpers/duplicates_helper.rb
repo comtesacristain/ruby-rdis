@@ -39,9 +39,9 @@ module DuplicatesHelper
   
   def tick_or_cross(a)
     if a.nil?
-      return ✓
+      return  "&x2713;"
     else
-      return ✗
+      return "&x2717;"
     end
   end
   
