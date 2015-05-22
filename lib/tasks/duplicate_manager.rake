@@ -283,37 +283,55 @@ end
 
 def rank_set(boreholes)
   if boreholes.size > 1
-    types =  boreholes.pluck(:entity_type).uniq
-    if types.size > 1
-      well_set = boreholes.where(:entity_type=>'WELL')
-      drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
-      if well_set.size > 1
-        well = rank_set(well_set)
-      else
-        well = well_set.first
-      end
-      drillhole_set.each {|b| b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>well.eno})}
-      well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
-      return well
+    holes = has_holes(boreholes)
+    if holes.size == 1
+      eno = holes.first
+      keep = boreholes.find_by(eno:eno)
+      delete = boreholes.where.not(eno:eno)
+      delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
+      keep.handler.update(:auto_remediation=>'KEEP')
     else
-      if has_relations(boreholes)
-        boreholes.each { |b| b.handler.update({:auto_remediation=>"NONE",:auto_transfer=>nil})}
-        return nil
+      types =  boreholes.pluck(:entity_type).uniq
+      if types.size > 1
+        well_set = boreholes.where(:entity_type=>'WELL')
+        drillhole_set = boreholes.where(:entity_type=>'DRILLHOLE')
+        if well_set.size > 1
+          well = rank_set(well_set)
+        else
+          well = well_set.first
+        end
+        drillhole_set.each {|b| b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>well.eno})}
+        well.handler.update(:auto_remediation=>'KEEP',:auto_transfer=>nil)
+        return well
       else
-        dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
-        eno = dates.key(dates.values.min)
-        delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
-        delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
-        keep=boreholes.where(:eno=>eno).first
-        keep.handler.update(:auto_remediation=>'KEEP')
-        return keep
+        if has_relations(boreholes)
+          boreholes.each { |b| b.handler.update({:auto_remediation=>"NONE",:auto_transfer=>nil})}
+          return nil
+        else
+          dates =  Hash[boreholes.map {|b| [b.eno, b.entity.entrydate]}]
+          eno = dates.key(dates.values.min)
+          delete=boreholes.where(Borehole.arel_table[:eno].not_in eno)
+          delete.each {|b|  b.handler.update({:auto_remediation=>"DELETE",:auto_transfer=>eno})}
+          keep=boreholes.find_by(:eno=>eno)
+          keep.handler.update(:auto_remediation=>'KEEP')
+          return keep
+        end
       end
+    else
+      boreholes.first.handler.auto_remediation="NONE"
+      boreholes.first.handler.save
+      return nil
     end
-  else
-    boreholes.first.handler.auto_remediation="NONE"
-    boreholes.first.handler.save
-    return nil
   end
+end
+
+def has_holes(boreholes)
+  enos = boreholes.map do |borehole|
+    if ! borehole.entity.well.nil?
+      borehole.entity.well.well_confids.empty? ?  nil : borehole.eno 
+    end
+  end
+  return enos.compact
 end
 
 
