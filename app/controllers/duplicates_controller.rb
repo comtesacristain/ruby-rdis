@@ -19,15 +19,10 @@ class DuplicatesController < ApplicationController
     # Has the automatical remediation been approved? 
     unless params[:auto_remediation].blank?
       # TODO: Change scope to auto_remediation
-      scope=scope.where(:has_remediation=>params[:has_remediation])
+      scope=scope.where(:auto_remediation=>params[:auto_remediation])
     end
     unless params[:manual_remediation].blank?
-      # TODO: Change scope to manual_remediation, deal with 'Y', 'N'
-      if params[:manual_remediation] =='Y'
-        scope=scope.where(:qaed=>['Y','N'])
-      elsif params[:manual_remediation] =='N'
-        scope=scope.where(:qaed=>nil)
-      end
+      scope=scope.where(:manual_remediation=>params[:manual_remediation])
     end 
     unless params[:or_status].blank?
       scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
@@ -99,7 +94,7 @@ class DuplicatesController < ApplicationController
     end
 
     respond_to do |format|
-      if @duplicate.update(duplicate_params.slice(:qaed,:comments))
+      if @duplicate.update(remediation_params)
         format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
         format.json { render :show, status: :ok, location: @duplicate }
       else
@@ -128,6 +123,23 @@ class DuplicatesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def duplicate_params
       params.require(:duplicate).permit(:qaed,:comments,handlers_attributes:[:id,:manual_remediation,:manual_transfer])
+    end
+    
+    def remediation_params
+      rp = Hash.new
+      case duplicate_params[:qaed] 
+      when "Y"
+        rp[:manual_remediation] ="Y"
+        rp[:auto_approved] ="Y"
+      when "N"
+        rp[:manual_remediation] ="Y"
+        rp[:auto_approved] ="N"
+      when nil
+        rp[:manual_remediation] ="N"
+        rp[:manual_remediation] =nil
+      end
+      rp.merge!(duplicate_params[:comments])
+      return rp
     end
     
     def handlers_attributes
