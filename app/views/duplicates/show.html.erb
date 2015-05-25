@@ -49,17 +49,6 @@
 	</div>
 </div>
 <%= form_for(@duplicate) do |f| %>
-  <% if @duplicate.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@duplicate.errors.count, "error") %> prohibited this duplicate from being saved:</h2>
-
-      <ul>
-      <% @duplicate.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
   <table><tr>
 	<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
 	<td><%= f.select :auto_approved, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
