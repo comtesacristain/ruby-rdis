@@ -55,4 +55,9 @@ module DuplicatesHelper
   def yes_no_nil
     return {nil=>nil,"Yes"=>"Y","No"=>"N"}
   end
+  
+  def deleted_boreholes
+    return @duplicate.boreholes.includes(:handler).find_by(handler:{manual_remediation:"DELETE"})
+  end
+  
 end

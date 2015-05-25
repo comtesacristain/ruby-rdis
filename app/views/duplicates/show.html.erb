@@ -49,6 +49,10 @@
 	</div>
 </div>
 
+<% if @duplicate.alias_check ="Y"%>
+<%= deleted_boreholes.pluck(:entityid).to_sentence %>
+<% end %>
+
 <% if @duplicate.manual_remediation == "N"%>
 <%= form_for(@duplicate) do |f| %>
   <table><tr>
