@@ -68,7 +68,7 @@
 		<%= f.text_area :comments, rows: 5, cols: 50%>
 	</div>
 </div>
-<% if @duplicate.manual_remediation == "N" %>
+
   <table><tr>
 	<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
 	<td><%= f.select :auto_approved, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
@@ -77,7 +77,7 @@
     <%= f.submit %>
   </div>
 <% end %>
-<% end %>
+
 
 
 

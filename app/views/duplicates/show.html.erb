@@ -48,6 +48,8 @@
 		<%= @duplicate.comments %>
 	</div>
 </div>
+
+<% if @duplicate.manual_remediation == "N"%>
 <%= form_for(@duplicate) do |f| %>
   <table><tr>
 	<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
@@ -56,6 +58,7 @@
       <%= f.submit %>
 
   <% end %>
+    <% end %>
 <% content_for(:head) do %>
   <%= stylesheet_link_tag    'duplicates', media: 'all', 'data-turbolinks-track' => true %>
   <% end %>
