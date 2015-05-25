@@ -51,4 +51,8 @@ module DuplicatesHelper
   def yes_no_all
     return {"All"=>nil,"Yes"=>"Y","No"=>"N"}
   end
+  
+  def yes_no_nil
+    return {nil=>nil,"Yes"=>"Y","No"=>"N"}
+  end
 end

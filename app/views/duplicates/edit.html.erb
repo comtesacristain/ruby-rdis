@@ -72,11 +72,11 @@
   <table>
 	  <tr>
 	  	<td><%= f.label :alias_check, "Save deleted borehole name(s) as alias?" %></td>
-	  	<td><%= f.select :alias_check, options_for_select(yes_no_all)%></td>
+	  	<td><%= f.select :alias_check, options_for_select(yes_no_nil)%></td>
 	    </tr>
 	  <tr>
 	<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
-	<td><%= f.select :auto_approved, options_for_select(yes_no_all)%></td>
+	<td><%= f.select :auto_approved, options_for_select(yes_no_nil)%></td>
   </tr></table>
   <div class="actions">
     <%= f.submit %>
