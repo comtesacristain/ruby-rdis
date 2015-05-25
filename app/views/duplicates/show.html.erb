@@ -65,7 +65,7 @@
 	<td><%= f.select :auto_approved, options_for_select({nil=>nil,"Yes"=>"Y","No"=>"N"})%></td>
   </tr></table>
       <%= f.submit %>
-    </div>
+
   <% end %>
 <% content_for(:head) do %>
   <%= stylesheet_link_tag    'duplicates', media: 'all', 'data-turbolinks-track' => true %>
