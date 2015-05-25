@@ -57,7 +57,7 @@ module DuplicatesHelper
   end
   
   def deleted_boreholes
-    return @duplicate.boreholes.includes(:handler).find_by(handler:{manual_remediation:"DELETE"})
+    return @duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"DELETE"})
   end
   
 end
