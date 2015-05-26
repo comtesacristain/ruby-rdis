@@ -6,8 +6,8 @@ class Borehole < ActiveRecord::Base
   
   has_one :handler
   
-  has_one :borehole_well
-  has_many :borehole_samples
+  has_one :well, :class_name => "BoreholeWell"
+  has_many :samples, :class_name => "BoreholeSample"
   
   def entity
     return Entity.find(self.eno)
