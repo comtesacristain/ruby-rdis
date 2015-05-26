@@ -2,7 +2,7 @@
 <h1>Duplicates detected</h1>
 
 <% if @duplicate.manual_remediation =="Y" %>
-<div class="manual-remediation">
+<div id="manual-remediation">
 	These duplicates have been manually remediated. <%= auto_approve_check %>
 </div>
 <% end %>
