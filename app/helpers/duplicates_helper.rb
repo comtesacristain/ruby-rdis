@@ -71,7 +71,7 @@ module DuplicatesHelper
   end
  
   def edit_link
-    return edit_duplicate_path(@duplicate)
+    return link_to("edit", edit_duplicate_path(@duplicate))
   end
   
 end
