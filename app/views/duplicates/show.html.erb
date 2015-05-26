@@ -1,5 +1,12 @@
 <p id="notice"><%= notice %></p>
 <h1>Duplicates detected</h1>
+
+<% if @duplicate.manual_remediation =="Y" %>
+<div class="manual-remediation" style="border: 1px black; background: #55ff11;">
+	These duplicates have been manually remediated. <%= auto_approve_check %>
+</div>
+<% end %>
+
 <table class='duplicates'>
 	<tr>
 	  <th>Primary Key</th>
@@ -49,7 +56,7 @@
 	</div>
 </div>
 
-<% if @duplicate.alias_check ="Y"%>
+<% if @duplicate.alias_check =="Y"%>
 <%= deleted_boreholes.pluck(:entityid).to_sentence %>
 <% end %>
 
