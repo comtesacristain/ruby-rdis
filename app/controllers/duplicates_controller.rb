@@ -106,6 +106,29 @@ class DuplicatesController < ApplicationController
       end
     end
   end
+  
+  def qaed
+    if duplicate_params[:auto_approved]=='Y'
+      @duplicate.handlers.each do |handler|
+        handler.manual_remediation = handler.auto_remediation 
+        handler.manual_transfer = handler.auto_transfer
+        handler.save
+      end
+    elsif duplicate_params[:auto_approved]=='N'
+      @duplicate.handlers.update_all(:manual_remediation=>'NONE',:manual_transfer=>nil)
+    end
+    respond_to do |format|
+      if @duplicate.update(remediation_params)
+        if duplicate_params[:auto_approved]=='Y'
+          format.html { redirect_to @duplicate, notice: 'Duplicate was successfully updated.' }
+        elsif duplicate_params[:auto_approved]=='N'
+          format.html { render :edit }
+        end
+      else
+        format.html { render :show }
+      end
+    end
+  end
 
   # DELETE /duplicates/1
   # DELETE /duplicates/1.json
