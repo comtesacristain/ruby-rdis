@@ -11,7 +11,7 @@
 
 <table class='duplicates'>
 	<tr>
-	  <th>Primary Key</th>
+	  <th>ENO</th>
 	  <th>Name</th>
 	  <th>Entity Type</th>
 	  <th>Longitude (x)</th>
@@ -57,6 +57,64 @@
 		<%= @duplicate.comments %>
 	</div>
 </div>
+
+<h2>Entity remediation</h2>
+
+<table class="duplicates">
+	<tr>
+		<th>ENO</th>
+		<th>Entity ID</th>
+		<th>Entity Type</th>
+		<th>Longitude (x)</th>
+		<th>Latitude (y)</th>
+		<th>Height (z)</th>
+		<th>Qualifier</th>
+		<th>Remark</th>
+		<th>Access Code</th>
+		<th>Confidential Until</th>
+		<th>QA Status Code</th>
+		<th>Acquisition Method Number</th>
+	</tr>
+		
+		<tr>
+			<td></td>
+			
+		</tr> <!-- Kept-->
+		<tr></tr> <!-- Deleted -->
+		<tr></tr> <!-- remediated -->
+ 		
+</table>
+
+<h2>Well remediation</h2>
+
+<table class="duplicates">
+	<tr>
+		<th>ENO</th>
+		<th>Well Type</th>
+		<th>Purpose</th>
+		<th>On/Off</th>
+		<th>Title</th>
+		<th>Classification</th>
+		<th>Status</th>
+		<th>Ground Elevation</th>
+		<th>Operator</th>
+		<th>UNO</th>
+		<th>Start Date</th>
+		<th>Completion Date</th>
+		<th>Comments</th>
+		<th>Total Depth</th>
+		<th>Originator</th>
+		<th>ORIGNO</th>
+	</tr>
+		
+		<tr>
+			<td></td>
+			
+		</tr> <!-- Kept-->
+		<tr></tr> <!-- Deleted -->
+		<tr></tr> <!-- remediated -->
+ 		
+</table>
 
 <% if @duplicate.alias_check =="Y"%>
 <%= deleted_boreholes.pluck(:entityid).to_sentence %>
