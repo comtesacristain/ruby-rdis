@@ -62,16 +62,16 @@ module DuplicatesHelper
   
   def auto_approve_check
     if @duplicate.auto_approved == "Y"
-      return "Their automatic remediation has been approved. Please #{edit_link} if you think changes are required."
+      return "Their automatic remediation has been approved. Please #{raw edit_link} if you think changes are required."
     elsif @duplicate.auto_approved == "N"
-      return "Their automatic remediation has not been approved. Please #{edit_link} if you think changes are required."
+      return "Their automatic remediation has not been approved. Please #{raw edit_link} if you think changes are required."
     else
-      return "Their automatic remediation status is unknown. Please #{edit_link} if you think changes are required."
+      return "Their automatic remediation status is unknown. Please #{raw edit_link} if you think changes are required."
     end
   end
  
   def edit_link
-    return raw link_to("edit", edit_duplicate_path(@duplicate))
+    return link_to("edit", edit_duplicate_path(@duplicate))
   end
   
 end
