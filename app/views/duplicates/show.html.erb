@@ -14,9 +14,6 @@
 	  <th>ENO</th>
 	  <th>Name</th>
 	  <th>Entity Type</th>
-	  <th>Longitude (x)</th>
-	  <th>Latitude (y)</th>
-	  <th>Height (z)</th>
 	  <th>Auto Remediation</th>
 	  <th>Auto Transfer</th>
 	  
@@ -33,11 +30,6 @@
 	  <td><%=borehole.eno%></td>
 	  <td><%=link_to borehole.entityid, borehole%></td>
 	  <td><%=borehole.entity_type%></td>
-	   <td><%=borehole.x%></td>
-	    <td><%=borehole.y%></td>
-		 <td><%=borehole.z%></td>
-	
-
 	  <td><%=borehole.handler.auto_remediation%></td>
 	  <td><%=borehole.handler.auto_transfer%></td>
 	  <td><%=borehole.handler.or_status%></td>
@@ -75,13 +67,24 @@
 		<th>QA Status Code</th>
 		<th>Acquisition Method Number</th>
 	</tr>
-		
+	<%  %>
+	<% @boreholes.each do |borehole| %>
 		<tr>
-			<td></td>
-			
+			<td><%= borehole.eno %></td>
+			<td><%= borehole.entityid %></td>
+			<td><%= borehole.entity_type %></td>
+			<td><%= borehole.x %></td>
+			<td><%= borehole.y %></td>
+			<td><%= borehole.z %></td>
+			<td><%= borehole.eid_qualifier %></td>
+			<td><%= borehole.remark %></td>
+			<td><%= borehole.access_code %></td>
+			<td><%= borehole.confid_until %></td>
+			<td><%= borehole.qa_status_code %></td>
+			<td><%= borehole.acquisition_methodno %></td>
 		</tr> <!-- Kept-->
-		<tr></tr> <!-- Deleted -->
-		<tr></tr> <!-- remediated -->
+	<% end %>
+	<tr></tr> <!-- remediated -->
  		
 </table>
 
@@ -106,9 +109,8 @@
 		<th>Originator</th>
 		<th>ORIGNO</th>
 	</tr>
-		
+	
 		<tr>
-			<td></td>
 			
 		</tr> <!-- Kept-->
 		<tr></tr> <!-- Deleted -->

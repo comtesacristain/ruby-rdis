@@ -42,6 +42,7 @@ class DuplicatesController < ApplicationController
   # GET /duplicates/1
   # GET /duplicates/1.json
   def show
+    @boreholes = @duplicate.boreholes
   end
 
   # GET /duplicates/new
