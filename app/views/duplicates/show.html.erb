@@ -35,12 +35,14 @@
   </tr>
 <% end %>
 </table>
-<% if @duplicate.manual_remediation =="Y" %>
+
 <div id="manual-remediation">
+<% if @duplicate.manual_remediation =="Y" %>
+
 	These duplicates have been manually remediated. <br />
 	<%= auto_approve_check %> <br />
 	Please <%= link_to 'edit', edit_duplicate_path(@duplicate) %> if you think changes are required.
-</div>
+
 <% elsif @duplicate.manual_remediation == "N"%>
 <%= form_for(@duplicate, :url => {:action => :qa}) do |f| %>
   <table><tr>
@@ -51,6 +53,7 @@
 
   <% end %>
     <% end %>
+	</div>
 <% unless @duplicate.comments.blank?%>
 <div>
 	<div>
