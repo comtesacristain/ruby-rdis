@@ -1,5 +1,5 @@
 class DuplicatesController < ApplicationController
-  before_action :set_duplicate, only: [:show, :edit, :update, :destroy]
+  before_action :set_duplicate, only: [:show, :edit, :update, :qaed, :destroy]
 
   # GET /duplicates
   # GET /duplicates.json
