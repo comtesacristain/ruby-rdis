@@ -127,27 +127,27 @@
 		<th>Originator</th>
 		<th>ORIGNO</th>
 	</tr>
-	<% @wells.each do |well| %>
-		<tr>
-			<td><%= well.eno %></td>
-			<td><%= well.welltype %></td>
-			<td><%= well.purpose %></td>
-			<td><%= well.on_off %></td>
-			<td><%= well.title %></td>
-			<td><%= well.classification %></td>
-			<td><%= well.status %></td>
-			<td><%= well.ground_elev %></td>
-			<td><%= well.operator %></td>
-			<td><%= well.uno %></td>
-			<td><%= well.start_date %></td>
-			<td><%= well.completion_date %></td>
-			<td><%= well.comments %></td>
-			<td><%= well.total_depth %></td>
-			<td><%= well.originator %></td>
-			<td><%= well.origno %></td>
-			
-			
-		</tr> <!-- Kept-->
+	<% unless @wells.nil?%>
+		<% @wells.each do |well| %>
+			<tr>
+				<td><%= well.eno %></td>
+				<td><%= well.welltype %></td>
+				<td><%= well.purpose %></td>
+				<td><%= well.on_off %></td>
+				<td><%= well.title %></td>
+				<td><%= well.classification %></td>
+				<td><%= well.status %></td>
+				<td><%= well.ground_elev %></td>
+				<td><%= well.operator %></td>
+				<td><%= well.uno %></td>
+				<td><%= well.start_date %></td>
+				<td><%= well.completion_date %></td>
+				<td><%= well.comments %></td>
+				<td><%= well.total_depth %></td>
+				<td><%= well.originator %></td>
+				<td><%= well.origno %></td>
+			</tr> <!-- Kept-->
+		<% end %>
 	<% end %>
 		<tr></tr> <!-- remediated -->
  		
