@@ -107,27 +107,28 @@
 </table>
 
 <h2>Well remediation</h2>
-
-<table class="remediation">
-	<tr>
-		<th>ENO</th>
-		<th>Well Type</th>
-		<th>Purpose</th>
-		<th>On/Off</th>
-		<th>Title</th>
-		<th>Classification</th>
-		<th>Status</th>
-		<th>Ground Elevation</th>
-		<th>Operator</th>
-		<th>UNO</th>
-		<th>Start Date</th>
-		<th>Completion Date</th>
-		<th>Comments</th>
-		<th>Total Depth</th>
-		<th>Originator</th>
-		<th>ORIGNO</th>
-	</tr>
-	<% unless @wells.nil?%>
+<% if @wells.nil?%>
+No wells
+<% else %>
+	<table class="remediation">
+		<tr>
+			<th>ENO</th>
+			<th>Well Type</th>
+			<th>Purpose</th>
+			<th>On/Off</th>
+			<th>Title</th>
+			<th>Classification</th>
+			<th>Status</th>
+			<th>Ground Elevation</th>
+			<th>Operator</th>
+			<th>UNO</th>
+			<th>Start Date</th>
+			<th>Completion Date</th>
+			<th>Comments</th>
+			<th>Total Depth</th>
+			<th>Originator</th>
+			<th>ORIGNO</th>
+		</tr>
 		<% @wells.each do |well| %>
 			<tr>
 				<td><%= well.eno %></td>
@@ -148,10 +149,11 @@
 				<td><%= well.origno %></td>
 			</tr> <!-- Kept-->
 		<% end %>
-	<% end %>
 		<tr></tr> <!-- remediated -->
  		
 </table>
+
+<% end %>
 
 <% if @duplicate.alias_check =="Y"%>
 <%= deleted_boreholes.pluck(:entityid).to_sentence %>
