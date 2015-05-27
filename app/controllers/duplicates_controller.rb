@@ -1,5 +1,5 @@
 class DuplicatesController < ApplicationController
-  before_action :set_duplicate, only: [:show, :edit, :update, :qaed, :destroy]
+  before_action :set_duplicate, only: [:show, :edit, :update, :qa, :destroy]
 
   # GET /duplicates
   # GET /duplicates.json
@@ -107,7 +107,7 @@ class DuplicatesController < ApplicationController
     end
   end
   
-  def qaed
+  def qa
     if duplicate_params[:auto_approved]=='Y'
       @duplicate.handlers.each do |handler|
         handler.manual_remediation = handler.auto_remediation 
