@@ -42,7 +42,7 @@
 	Please <%= link_to 'edit', edit_duplicate_path(@duplicate) %> if you think changes are required.
 </div>
 <% elsif @duplicate.manual_remediation == "N"%>
-<%= form_for(@duplicate, :url => {:action => :qaed}) do |f| %>
+<%= form_for(@duplicate, :url => {:action => :qa}) do |f| %>
   <table><tr>
 	<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
 	<td><%= f.select :auto_approved, options_for_select(yes_no_nil)%></td>
