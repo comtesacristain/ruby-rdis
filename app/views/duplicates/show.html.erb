@@ -38,11 +38,11 @@
 
 <div id="manual-remediation">
 <% if @duplicate.manual_remediation =="Y" %>
-
-	These duplicates have been manually remediated. <br />
-	<%= auto_approve_check %> <br />
-	Please <%= link_to 'edit', edit_duplicate_path(@duplicate) %> if you think changes are required.
-
+<ul>
+	<li>These duplicates have been manually remediated. </li>
+	<li><%= auto_approve_check %></li>
+	<li>Please <%= link_to 'edit', edit_duplicate_path(@duplicate) %> if you think changes are required.</li>
+</ul>
 <% elsif @duplicate.manual_remediation == "N"%>
 <%= form_for(@duplicate, :url => {:action => :qa}) do |f| %>
   <table><tr>
