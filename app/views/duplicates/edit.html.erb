@@ -14,7 +14,7 @@
 
 <table class='duplicates'>
 	<tr>
-		<th>Primary Key</th>
+		<th>ENO</th>
 	  	<th>Name</th>
 	  	<th>Entity Type</th>
 	  	<th>Longitude (x)</th>
@@ -51,6 +51,10 @@
 	<% end %>
 </table>
 
+
+<table class="duplicates">
+	
+</table>
 <div>
 	<div>
 		<%= f.label :comments, "Comments:" %>
@@ -59,6 +63,90 @@
 		<%= f.text_area :comments, rows: 5, cols: 50%>
 	</div>
 </div>
+
+<h2>Entity remediation</h2>
+
+<table class="remediation">
+	<tr>
+		<th>ENO</th>
+		<th>Entity ID</th>
+		<th>Entity Type</th>
+		<th>Longitude (x)</th>
+		<th>Latitude (y)</th>
+		<th>Height (z)</th>
+		<th>Qualifier</th>
+		<th>Remark</th>
+		<th>Access Code</th>
+		<th>Confidential Until</th>
+		<th>QA Status Code</th>
+		<th>Acquisition Method Number</th>
+	</tr>
+	<% @boreholes.each do |borehole| %>
+		<tr>
+			<td><%= borehole.eno %></td>
+			<td><%= borehole.entityid %></td>
+			<td><%= borehole.entity_type %></td>
+			<td><%= borehole.x %></td>
+			<td><%= borehole.y %></td>
+			<td><%= borehole.z %></td>
+			<td><%= borehole.eid_qualifier %></td>
+			<td><%= borehole.remark %></td>
+			<td><%= borehole.access_code %></td>
+			<td><%= borehole.confid_until %></td>
+			<td><%= borehole.qa_status_code %></td>
+			<td><%= borehole.acquisition_methodno %></td>
+		</tr> <!-- Kept-->
+	<% end %>
+	<tr></tr> <!-- remediated -->
+ 		
+</table>
+
+<h2>Well remediation</h2>
+
+<table class="remediation">
+	<tr>
+		<th>ENO</th>
+		<th>Well Type</th>
+		<th>Purpose</th>
+		<th>On/Off</th>
+		<th>Title</th>
+		<th>Classification</th>
+		<th>Status</th>
+		<th>Ground Elevation</th>
+		<th>Operator</th>
+		<th>UNO</th>
+		<th>Start Date</th>
+		<th>Completion Date</th>
+		<th>Comments</th>
+		<th>Total Depth</th>
+		<th>Originator</th>
+		<th>ORIGNO</th>
+	</tr>
+	<% @boreholes.each do |borehole| %>
+		<tr>
+			<td><%= borehole.well.eno %></td>
+			<td><%= borehole.well.welltype %></td>
+			<td><%= borehole.well.purpose %></td>
+			<td><%= borehole.well.on_off %></td>
+			<td><%= borehole.well.title %></td>
+			<td><%= borehole.well.classification %></td>
+			<td><%= borehole.well.status %></td>
+			<td><%= borehole.well.ground_elev %></td>
+			<td><%= borehole.well.operator %></td>
+			<td><%= borehole.well.uno %></td>
+			<td><%= borehole.well.start_date %></td>
+			<td><%= borehole.well.completion_date %></td>
+			<td><%= borehole.well.comments %></td>
+			<td><%= borehole.well.total_depth %></td>
+			<td><%= borehole.well.originator %></td>
+			<td><%= borehole.well.origno %></td>
+			
+			
+		</tr> <!-- Kept-->
+	<% end %>
+		<tr></tr> <!-- remediated -->
+ 		
+</table>
 
   <table>
 	  <tr>
