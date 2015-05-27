@@ -454,7 +454,7 @@ end
 
 def attr_hash(row, type)
   h = Hash.new
-  _query_terms(type).each do |qt|
+  query_terms(type).each do |qt|
     if qt == :geom
       if row[qt.to_s.upcase].nil?
         geom_hash = {geom:to_sdo_string(row[qt.to_s.upcase]),x:nil,y:nil,z:nil}
@@ -493,6 +493,10 @@ def sample_query_string
   return query_string(:sample)
 end
 
+def well_query_string
+  return query_string(:well)
+end
+
 def query_terms(type=nil)
   case type
   when :borehole
@@ -514,6 +518,10 @@ def borehole_query_terms
   query_terms(:borehole)
 end
 
+def well_query_terms
+  query_terms(:well)
+end
+
 def spatial_query(geom,d=100)
   return "select #{borehole_query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
@@ -529,12 +537,14 @@ def load_samples
   duplicates.each do |duplicate|
     boreholes = duplicate.boreholes
     boreholes.each do |borehole|
-      statement = "select #{_query_terms(:sample).join(',')} from a.samples s where eno =  #{borehole.eno}"
+      statement = "select #{sample_query_string} from a.samples s where eno =  #{borehole.eno}"
       cursor=connection.exec(statement)
       cursor.fetch_hash do |row|
         sample = BoreholeSample.find_or_initialize_by(sampleno:row["SAMPLENO"])
         puts "Loading sample #{sample.sampleno}"
         sample.update(sample_attr_hash(row))
+        borehole.borehole_sample= sample
+        borehole.save
       end
     end
   end
@@ -546,12 +556,14 @@ def load_wells
   duplicates.each do |duplicate|
     boreholes = duplicate.boreholes
     boreholes.each do |borehole|
-      statement = "select #{_query_terms(:well).join(',')} from npm.wells w where eno =  #{borehole.eno}"
+      statement = "select #{well_query_string} from npm.wells w where eno =  #{borehole.eno}"
       cursor=connection.exec(statement)
       cursor.fetch_hash do |row|
         well = BoreholeWell.find_or_initialize_by(eno:row["ENO"])
         puts "Loading well #{well.eno}"
         well.update(well_attr_hash(row))
+        borehole.borehole_well = well
+        borehole.save
       end
     end
   end
