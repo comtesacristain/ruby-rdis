@@ -33,14 +33,21 @@ tr.unknown {
 #sidebar {display: none;}
 #main {width:100%;}
 
-#manual-remediation {
+#remediation {
 	border: 1px solid #0000ff;
 	width: 30em;
 	margin: 5px;
 	margin-left: 0px;
 	padding: 3px;
+	vertical-align: middle;
+	text-align: center;
+	display: table-cell;
 }
 
+#qaed {
+	display: inline-block;
+	text-align: left;
+}
 .remediation {
 	border: 1px solid black;
 	font-size: 9pt;

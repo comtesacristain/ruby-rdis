@@ -37,23 +37,27 @@
 </table>
 
 <div id="manual-remediation">
-<% if @duplicate.manual_remediation =="Y" %>
-<ul>
-	<li>These duplicates have been manually remediated. </li>
-	<li><%= auto_approve_check %></li>
-	<li>Please <%= link_to 'edit', edit_duplicate_path(@duplicate) %> if you think changes are required.</li>
-</ul>
-<% elsif @duplicate.manual_remediation == "N"%>
-<%= form_for(@duplicate, :url => {:action => :qa}) do |f| %>
-  <table><tr>
-	<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
-	<td><%= f.select :auto_approved, options_for_select(yes_no_nil)%></td>
-  </tr></table>
-      <%= f.submit %>
+	<% if @duplicate.manual_remediation =="Y" %>
+		<div id="qaed">
+			<ul>
+				<li>These duplicates have been manually remediated. </li>
+				<li><%= auto_approve_check %></li>
+				<li>Please <%= link_to 'edit', edit_duplicate_path(@duplicate) %> if you think changes are required.</li>
+			</ul>
+		</div>
+	<% elsif @duplicate.manual_remediation == "N"%>
+		<%= form_for(@duplicate, :url => {:action => :qa}) do |f| %>
+  	  		<table>
+				<tr>
+					<td><%= f.label :auto_approved, "Approve Automatic Remediation?" %></td>
+					<td><%= f.select :auto_approved, options_for_select(yes_no_nil)%></td>
+  			  	</tr>
+			</table>
+      	  	<%= f.submit %>
 
-  <% end %>
+ 		<% end %>
     <% end %>
-	</div>
+</div>
 <% unless @duplicate.comments.blank?%>
 <div>
 	<div>
