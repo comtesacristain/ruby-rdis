@@ -1,6 +1,6 @@
 class DuplicatesController < ApplicationController
   before_action :set_duplicate, only: [:show, :edit, :update, :qa, :destroy]
-
+  before_action :set_boreholes, only: [:show, :edit]
   # GET /duplicates
   # GET /duplicates.json
   def index
@@ -42,7 +42,7 @@ class DuplicatesController < ApplicationController
   # GET /duplicates/1
   # GET /duplicates/1.json
   def show
-    @boreholes = @duplicate.boreholes
+
   end
 
   # GET /duplicates/new
@@ -144,6 +144,10 @@ class DuplicatesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_duplicate
       @duplicate = Duplicate.find(params[:id])
+    end
+    
+    def set_boreholes
+      @boreholes = @duplicate.boreholes
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
