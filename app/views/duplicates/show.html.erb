@@ -107,9 +107,7 @@
 </table>
 
 <h2>Well remediation</h2>
-<% if @wells.nil?%>
-No wells
-<% else %>
+<% if @wells.exists?%>
 	<table class="remediation">
 		<tr>
 			<th>ENO</th>
@@ -152,7 +150,10 @@ No wells
 		<tr></tr> <!-- remediated -->
  		
 </table>
-
+<% else %>
+<div>
+	No wells.
+</div>
 <% end %>
 
 <% if @duplicate.alias_check =="Y"%>
