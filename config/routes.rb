@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :duplicates do
     member do
       put :qa
+      patch :qa
     end
   end
   
