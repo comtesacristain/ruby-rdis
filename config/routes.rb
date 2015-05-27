@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
-  resources :duplicates
-  resources :boreholes
+  resources :duplicates do
+    collection do
+      put :qaed
+    end
+  end
+  
+  resources :boreholes 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
