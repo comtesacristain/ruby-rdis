@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :duplicates do
     collection do
-      post :qaed
+      put :qaed
     end
   end
   
