@@ -39,6 +39,7 @@ class Duplicate < ActiveRecord::Base
     else
       return self.access_code = self.keep
     end
+    self.save
   end
   
   def pick_qualifier
@@ -48,8 +49,9 @@ class Duplicate < ActiveRecord::Base
     if boreholes.size == 1
       self.eid_qualifier = boreholes.first.eno
     else
-      return self.remark = self.keep
+      return self.eid_qualifier = self.keep
     end
+    self.save
   end
   
   
@@ -62,5 +64,6 @@ class Duplicate < ActiveRecord::Base
     else
       return self.remark = self.keep
     end
+    self.save
   end
 end
