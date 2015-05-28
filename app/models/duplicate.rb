@@ -29,9 +29,9 @@ class Duplicate < ActiveRecord::Base
     boreholes = self.boreholes.select do |b|
       case b.access_code
       when "C"
-        return b
+        b
       when "A"
-        return b
+        b
       end
     end
     if boreholes.size == 1
