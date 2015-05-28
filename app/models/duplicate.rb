@@ -25,5 +25,42 @@ class Duplicate < ActiveRecord::Base
     self.save
   end
 
-
+  def pick_access_code
+    boreholes = self.boreholes.select do |b|
+      case b.access_code
+      when "C"
+        return b
+      when "A"
+        return b
+      end
+    end
+    if boreholes.size == 1
+      self.access_code = boreholes.first.eno
+    else
+      return self.access_code = self.keep
+    end
+  end
+  
+  def pick_qualifier
+    boreholes = self.boreholes.select do |b|
+      !b.eid_qualifier.nil?
+    end
+    if boreholes.size == 1
+      self.eid_qualifier = boreholes.first.eno
+    else
+      return self.remark = self.keep
+    end
+  end
+  
+  
+  def pick_remark
+    boreholes = self.boreholes.select do |b|
+      !b.remark.nil?
+    end
+    if boreholes.size == 1
+      self.remark = boreholes.first.eno
+    else
+      return self.remark = self.keep
+    end
+  end
 end
