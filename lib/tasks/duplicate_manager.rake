@@ -577,7 +577,7 @@ def entity_remediation
     boreholes = duplicate.boreholes
     geom_hash =  Hash[boreholes.pluck(:eno,:x,:y,:z).map{|b| [b[0], b[1..3]]}]
     geom_hash.each do |k,v|
-      if d
+      
     end
   end
 end
