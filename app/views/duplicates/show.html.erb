@@ -107,7 +107,7 @@
 </table>
 
 <h2>Well remediation</h2>
-<% if @wells.exists?%>
+<% unless @wells.empty?%>
 	<table class="remediation">
 		<tr>
 			<th>ENO</th>
