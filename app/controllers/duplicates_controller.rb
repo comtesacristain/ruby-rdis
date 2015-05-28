@@ -1,6 +1,7 @@
 class DuplicatesController < ApplicationController
   before_action :set_duplicate, only: [:show, :edit, :update, :qa, :destroy]
   before_action :set_boreholes, only: [:show, :edit]
+  before_action :set_wells, only: [:show, :edit]
   # GET /duplicates
   # GET /duplicates.json
   def index
@@ -148,6 +149,10 @@ class DuplicatesController < ApplicationController
     
     def set_boreholes
       @boreholes = @duplicate.boreholes
+    end
+    
+    def set_wells
+      @wells = @duplicate.wells
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
