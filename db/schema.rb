@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150528145151) do
+ActiveRecord::Schema.define(version: 20150528151101) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 20150528145151) do
     t.integer  "total_depth"
     t.integer  "originator"
     t.integer  "origno"
+    t.integer  "on_off"
   end
 
   create_table "handlers", force: :cascade do |t|
