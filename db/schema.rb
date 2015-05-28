@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150525061913) do
+ActiveRecord::Schema.define(version: 20150528051839) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -127,6 +127,8 @@ ActiveRecord::Schema.define(version: 20150525061913) do
     t.string   "comments"
     t.string   "auto_approved"
     t.string   "alias_check"
+    t.integer  "keep"
+    t.integer  "geom_original"
   end
 
   create_table "handlers", force: :cascade do |t|
