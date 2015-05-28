@@ -9,6 +9,8 @@ class Duplicate < ActiveRecord::Base
   
   accepts_nested_attributes_for :handlers
 
+  well_picks= [ :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
+
 
   def pick_kept
     borehole = self.boreholes.includes(:handler).find_by(handlers:{auto_remediation:"KEEP"})
@@ -65,5 +67,19 @@ class Duplicate < ActiveRecord::Base
       self.remark = self.keep
     end
     self.save
+  end
+  
+  def pick_wells
+    well_picks.each do |wp|
+      wells = self.wells.select do |w|
+        !w[wp].nil?
+      end
+      if wells.size == 1
+        self[wp] = wells.first.eno
+      else
+        self[wp] = self.keep
+      end
+      self.save
+    end
   end
 end
