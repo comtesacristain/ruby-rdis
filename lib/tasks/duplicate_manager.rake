@@ -46,6 +46,7 @@ def run_all
     load_spreadsheet
   end
   find_and_rank
+  load_wells
 end
 
 def find_and_rank
@@ -543,7 +544,7 @@ def load_samples
         sample = BoreholeSample.find_or_initialize_by(sampleno:row["SAMPLENO"])
         puts "Loading sample #{sample.sampleno}"
         sample.update(sample_attr_hash(row))
-        borehole.borehole_sample= sample
+        borehole.sample= sample
         borehole.save
       end
     end
@@ -562,13 +563,29 @@ def load_wells
         well = BoreholeWell.find_or_initialize_by(eno:row["ENO"])
         puts "Loading well #{well.eno}"
         well.update(well_attr_hash(row))
-        borehole.borehole_well = well
+        borehole.well = well
         borehole.save
       end
     end
   end
 end
 
+
+def entity_remediation
+  duplicates = Duplicate.all
+  duplicates.each do |duplicate|
+    boreholes = duplicate.boreholes
+    geom_hash =  Hash[boreholes.pluck(:eno,:x,:y,:z).map{|b| [b[0], b[1..3]]}]
+    geom_hash.each do |k,v|
+      if d
+    end
+  end
+end
+
+
+def well_remediation
+  
+end
 def distance_queries 
   return [0,500,1500,5000,15000]
 end
