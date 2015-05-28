@@ -20,7 +20,7 @@ class Duplicate < ActiveRecord::Base
     if boreholes.size == 1
       self.geom_original = boreholes.first.eno
     else
-      return self.geom_original = self.keep
+      self.geom_original = self.keep
     end
     self.save
   end
@@ -37,7 +37,7 @@ class Duplicate < ActiveRecord::Base
     if boreholes.size == 1
       self.access_code = boreholes.first.eno
     else
-      return self.access_code = self.keep
+       self.access_code = self.keep
     end
     self.save
   end
@@ -49,7 +49,7 @@ class Duplicate < ActiveRecord::Base
     if boreholes.size == 1
       self.eid_qualifier = boreholes.first.eno
     else
-      return self.eid_qualifier = self.keep
+       self.eid_qualifier = self.keep
     end
     self.save
   end
@@ -62,7 +62,7 @@ class Duplicate < ActiveRecord::Base
     if boreholes.size == 1
       self.remark = boreholes.first.eno
     else
-      return self.remark = self.keep
+      self.remark = self.keep
     end
     self.save
   end
