@@ -9,7 +9,7 @@ class Duplicate < ActiveRecord::Base
   
   accepts_nested_attributes_for :handlers
 
-  well_picks = [ :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
+  @well_picks = [ :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
 
 
   def pick_kept
@@ -70,7 +70,7 @@ class Duplicate < ActiveRecord::Base
   end
   
   def pick_wells
-    self.well_picks.each do |wp|
+    @well_picks.each do |wp|
       wells = self.wells.select do |w|
         !w[wp].nil?
       end
