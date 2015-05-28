@@ -71,7 +71,7 @@ class Duplicate < ActiveRecord::Base
   end
   
   def pick_wells
-    @well_picks.each do |wp|
+    well_picks.each do |wp|
       wells = self.wells.select do |w|
         !w[wp].nil?
       end
