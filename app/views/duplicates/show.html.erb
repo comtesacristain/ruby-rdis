@@ -149,10 +149,10 @@
 		<% end %>
 		<tr>
 			<td><%= @duplicate.keep %></td>
-			<td><%=  @wells.find_by(eno:@duplicate.welltype).welltype%></td>
-			<td><%=  @wells.find_by(eno:@duplicate.purpose).purpose%></td>
-			<td><%=  @wells.find_by(eno:@duplicate.title).title%>/td>
-			<td><%=  @wells.find_by(eno:@duplicate.classification).classification%></td>
+			<td><%= @wells.find_by(eno:@duplicate.welltype).welltype %></td>
+			<td><%= @wells.find_by(eno:@duplicate.purpose).purpose %></td>
+			<td><%= @wells.find_by(eno:@duplicate.title).title %>/td>
+			<td><%= @wells.find_by(eno:@duplicate.classification).classification %></td>
 			
 		</tr> <!-- remediated -->
  		
