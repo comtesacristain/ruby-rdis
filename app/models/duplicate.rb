@@ -70,6 +70,29 @@ class Duplicate < ActiveRecord::Base
     self.save
   end
   
+  def pick_boreholes
+    borehole_picks do |bp| 
+      boreholes = self.boreholes.select do |b|
+        case bp
+        when :access_code
+          if b[bp] == "C"
+            b
+          elsif b[bp] == "A"
+            b
+          end
+        else
+          !b[bp].nil?
+        end
+      end
+      if boreholes.size == 1
+        self[bp] = boreholes.first.eno
+      else
+         self[bp] = self.keep
+      end
+      self.save
+    end
+  end
+  
   def pick_wells
     well_picks.each do |wp|
       wells = self.wells.select do |w|
