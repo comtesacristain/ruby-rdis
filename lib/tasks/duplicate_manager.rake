@@ -254,17 +254,20 @@ end
 
 
 def rank_duplicates
-  duplicate_groups=Duplicate.all
-  duplicate_groups.each do |duplicate_group|
-    boreholes = duplicate_group.boreholes
+  duplicates=Duplicate.all
+  duplicates.each do |duplicate|
+    boreholes = duplicate.boreholes
       #name_sort(boreholes)
       rank_set(boreholes)
-      auto_remediations = duplicate_group.boreholes.includes(:handler).pluck(:auto_remediation)
+      auto_remediations = duplicate.boreholes.includes(:handler).pluck(:auto_remediation)
       if "DELETE".in?(auto_remediations)
-        duplicate_group.update(:auto_remediation=>'Y')
+        duplicate.update(:auto_remediation=>'Y')
       else
-        duplicate_group.update(:auto_remediation=>'N')
+        duplicate.update(:auto_remediation=>'N')
       end
+      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handler:{auto_remediation:"KEEP"})
+      duplicate.keep = kept_borehole.eno
+      duplicate.pick_all
   end
 
 end
@@ -571,21 +574,6 @@ def load_wells
 end
 
 
-def entity_remediation
-  duplicates = Duplicate.all
-  duplicates.each do |duplicate|
-    boreholes = duplicate.boreholes
-    geom_hash =  Hash[boreholes.pluck(:eno,:x,:y,:z).map{|b| [b[0], b[1..3]]}]
-    geom_hash.each do |k,v|
-      
-    end
-  end
-end
-
-
-def well_remediation
-  
-end
 def distance_queries 
   return [0,500,1500,5000,15000]
 end
