@@ -14,7 +14,7 @@ class Duplicate < ActiveRecord::Base
   end 
   
   def borehole_picks
-    return [:geom_original, :access_code, :eid_qualifier, :remark]
+    return [:geom_original, :access_code, :eid_qualifier, :remark, :acquisition_methodno]
   end
 
   def pick_kept
@@ -42,7 +42,7 @@ class Duplicate < ActiveRecord::Base
       if boreholes.size == 1
         self[bp] = boreholes.first.eno
       else
-         self[bp] = self.keep
+        self[bp] = self.keep
       end
       self.save
     end
