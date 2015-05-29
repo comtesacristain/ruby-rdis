@@ -45,15 +45,16 @@ def run_all
   if Handler.where.not(:or_status=>'undetermined').empty?
     load_spreadsheet
   end
-  find_and_rank
   load_wells
+  find_and_rank
 end
 
 def find_and_rank
   or_duplicates
+  rank_duplicates
   distance_queries.each do |d|
-     rank_duplicates
      find_duplicates(d)
+     rank_duplicates
   end
 end
 
