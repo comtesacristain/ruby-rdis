@@ -24,7 +24,7 @@ class Duplicate < ActiveRecord::Base
 
   
   def pick_boreholes
-    borehole_picks do |bp| 
+    borehole_picks.each do |bp| 
       boreholes = self.boreholes.select do |b|
         case bp
         when :access_code
