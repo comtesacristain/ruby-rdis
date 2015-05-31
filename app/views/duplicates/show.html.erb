@@ -147,7 +147,12 @@
 				<td><%= well.origno %></td>
 			</tr> <!-- Kept-->
 		<% end %>
-		<tr></tr> <!-- remediated -->
+		<tr>
+			<td><%= @duplicate.keep %></td>
+			<!--<%#= remediated_well %>-->
+			
+			
+		</tr> <!-- remediated -->
  		
 </table>
 <% else %>

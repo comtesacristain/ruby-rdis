@@ -1,6 +1,4 @@
 module DuplicatesHelper
-
-	
   
 	def get_wells_row(well)
     if well.nil?
@@ -22,6 +20,14 @@ module DuplicatesHelper
 			return :unknown
 		end
 	end
+  
+  def remediated_well
+    well_picks = [ :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
+    well_picks.collect do |wp|
+      content_tag(:td,@wells.find_by(eno:@duplicate[wp])[wp])
+    end.join.html_safe
+  end
+
   
   
   def create_duplicate_pattern(boreholes)
@@ -70,8 +76,6 @@ module DuplicatesHelper
     end
   end
  
-  def edit_link
-    return 
-  end
+  
   
 end

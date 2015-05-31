@@ -12,62 +12,45 @@ class Duplicate < ActiveRecord::Base
   def well_picks 
     return [ :welltype, :purpose, :on_off, :title, :classification, :status, :ground_elev, :operator, :uno, :start_date, :completion_date, :comments, :total_depth, :originator, :origno]
   end 
+  
+  def borehole_picks
+    return [:geom_original, :access_code, :eid_qualifier, :remark, :acquisition_methodno]
+  end
 
   def pick_kept
     borehole = self.boreholes.includes(:handler).find_by(handlers:{auto_remediation:"KEEP"})
     self.keep = borehole.eno
   end
-
-  def pick_geom_original
-    boreholes = self.boreholes.select{|b| !b.z.nil?}
-    if boreholes.size == 1
-      self.geom_original = boreholes.first.eno
-    else
-      self.geom_original = self.keep
-    end
-    self.save
+  
+  def pick_all
+    pick_boreholes
+    pick_wells
   end
 
-  def pick_access_code
-    boreholes = self.boreholes.select do |b|
-      case b.access_code
-      when "C"
-        b
-      when "A"
-        b
+  
+  def pick_boreholes
+    borehole_picks.each do |bp| 
+      boreholes = self.boreholes.select do |b|
+        case bp
+        when :access_code
+          if b[bp] == "C"
+            b
+          elsif b[bp] == "A"
+            b
+          end
+        when :geom_original
+          !b[:z].nil?
+        else
+          !b[bp].nil?
+        end
       end
+      if boreholes.size == 1
+        self[bp] = boreholes.first.eno
+      else
+        self[bp] = self.keep
+      end
+      self.save
     end
-    if boreholes.size == 1
-      self.access_code = boreholes.first.eno
-    else
-       self.access_code = self.keep
-    end
-    self.save
-  end
-  
-  def pick_qualifier
-    boreholes = self.boreholes.select do |b|
-      !b.eid_qualifier.nil?
-    end
-    if boreholes.size == 1
-      self.eid_qualifier = boreholes.first.eno
-    else
-       self.eid_qualifier = self.keep
-    end
-    self.save
-  end
-  
-  
-  def pick_remark
-    boreholes = self.boreholes.select do |b|
-      !b.remark.nil?
-    end
-    if boreholes.size == 1
-      self.remark = boreholes.first.eno
-    else
-      self.remark = self.keep
-    end
-    self.save
   end
   
   def pick_wells
