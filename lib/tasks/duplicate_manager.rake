@@ -55,6 +55,7 @@ def find_and_rank
      rank_duplicates
      find_duplicates(d)
   end
+  rank_duplicates
 end
 
 def load_boreholes(n=nil)
