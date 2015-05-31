@@ -21,6 +21,11 @@ class Duplicate < ActiveRecord::Base
     borehole = self.boreholes.includes(:handler).find_by(handlers:{auto_remediation:"KEEP"})
     self.keep = borehole.eno
   end
+  
+  def pick_all
+    pick_boreholes
+    pick_wells
+  end
 
   
   def pick_boreholes
