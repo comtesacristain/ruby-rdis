@@ -161,9 +161,9 @@
 </div>
 <% end %>
 
-<% if @duplicate.alias_check =="Y"%>
-<%= deleted_boreholes.pluck(:entityid).to_sentence %>
-<% end %>
+<%# if @duplicate.alias_check =="Y"%>
+<%#= deleted_boreholes.pluck(:entityid).to_sentence %>
+<%# end %>
 
 <% content_for(:head) do %>
   <%= stylesheet_link_tag    'duplicates', media: 'all', 'data-turbolinks-track' => true %>
