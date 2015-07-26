@@ -51,7 +51,7 @@ end
 
 def find_and_rank
   or_duplicates
-  rank_duplicates
+  rank_duplicates:
   distance_queries.each do |d|
      find_duplicates(d)
      rank_duplicates
@@ -125,15 +125,18 @@ def load_manual_backup
   spreadsheet = 'backup.xlsx'
   wb =Roo::Spreadsheet.open(spreadsheet)
   sheet = wb.sheet(0)
-  manual_duplicates = Hash.new
+  review_duplicates = Hash.new
+  columns=[:duplicate_id,:eno,:final_remediation,:final_transfer,:final_comments] #increase for OR edits
+  
+  columns_hash = get_columns_hash(columns,sheet.row(1))
   ((sheet.first_row + 1)..sheet.last_row).each do |row|
-    manual_duplicates[sheet.row(row)[0].to_i] ||= []
-    manual=Hash.new
-    manual[:eno] = sheet.row(row)[2].to_i
-    manual[:remediation] = sheet.row(row)[23]
-    manual[:transfer] = sheet.row(row)[24].to_i
-    manual[:comments] = sheet.row(row)[25]
-    manual_duplicates[sheet.row(row)[0].to_i].push(manual)
+    review_duplicates[sheet.row(row)[columns_hash[:duplicate_id]].to_i] ||= []
+    review=Hash.new
+    review[:eno] = sheet.row(row)[columns_hash[:eno]].to_i
+    review[:final_remediation] = sheet.row(row)[columns_hash[:final_remediation]]
+    review[:final_transfer] = sheet.row(row)[columns_hash[:final_transfer]].to_i
+    review[:final_comments] = sheet.row(row)[columns_hash[:final_comments]]
+    review_duplicates[sheet.row(row)[columns_hash[:duplicate_id]].to_i].push(review)
   end
   manual_duplicates.each do |k,a|
     enos = a.map{|h| h[:eno]}
@@ -156,6 +159,37 @@ def load_manual_backup
   end 
 end
 
+def load_or_review
+  columns=[:duplicate_id,:eno,:final_transfer,:or_review,:or_reference,:or_comment_final] #
+  spreadsheet = 'or_review.xlsx'
+  wb =Roo::Spreadsheet.open(spreadsheet)
+  review_duplicates = Hash.new
+  sheet = wb.sheet(0)
+  columns_hash = get_columns_hash(columns,sheet.row(1))
+  duplicate_id=columns_hash.extract!(:duplicate_id)[:duplicate_id]
+  ((sheet.first_row + 1)..sheet.last_row).each do |row|
+    review_duplicates[sheet.row(row)[duplicate_id].to_i] ||= []
+    review=Hash.new
+    columns_hash.each do |k,v| 
+      field = sheet.row(row)[v]
+      if field.class == Float
+        field = field.to_i
+      end
+      review[k] = field
+    end
+    review_duplicates[sheet.row(row)[duplicate_id].to_i].push(review)
+  end
+end
+
+def get_columns_hash(column_headings,row)
+  x= Hash.new
+  column_headings.each do |ch|
+    x[ch] = row.index(ch.to_s.upcase)
+  
+  end
+  return x
+end
+
 def or_duplicates
    boreholes=Borehole.joins(:handler).where.not(handlers:{or_transfer:nil})
    boreholes.each do |borehole|
@@ -167,6 +201,18 @@ def or_duplicates
        duplicate.save
      end
    end
+end
+
+def delete_duplicates
+  duplicates=Duplicate.where(manual_remediation:"Y")
+  duplicates.each do |duplicate|
+    boreholes = duplicate.boreholes
+    boreholes.
+  end
+end
+
+def create_archives
+  duplicates.each
 end
 
 def find_duplicates(d=0)
