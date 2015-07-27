@@ -49,6 +49,13 @@ def test_env
   puts Rails.env
 end
 
+def oracle_connection
+  return [ db[oracle_instance]["username"], db[oracle_instance]["password"], db[oracle_instance]["database"] ] 
+end
+
+def oracle_instance
+  return "oracle_#{Rails.env}"
+end
 
 def run_all
   load_boreholes
@@ -69,7 +76,7 @@ def find_and_rank
 end
 
 def load_boreholes(n=nil)
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  connection=OCI8.new(*oracle_connection)
   statement = "select #{borehole_query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
   unless n.nil?
     statement = statement + " and rownum < #{n}"
@@ -226,8 +233,7 @@ def create_archives
 end
 
 def find_duplicates(d=0)
-  
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  connection=OCI8.new(*oracle_connection)
   boreholes=Borehole.joins(:handler).where(Handler.arel_table[:or_status].not_eq("no").and(Handler.arel_table[:auto_remediation].eq('NONE')))
   boreholes.each do |borehole|
     
@@ -593,8 +599,7 @@ def name_query(name)
 end
 
 def load_samples
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
-  duplicates = Duplicate.all
+  connection=OCI8.new(*oracle_connection)
   duplicates.each do |duplicate|
     boreholes = duplicate.boreholes
     boreholes.each do |borehole|
@@ -612,7 +617,7 @@ def load_samples
 end
 
 def load_wells
-  connection=OCI8.new(db["oracle_production"]["username"],db["oracle_production"]["password"],db["oracle_production"]["database"])
+  connection=OCI8.new(*oracle_connection)
   duplicates = Duplicate.all
   duplicates.each do |duplicate|
     boreholes = duplicate.boreholes
