@@ -38,7 +38,17 @@ namespace :duplicate_manager do
     load_manual_backup
   end
 
+  desc "Test environment"
+  task test_env: :environment do
+    test_env
+  end
+
 end
+
+def test_env
+  puts Rails.env
+end
+
 
 def run_all
   load_boreholes
@@ -207,7 +217,7 @@ def delete_duplicates
   duplicates=Duplicate.where(manual_remediation:"Y")
   duplicates.each do |duplicate|
     boreholes = duplicate.boreholes
-    boreholes.
+    #boreholes.
   end
 end
 
