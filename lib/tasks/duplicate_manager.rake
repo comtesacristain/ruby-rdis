@@ -47,6 +47,7 @@ end
 
 def test_env
   puts Rails.env
+  puts oracle_connection
 end
 
 def oracle_connection
