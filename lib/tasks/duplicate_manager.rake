@@ -329,7 +329,7 @@ def rank_duplicates
       else
         duplicate.update(:auto_remediation=>'N')
       end
-      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handler:{auto_remediation:"KEEP"})
+      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{auto_remediation:"KEEP"})
       duplicate.keep = kept_borehole.eno
       duplicate.pick_all
   end
