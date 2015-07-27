@@ -37,16 +37,7 @@ namespace :duplicate_manager do
   task load_manual_backup: :environment do
     load_manual_backup
   end
-  
-  desc "Test the environment variables are working correctly"
-  task test_env: :environment do
-    test_end
-  end
 
-end
-
-def test_env 
-  puts Rails.env
 end
 
 def run_all
