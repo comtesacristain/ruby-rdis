@@ -159,21 +159,22 @@ def load_manual_backup
   review_duplicates.each do |k,a|
     enos = a.map{|h| h[:eno]}
     
-    duplicate = Duplicate.includes(:boreholes).find_by(boreholes:{eno:enos})
-    duplicate.manual_remediation = "Y"
-    auto_approved = "Y"
-    a.each do |item|
-      borehole = duplicate.boreholes.find_by(eno:item[:eno])
-      borehole.handler.manual_remediation = item[:remediation]
-      borehole.handler.manual_transfer = (item[:transfer] == 0 ? nil : item[:transfer] )
-      if borehole.handler.manual_remediation != borehole.handler.auto_remediation 
-        auto_approved = "N"
+    if duplicate = Duplicate.includes(:boreholes).find_by(boreholes:{eno:enos})
+      duplicate.manual_remediation = "Y"
+      auto_approved = "Y"
+      a.each do |item|
+        borehole = duplicate.boreholes.find_by(eno:item[:eno])
+        borehole.handler.manual_remediation = item[:remediation]
+        borehole.handler.manual_transfer = (item[:transfer] == 0 ? nil : item[:transfer] )
+        if borehole.handler.manual_remediation != borehole.handler.auto_remediation 
+          auto_approved = "N"
+        end
+        duplicate.comments = item[:comments]
+        borehole.handler.save
       end
-      duplicate.comments = item[:comments]
-      borehole.handler.save
+      duplicate.auto_approved = auto_approved
+      duplicate.save
     end
-    duplicate.auto_approved = auto_approved
-    duplicate.save
   end 
 end
 
