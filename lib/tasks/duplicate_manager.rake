@@ -156,7 +156,7 @@ def load_manual_backup
     review[:final_comments] = sheet.row(row)[columns_hash[:final_comments]]
     review_duplicates[sheet.row(row)[columns_hash[:duplicate_id]].to_i].push(review)
   end
-  manual_duplicates.each do |k,a|
+  review_duplicates.each do |k,a|
     enos = a.map{|h| h[:eno]}
     
     duplicate = Duplicate.includes(:boreholes).find_by(boreholes:{eno:enos})
