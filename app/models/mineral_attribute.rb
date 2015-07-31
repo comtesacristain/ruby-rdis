@@ -1,5 +1,5 @@
 class EntityAttribute < ActiveRecord::Base
-  connection.execute("ALTER SESSION set NLS_DATE_FORMAT ='DD-MON-FXYYYY'")
+  establish_connection "oracle_#{Rails.env}"
 
   set_table_name "a.entity_attribs"
   set_primary_key :eno
