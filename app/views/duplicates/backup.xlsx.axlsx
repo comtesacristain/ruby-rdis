@@ -1,17 +1,4 @@
 wb = xlsx_package.workbook
-border_color = '000000'
-
-header_style= {  :alignment => { :horizontal => :center }, :bold => true, :b=>true }
- styles_hash = {:delete=>{ :bold => false,:b => false},:keep=>{ :bold => true,:b => true},:unknown=>{ :bg_color =>'ffdddd'}}
- styles={}                             
-styles_hash.each {|k,v| 
-styles[k]=Hash.new
-styles[k][:top]=wb.styles.add_style v.merge({:border => { :style => :thick, :color =>"FF000000", :edges => [:top] }})
-styles[k][:middle]=wb.styles.add_style v    
-
-
-}
-
 
 wb.add_worksheet(name: "Duplicates") do |sheet|
   sheet.add_row ["DUPLICATE_ID","BOREHOLE_ID","ENO",
@@ -23,25 +10,12 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
   @duplicates.each.with_index(1) do |duplicate|
   	boreholes= duplicate.boreholes.order(:entityid)
   	boreholes.each_with_index do |borehole,i|
-  	case borehole.handler.auto_remediation
-  	when "DELETE"
-  	  row_style= styles[:delete]
-  	when "KEEP"
-  	row_style=styles[:keep]
-  	else
-  	  row_style= styles[:unknown]
-  	end
-  	if i ==0
-  		row_style=row_style[:top]
-      else
-    row_style=row_style[:middle]
-  	end
-    wells_row =get_wells_row(borehole.well)
-    row =[duplicate.id, borehole.id, borehole.eno, borehole.handler.auto_remediation,
-      borehole.handler.auto_transfer,borehole.handler.or_status,borehole.handler.or_transfer,
-      borehole.handler.or_comment,borehole.handler.manual_remediation,
-      borehole.handler.manual_transfer, duplicate.comments, duplicate.resolved_name].flatten
-    sheet.add_row row, style:row_style
+      wells_row =get_wells_row(borehole.well)
+      row =[duplicate.id, borehole.id, borehole.eno, borehole.handler.auto_remediation,
+        borehole.handler.auto_transfer,borehole.handler.or_status,borehole.handler.or_transfer,
+        borehole.handler.or_comment,borehole.handler.manual_remediation,
+        borehole.handler.manual_transfer, duplicate.comments, duplicate.resolved_name].flatten
+      sheet.add_row row
     end
   end
 end
