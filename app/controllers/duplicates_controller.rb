@@ -40,6 +40,14 @@ class DuplicatesController < ApplicationController
     end
   end
 
+  def backup
+    @duplicates = Duplicate.all
+    respond_to do |format|
+      format.html
+      format.xlsx
+    end
+  end
+
   # GET /duplicates/1
   # GET /duplicates/1.json
   def show
