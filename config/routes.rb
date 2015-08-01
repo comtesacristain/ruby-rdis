@@ -3,6 +3,9 @@ Rails.application.routes.draw do
     member do
       put :qa
       patch :qa
+      
+    end
+    collection do 
       get :backup
     end
   end
