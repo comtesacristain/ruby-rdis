@@ -42,7 +42,7 @@ namespace :duplicate_manager do
   task test_env: :environment do
     test_env
   end
-
+  
 end
 
 def test_env
@@ -169,7 +169,7 @@ def load_manual_backup
         if borehole.handler.manual_remediation != borehole.handler.auto_remediation 
           auto_approved = "N"
         end
-        duplicate.comments = item[:comments]
+        duplicate.comments = item[:final_comments]
         borehole.handler.save
       end
       duplicate.auto_approved = auto_approved
@@ -197,6 +197,38 @@ def load_or_review
       review[k] = field
     end
     review_duplicates[sheet.row(row)[duplicate_id].to_i].push(review)
+  end
+  
+  review_duplicates.each do |k,a|
+    enos = a.map{|h| h[:eno]}
+    if duplicate = Duplicate.includes(:boreholes).find_by(boreholes:{eno:enos})
+      duplicate.manual_remediation = "Y"
+      auto_approved = "Y"
+      a.each do |item|
+        borehole = duplicate.boreholes.find_by(eno:item[:eno])
+        borehole.handler[:manual_transfer] = item[:final_transfer]
+        borehole.handler[:or_reference] = item[:or_reference]
+        borehole.handler[:or_final_comment] = item[:or_comment_final]
+        borehole.handler[:manual_remediation] = item[:or_review]
+        if borehole.handler.manual_remediation != borehole.handler.auto_remediation 
+          auto_approved = "N"
+        end
+         borehole.handler.save
+      end
+      duplicate.auto_approved = auto_approved
+      duplicate.save
+    end
+  end
+end
+
+def resolve_names_and_aliases
+  duplicates = Duplicate.all
+  duplicates.each do |duplicate|
+    final_comments = duplicate.handlers.pluck(:or_final_comment)
+    duplicate.alias_check = final_comments.any?{|c| /use name as alias/ =~ c} ? "Y" : "N"
+    name = final_comments.select{|c| /name = / =~ c}
+    duplicate.resolved_name = name.empty? ? nil : name.first.gsub(/name = /,"")
+    duplicate.save
   end
 end
 
