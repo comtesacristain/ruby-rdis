@@ -43,7 +43,6 @@ class DuplicatesController < ApplicationController
   def backup
     @duplicates = Duplicate.all
     respond_to do |format|
-      format.html
       format.xlsx
     end
   end
