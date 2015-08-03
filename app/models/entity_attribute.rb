@@ -1,7 +1,7 @@
 class EntityAttribute < ActiveRecord::Base
   establish_connection "oracle_#{Rails.env}"
 
-  self.table_name = "mgd.entity_attribs"
+  self.table_name = "a.entity_attribs"
   self.primary_key = :eno
   set_date_columns :entrydate, :qadate, :confid_until, :lastupdate
 
