@@ -9,6 +9,7 @@ class Entity < ActiveRecord::Base
 	has_many :samples, :foreign_key => :eno
   
   has_many :remarkws, :foreign_key => :eno
+  has_many :stratigraphies, :foreign_key => :eno
   has_one :sidetrack, :foreign_key => :eno
   
   has_many :entity_attributes, :foreign_key => :eno
