@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804040635) do
+ActiveRecord::Schema.define(version: 20150804042941) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -24,43 +24,13 @@ ActiveRecord::Schema.define(version: 20150804040635) do
   add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
 
   create_table "borehole_entity_attributes", force: :cascade do |t|
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.integer  "eno"
-    t.string   "attribute"
-    t.decimal  "num_value"
-    t.datetime "date_value"
-    t.string   "access_code"
-    t.date     "entrydate"
-    t.string   "enteredby"
-    t.date     "lastupdate"
-    t.string   "updatedby"
-    t.string   "text_value"
-    t.integer  "ano"
-    t.string   "remark"
-    t.integer  "attribno"
-    t.date     "confid_until"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "borehole_mineral_attributes", force: :cascade do |t|
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.integer  "eno"
-    t.string   "attribute"
-    t.decimal  "num_value"
-    t.datetime "date_value"
-    t.string   "uom"
-    t.string   "access_code"
-    t.date     "entrydate"
-    t.string   "enteredby"
-    t.date     "lastupdate"
-    t.string   "updatedby"
-    t.string   "text_value"
-    t.integer  "ano"
-    t.string   "comments"
-    t.integer  "attribno"
-    t.integer  "year"
-    t.date     "confid_until"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "borehole_remarkws", force: :cascade do |t|
@@ -74,6 +44,18 @@ ActiveRecord::Schema.define(version: 20150804040635) do
     t.integer  "eno"
     t.string   "access_code"
     t.integer  "ano"
+  end
+
+  create_table "borehole_resfacs_remarks", force: :cascade do |t|
+    t.string  "uno"
+    t.string  "code"
+    t.decimal "seq_no"
+    t.string  "remark"
+    t.string  "sidetrack"
+    t.integer "eno"
+    t.string  "access_code"
+    t.integer "ano"
+    t.decimal "rfs_rmksno"
   end
 
   create_table "borehole_samples", force: :cascade do |t|
