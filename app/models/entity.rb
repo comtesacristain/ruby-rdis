@@ -14,5 +14,5 @@ class Entity < ActiveRecord::Base
   has_one :sidetrack, :foreign_key => :eno
   
   has_many :entity_attributes, :foreign_key => :eno
-  has_many :minerals_attributes, :foreign_key => :eno
+  has_many :mineral_attributes, :foreign_key => :eno
 end
