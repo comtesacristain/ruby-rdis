@@ -1,7 +1,7 @@
 class AddColumnsToBoreholeMineralAttribute < ActiveRecord::Migration
   def change
     add_column :borehole_mineral_attributes, :eno, :integer
-    add_column :borehole_mineral_attributes, :attribute, :string
+    add_column :borehole_mineral_attributes, :a_attribute, :string
     add_column :borehole_mineral_attributes, :num_value, :decimal
     add_column :borehole_mineral_attributes, :date_value, :datetime
     add_column :borehole_mineral_attributes, :uom, :string

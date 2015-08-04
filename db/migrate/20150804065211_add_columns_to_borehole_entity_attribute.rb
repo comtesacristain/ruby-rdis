@@ -1,7 +1,7 @@
 class AddColumnsToBoreholeEntityAttribute < ActiveRecord::Migration
   def change
     add_column :borehole_entity_attributes, :eno, :integer
-    add_column :borehole_entity_attributes, :attribute, :string
+    add_column :borehole_entity_attributes, :a_attribute, :string
     add_column :borehole_entity_attributes, :num_value, :decimal
     add_column :borehole_entity_attributes, :date_value, :datetime
     add_column :borehole_entity_attributes, :access_code, :string
