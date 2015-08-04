@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804035134) do
+ActiveRecord::Schema.define(version: 20150804040635) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -24,13 +24,56 @@ ActiveRecord::Schema.define(version: 20150804035134) do
   add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
 
   create_table "borehole_entity_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "eno"
+    t.string   "attribute"
+    t.decimal  "num_value"
+    t.datetime "date_value"
+    t.string   "access_code"
+    t.date     "entrydate"
+    t.string   "enteredby"
+    t.date     "lastupdate"
+    t.string   "updatedby"
+    t.string   "text_value"
+    t.integer  "ano"
+    t.string   "remark"
+    t.integer  "attribno"
+    t.date     "confid_until"
   end
 
   create_table "borehole_mineral_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "eno"
+    t.string   "attribute"
+    t.decimal  "num_value"
+    t.datetime "date_value"
+    t.string   "uom"
+    t.string   "access_code"
+    t.date     "entrydate"
+    t.string   "enteredby"
+    t.date     "lastupdate"
+    t.string   "updatedby"
+    t.string   "text_value"
+    t.integer  "ano"
+    t.string   "comments"
+    t.integer  "attribno"
+    t.integer  "year"
+    t.date     "confid_until"
+  end
+
+  create_table "borehole_remarkws", force: :cascade do |t|
+    t.string   "uno"
+    t.string   "code"
+    t.integer  "sequence"
+    t.string   "remark"
+    t.datetime "rec_date"
+    t.datetime "updated"
+    t.string   "db_source"
+    t.integer  "eno"
+    t.string   "access_code"
+    t.integer  "ano"
   end
 
   create_table "borehole_samples", force: :cascade do |t|
@@ -83,18 +126,181 @@ ActiveRecord::Schema.define(version: 20150804035134) do
   end
 
   create_table "borehole_sidetracks", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "uno"
+    t.string   "sidetrack"
+    t.decimal  "ko_depth"
+    t.decimal  "td_driller"
+    t.decimal  "td_logs"
+    t.decimal  "tvd"
+    t.decimal  "metres_drilled"
+    t.string   "db_source"
+    t.datetime "rec_date"
+    t.datetime "updated"
+    t.integer  "eno"
+    t.string   "access_code"
+    t.integer  "ano"
   end
 
   create_table "borehole_stratigraphies", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "picked"
+    t.string   "age1"
+    t.string   "qual1"
+    t.string   "age2"
+    t.string   "qual2"
+    t.string   "unit"
+    t.decimal  "top_meas_depth_m"
+    t.decimal  "elevation"
+    t.decimal  "meas_thickness_m"
+    t.string   "code"
+    t.datetime "updated"
+    t.datetime "rec_date"
+    t.string   "db_source"
+    t.integer  "unitno"
+    t.decimal  "top_vert_depth_m"
+    t.integer  "eno"
+    t.string   "access_code"
+    t.integer  "ano"
+    t.string   "unit_qualifier"
+    t.decimal  "base_meas_depth_m"
+    t.integer  "sourceno"
+    t.string   "source_comment"
+    t.string   "enteredby"
+    t.string   "updatedby"
+    t.string   "remarks"
+    t.integer  "sampleno"
+    t.string   "pref_alt"
   end
 
   create_table "borehole_well_confids", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.decimal  "eno"
+    t.string   "confid"
+    t.string   "phase"
+    t.datetime "date_created"
+    t.string   "accumulation"
+    t.string   "acreage_summary"
+    t.string   "actual_well_purpose"
+    t.string   "admin_reg"
+    t.string   "admin_reg_abbrev"
+    t.decimal  "associated_well_eno"
+    t.string   "contractor"
+    t.string   "cont_abbrev"
+    t.string   "country"
+    t.decimal  "der_ko_depth"
+    t.decimal  "der_prop_total_depth"
+    t.decimal  "der_tot_depth_sub_sea"
+    t.string   "discovery"
+    t.string   "disc_type"
+    t.decimal  "drillers_total_depth"
+    t.string   "drillers_total_depth_units"
+    t.decimal  "easting"
+    t.decimal  "elev"
+    t.decimal  "est_cost"
+    t.string   "facility"
+    t.string   "file_number"
+    t.string   "ga_basin"
+    t.string   "ga_location"
+    t.string   "ga_sub_basin"
+    t.string   "ga_summary"
+    t.string   "hc_show"
+    t.string   "hole_class"
+    t.string   "hole_name"
+    t.string   "incl_type"
+    t.string   "kb_rt"
+    t.decimal  "kb_rt_height"
+    t.decimal  "ko_depth"
+    t.string   "ko_depth_units"
+    t.string   "leg"
+    t.string   "loggers_depth_units"
+    t.decimal  "loggers_total_depth"
+    t.decimal  "max_dev"
+    t.string   "near_accumulation"
+    t.decimal  "northing"
+    t.string   "on_off"
+    t.string   "operator"
+    t.string   "operator_abbrev"
+    t.string   "op_abn"
+    t.string   "op_acn"
+    t.string   "op_arbn"
+    t.decimal  "orig_elev"
+    t.string   "orig_elev_units_measure"
+    t.string   "orig_geo_datum"
+    t.decimal  "orig_kb_rt_height"
+    t.string   "orig_kb_rt_height_units"
+    t.decimal  "orig_lat_dec_degrees"
+    t.decimal  "orig_lat_degrees"
+    t.decimal  "orig_lat_minutes"
+    t.decimal  "orig_lat_seconds"
+    t.decimal  "orig_long_dec_degrees"
+    t.decimal  "orig_long_degrees"
+    t.decimal  "orig_long_minutes"
+    t.decimal  "orig_long_seconds"
+    t.decimal  "orig_td_easting"
+    t.decimal  "orig_td_lat_dec_degrees"
+    t.decimal  "orig_td_lat_deg"
+    t.decimal  "orig_td_lat_min"
+    t.decimal  "orig_td_lat_sec"
+    t.decimal  "orig_td_long_dec_degrees"
+    t.decimal  "orig_td_long_deg"
+    t.decimal  "orig_td_long_min"
+    t.decimal  "orig_td_long_sec"
+    t.decimal  "orig_td_northing"
+    t.decimal  "orig_td_zone"
+    t.decimal  "parent_well_eno"
+    t.string   "parent_well_name"
+    t.string   "post_drill"
+    t.decimal  "pref_total_depth"
+    t.string   "pref_total_depth_units"
+    t.string   "pre_drill"
+    t.decimal  "prop_target_depth"
+    t.string   "prop_target_depth_units"
+    t.string   "reason_for_cessation"
+    t.string   "rig_capacity"
+    t.string   "rig_make"
+    t.string   "rig_model"
+    t.string   "rig_name"
+    t.string   "rig_no"
+    t.datetime "rig_release_date"
+    t.string   "rig_type"
+    t.string   "sidetrack_purpose"
+    t.datetime "spud_date"
+    t.decimal  "sub_cost"
+    t.string   "subsidy"
+    t.datetime "td_depth_date"
+    t.decimal  "td_lat_dec_degrees"
+    t.decimal  "td_long_dec_degrees"
+    t.string   "tests_entered"
+    t.string   "title"
+    t.decimal  "total_depth"
+    t.decimal  "tot_cost"
+    t.decimal  "tvd_subsea"
+    t.string   "tvd_subsea_units"
+    t.decimal  "utm_zone"
+    t.string   "v_dat_type"
+    t.string   "wcr_basin"
+    t.string   "wcr_location"
+    t.string   "wcr_sub_basin"
+    t.string   "wcr_summary"
+    t.string   "weekly_comments"
+    t.string   "well_abbreviation"
+    t.string   "well_alias"
+    t.string   "well_comm"
+    t.decimal  "well_lat_dec_degrees"
+    t.decimal  "well_long_dec_degrees"
+    t.string   "well_objective"
+    t.string   "well_purpose"
+    t.string   "well_status"
+    t.string   "well_summary"
+    t.string   "well_uno"
+    t.string   "zone"
+    t.string   "proposed_rig_name"
+    t.datetime "proposed_spud_date"
+    t.datetime "proposed_td_date"
   end
 
   create_table "borehole_wells", force: :cascade do |t|
