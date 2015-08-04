@@ -1,3 +1,4 @@
+require "rails/generators"
 namespace :backup_manager do
   desc "TODO"
   task create_migrations: :environment do
