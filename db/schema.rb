@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803043407) do
+ActiveRecord::Schema.define(version: 20150804035134) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -34,13 +34,101 @@ ActiveRecord::Schema.define(version: 20150803043407) do
   end
 
   create_table "borehole_samples", force: :cascade do |t|
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "sampleno"
+    t.integer  "eno"
+    t.string   "sampleid"
+    t.string   "sample_type"
+    t.decimal  "top_depth"
+    t.decimal  "base_depth"
+    t.integer  "parent"
+    t.string   "access_code"
+    t.datetime "entrydate"
+    t.string   "enteredby"
+    t.datetime "lastupdate"
+    t.string   "updatedby"
+    t.datetime "qadate"
+    t.string   "qaby"
+    t.string   "qa_status_code"
+    t.string   "activity_code"
+    t.string   "originator"
+    t.datetime "acquiredate"
+    t.integer  "ano"
+    t.string   "geom"
+    t.string   "comments"
+    t.string   "source"
+    t.integer  "procedureno"
+    t.integer  "origno"
+    t.datetime "confid_until"
+    t.string   "geom_original"
+    t.integer  "accuracy"
+    t.integer  "elev_accuracy"
+    t.integer  "acquisition_methodno"
+    t.string   "acquisition_scale"
+    t.string   "method"
+    t.string   "countryid"
+    t.string   "stateid"
+    t.string   "onshore_flag"
+    t.integer  "prov_eno"
+    t.integer  "intervalno"
+    t.integer  "sample_type_new"
+    t.integer  "sampling_method"
+    t.integer  "material_class"
+    t.string   "igsn"
+    t.decimal  "mass"
+    t.string   "mass_uom"
+    t.string   "specimen_location"
+    t.datetime "specimen_location_date"
+  end
+
+  create_table "borehole_sidetracks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "borehole_stratigraphies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "borehole_well_confids", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "borehole_wells", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "eno"
+    t.string   "welltype"
+    t.string   "purpose"
+    t.string   "on_off"
+    t.string   "title"
+    t.string   "classification"
+    t.string   "status"
+    t.decimal  "ground_elev"
+    t.string   "operator"
+    t.string   "uno"
+    t.datetime "start_date"
+    t.datetime "completion_date"
+    t.string   "comments"
+    t.string   "access_code"
+    t.integer  "ano"
+    t.datetime "entrydate"
+    t.string   "enteredby"
+    t.datetime "lastupdate"
+    t.string   "updatedby"
+    t.decimal  "total_depth"
+    t.string   "originator"
+    t.datetime "qadate"
+    t.string   "qaby"
+    t.string   "qa_status_code"
+    t.string   "activity_code"
+    t.string   "file_no"
+    t.string   "state"
+    t.datetime "confid_until"
+    t.integer  "origno"
   end
 
   create_table "boreholes", force: :cascade do |t|
