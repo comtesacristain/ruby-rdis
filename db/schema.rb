@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804042941) do
+ActiveRecord::Schema.define(version: 20150804064721) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -24,13 +24,43 @@ ActiveRecord::Schema.define(version: 20150804042941) do
   add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
 
   create_table "borehole_entity_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "eno"
+    t.string   "attribute"
+    t.decimal  "num_value"
+    t.datetime "date_value"
+    t.string   "access_code"
+    t.date     "entrydate"
+    t.string   "enteredby"
+    t.date     "lastupdate"
+    t.string   "updatedby"
+    t.string   "text_value"
+    t.integer  "ano"
+    t.string   "remark"
+    t.integer  "attribno"
+    t.date     "confid_until"
   end
 
   create_table "borehole_mineral_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "eno"
+    t.string   "attribute"
+    t.decimal  "num_value"
+    t.datetime "date_value"
+    t.string   "uom"
+    t.string   "access_code"
+    t.date     "entrydate"
+    t.string   "enteredby"
+    t.date     "lastupdate"
+    t.string   "updatedby"
+    t.string   "text_value"
+    t.integer  "ano"
+    t.string   "comments"
+    t.integer  "attribno"
+    t.integer  "year"
+    t.date     "confid_until"
   end
 
   create_table "borehole_remarkws", force: :cascade do |t|
