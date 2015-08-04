@@ -24,74 +24,24 @@ ActiveRecord::Schema.define(version: 20150803043407) do
   add_index "borehole_duplicates", ["duplicate_id"], name: "index_borehole_duplicates_on_duplicate_id"
 
   create_table "borehole_entity_attributes", force: :cascade do |t|
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.integer  "attribno"
-    t.integer  "eno"
-    t.string   "attr"
-    t.float    "num_value"
-    t.string   "text_value"
-    t.date     "date_value"
-    t.integer  "borehole_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
-
-  add_index "borehole_entity_attributes", ["eno"], name: "index_borehole_entity_attributes_on_eno"
 
   create_table "borehole_mineral_attributes", force: :cascade do |t|
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.integer  "attribno"
-    t.integer  "eno"
-    t.string   "attr"
-    t.float    "num_value"
-    t.string   "text_value"
-    t.date     "date_value"
-    t.integer  "borehole_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
-
-  add_index "borehole_mineral_attributes", ["eno"], name: "index_borehole_mineral_attributes_on_eno"
 
   create_table "borehole_samples", force: :cascade do |t|
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.integer  "sampleno"
-    t.integer  "eno"
-    t.string   "sampleid"
-    t.string   "sample_type"
-    t.float    "top_depth"
-    t.float    "base_depth"
-    t.integer  "parent"
-    t.string   "originator"
-    t.date     "acquiredate"
-    t.string   "geom_original"
-    t.integer  "borehole_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
-
-  add_index "borehole_samples", ["eno"], name: "index_borehole_samples_on_eno"
 
   create_table "borehole_wells", force: :cascade do |t|
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.integer  "eno"
-    t.string   "welltype"
-    t.string   "purpose"
-    t.string   "on_off"
-    t.string   "title"
-    t.string   "classification"
-    t.string   "status"
-    t.float    "ground_elev"
-    t.string   "operator"
-    t.string   "uno"
-    t.date     "start_date"
-    t.date     "completion_date"
-    t.string   "comments"
-    t.float    "total_depth"
-    t.string   "originator"
-    t.integer  "origno"
-    t.integer  "borehole_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
-
-  add_index "borehole_wells", ["eno"], name: "index_borehole_wells_on_eno"
 
   create_table "boreholes", force: :cascade do |t|
     t.integer  "eno"

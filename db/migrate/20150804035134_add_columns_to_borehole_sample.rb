@@ -1,0 +1,48 @@
+class AddColumnsToBoreholeSample < ActiveRecord::Migration
+  def change
+    add_column :borehole_samples, :sampleno, :integer
+    add_column :borehole_samples, :eno, :integer
+    add_column :borehole_samples, :sampleid, :string
+    add_column :borehole_samples, :sample_type, :string
+    add_column :borehole_samples, :top_depth, :decimal
+    add_column :borehole_samples, :base_depth, :decimal
+    add_column :borehole_samples, :parent, :integer
+    add_column :borehole_samples, :access_code, :string
+    add_column :borehole_samples, :entrydate, :datetime
+    add_column :borehole_samples, :enteredby, :string
+    add_column :borehole_samples, :lastupdate, :datetime
+    add_column :borehole_samples, :updatedby, :string
+    add_column :borehole_samples, :qadate, :datetime
+    add_column :borehole_samples, :qaby, :string
+    add_column :borehole_samples, :qa_status_code, :string
+    add_column :borehole_samples, :activity_code, :string
+    add_column :borehole_samples, :originator, :string
+    add_column :borehole_samples, :acquiredate, :datetime
+    add_column :borehole_samples, :ano, :integer
+    add_column :borehole_samples, :geom, :string
+    add_column :borehole_samples, :comments, :string
+    add_column :borehole_samples, :source, :string
+    add_column :borehole_samples, :procedureno, :integer
+    add_column :borehole_samples, :origno, :integer
+    add_column :borehole_samples, :confid_until, :datetime
+    add_column :borehole_samples, :geom_original, :string
+    add_column :borehole_samples, :accuracy, :integer
+    add_column :borehole_samples, :elev_accuracy, :integer
+    add_column :borehole_samples, :acquisition_methodno, :integer
+    add_column :borehole_samples, :acquisition_scale, :string
+    add_column :borehole_samples, :method, :string
+    add_column :borehole_samples, :countryid, :string
+    add_column :borehole_samples, :stateid, :string
+    add_column :borehole_samples, :onshore_flag, :string
+    add_column :borehole_samples, :prov_eno, :integer
+    add_column :borehole_samples, :intervalno, :integer
+    add_column :borehole_samples, :sample_type_new, :integer
+    add_column :borehole_samples, :sampling_method, :integer
+    add_column :borehole_samples, :material_class, :integer
+    add_column :borehole_samples, :igsn, :string
+    add_column :borehole_samples, :mass, :decimal
+    add_column :borehole_samples, :mass_uom, :string
+    add_column :borehole_samples, :specimen_location, :string
+    add_column :borehole_samples, :specimen_location_date, :datetime
+  end
+end
