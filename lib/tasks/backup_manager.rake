@@ -7,12 +7,16 @@ namespace :backup_manager do
 end
 
 def create_migrations
-  models = [:well,:sample,:remarkw,:entity_attribute,
-    :mineral_attribute,:sidetrack,:stratigraphy,:well_confid,
-    :resfacs_remark]
+  models = Entity.reflections.keys.map{|k| k.singularize}
   models.each do |model|
     model_class = model.to_s.classify.constantize
-    attribute_hash = Hash[model_class.columns_hash.map {|k,v| [k,v.type]}]
+    attribute_hash = Hash[model_class.columns_hash.map do |k,v|
+      if k == "attribute"
+        ["a_attribute",v.type]
+      else 
+        [k,v.type]
+      end
+    end ]
     attributes = attribute_hash.map{|k,v| "#{k}:#{v}"}
     backup_string = "Borehole#{model.to_s.classify}"
     
