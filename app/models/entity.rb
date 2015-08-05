@@ -16,6 +16,7 @@ class Entity < ActiveRecord::Base
   has_one :sidetrack, :foreign_key => :eno
   has_one :porperm_one, :foreign_key => :eno
   has_many :porperm_twos, :foreign_key => :eno
+  has_many :porperm_picks, :foreign_key => :eno
   
   has_many :entity_attributes, :foreign_key => :eno
   has_many :mineral_attributes, :foreign_key => :eno
