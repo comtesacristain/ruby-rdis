@@ -1,4 +1,106 @@
 Rails.application.routes.draw do
+  get 'borehole_mineral_attributes/index'
+
+  get 'borehole_entity_attributes/index'
+
+  get 'borehole_wdata_twos/index'
+
+  get 'borehole_wdata_ones/index'
+
+  get 'borehole_porperm_picks/index'
+
+  get 'borehole_porperm_twos/index'
+
+  get 'borehole_porperm_ones/index'
+
+  get 'borehole_sidetracks/index'
+
+  get 'borehole_resfacs_remarks/index'
+
+  get 'borehole_stratigraphies/index'
+
+  get 'borehole_dir_survey_stations/index'
+
+  get 'borehole_dir_surveys/index'
+
+  get 'borehole_resultws/index'
+
+  get 'borehole_remarkws/index'
+
+  get 'borehole_well_confids/index'
+
+  get 'borehole_samples/index'
+
+  get 'borehole_wells/index'
+
+  get 'mineral_attributes/index'
+
+  get 'entity_attributes/index'
+
+  get 'wdata_twos/index'
+
+  get 'wdata_ones/index'
+
+  get 'porperm_picks/index'
+
+  get 'porperm_twos/index'
+
+  get 'porperm_ones/index'
+
+  get 'sidetracks/index'
+
+  get 'resfacs_remarks/index'
+
+  get 'stratigraphies/index'
+
+  get 'dir_survey_stations/index'
+
+  get 'dir_surveys/index'
+
+  get 'resultws/index'
+
+  get 'remarkws/index'
+
+  get 'well_confids/index'
+
+  get 'samples/index'
+
+  get 'wells/index'
+
+  get 'mineral_attributes/index'
+
+  get 'entity_attributes/index'
+
+  get 'wdata_twos/index'
+
+  get 'wdata_ones/index'
+
+  get 'porperm_picks/index'
+
+  get 'porperm_twos/index'
+
+  get 'porperm_ones/index'
+
+  get 'sidetracks/index'
+
+  get 'resfacs_remarks/index'
+
+  get 'stratigraphies/index'
+
+  get 'dir_survey_stations/index'
+
+  get 'dir_surveys/index'
+
+  get 'resultws/index'
+
+  get 'remarkws/index'
+
+  get 'well_confids/index'
+
+  get 'samples/index'
+
+  get 'wells/index'
+
   get 'mineral_attributes/index'
 
   get 'entity_attributes/index'

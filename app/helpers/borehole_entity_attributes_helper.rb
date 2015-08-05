@@ -1,0 +1,2 @@
+module BoreholeEntityAttributesHelper
+end
