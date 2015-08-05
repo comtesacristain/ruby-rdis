@@ -7,7 +7,7 @@ namespace :duplicate_cleaner do
 end
 
 def delete_duplicates
-  duplicates = Duplicate.offset(10).limit(5)
+  duplicates = Duplicate.limit(50)
   duplicates.transaction do
     duplicates.each do |duplicate|
    
@@ -54,7 +54,7 @@ end
 
 
 
-def backup_data
+def backup_borehole(borehole)
   duplicates = Duplicate.all
   models = Entity.reflections.keys
   duplicates.each do |duplicate|
