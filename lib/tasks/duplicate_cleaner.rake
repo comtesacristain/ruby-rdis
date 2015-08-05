@@ -59,6 +59,8 @@ def resolve_model(delete,keep_eno)
         case e
         when /ORA-01031/
           puts "You have insufficient priveleges to update #{delete.class.table_name}"
+        else
+          puts "Different Oracle Error: #{e}"
         end
       rescue => e
         puts "Some other exception #{e}"
