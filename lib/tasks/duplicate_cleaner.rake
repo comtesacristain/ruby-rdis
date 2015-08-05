@@ -22,23 +22,17 @@ def delete_duplicates
           entity = deleted_borehole.entity
           
           backup_borehole(deleted_borehole)
+          
+          
           entity.stratigraphies.update_all(eno:kept_borehole.eno)
         
           entity.samples.update_all(eno:kept_borehole.eno)
-          # kept_borehole.entity.stratigraphies
-          ##
           fix_constrained_model(entity.remarkws,kept_borehole.eno)
+          fix_constrained_model(entity.resultws,kept_borehole.eno)
           fix_constrained_model(entity.resfacs_remarks,kept_borehole.eno)
           fix_constrained_model(entity.entity_attributes,kept_borehole.eno)
-          
           fix_constrained_model(entity.porperm_twos,kept_borehole.eno)
           fix_constrained_model(entity.porperm_picks,kept_borehole.eno)
-          # deleted_borehole.entity.entity_attributes
-          # kept_borehole.entity.entity_attributes.size
-      
-          ## deleted_borehole.entity.entity_attributes.update_all(eno:kept_borehole.eno)
-          ## deleted_borehole.entity.entity_attributes.update_all(eno:kept_borehole.eno)   
-          ##
           entity.porperm_one.delete unless entity.porperm_one.nil?
           entity.sidetrack.delete unless entity.sidetrack.nil?
           entity.well.delete unless entity.well.nil?
