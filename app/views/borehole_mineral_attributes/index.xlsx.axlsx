@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "MineralAttributes") do |sheet|
+  sheet.add_row @columns.map {|column| column.upcase}
+ 
+ 
+ 
+  @mineral_attributes.each do |mineral_attribute|
+  	sheet.add_row @columns.map { |column|  mineral_attribute[column] }
+  end
+end

@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "EntityAttributes") do |sheet|
+  sheet.add_row @columns.map {|column| column.upcase}
+ 
+ 
+ 
+  @entity_attributes.each do |entity_attribute|
+  	sheet.add_row @columns.map { |column|  entity_attribute[column] }
+  end
+end
