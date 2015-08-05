@@ -1,37 +1,9 @@
 Rails.application.routes.draw do
-  get 'borehole_mineral_attributes/index'
 
-  get 'borehole_entity_attributes/index'
 
-  get 'borehole_wdata_twos/index'
 
-  get 'borehole_wdata_ones/index'
 
-  get 'borehole_porperm_picks/index'
 
-  get 'borehole_porperm_twos/index'
-
-  get 'borehole_porperm_ones/index'
-
-  get 'borehole_sidetracks/index'
-
-  get 'borehole_resfacs_remarks/index'
-
-  get 'borehole_stratigraphies/index'
-
-  get 'borehole_dir_survey_stations/index'
-
-  get 'borehole_dir_surveys/index'
-
-  get 'borehole_resultws/index'
-
-  get 'borehole_remarkws/index'
-
-  get 'borehole_well_confids/index'
-
-  get 'borehole_samples/index'
-
-  get 'borehole_wells/index'
 
   resources :duplicates do
     member do
@@ -49,6 +21,34 @@ Rails.application.routes.draw do
   resources :borehole_wells
   resources :borehole_mineral_attributes
   resources :borehole_entity_attributes
+  
+  resources :borehole_wdata_twos
+
+  resources :borehole_wdata_ones
+
+  resources :borehole_porperm_picks
+
+  resources :borehole_porperm_twos
+
+  resources :borehole_porperm_ones
+
+  resources :borehole_sidetracks
+
+  resources :borehole_resfacs_remarks
+
+  resources :borehole_stratigraphies
+
+  resources :borehole_dir_survey_stations
+
+  resources :borehole_dir_surveys
+
+  resources :borehole_resultws
+
+  resources :borehole_remarkws
+
+  resources :borehole_well_confids
+
+  resources :borehole_samples
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
