@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150805025638) do
+ActiveRecord::Schema.define(version: 20150805040907) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -61,6 +61,20 @@ ActiveRecord::Schema.define(version: 20150805025638) do
     t.integer  "attribno"
     t.integer  "year"
     t.date     "confid_until"
+  end
+
+  create_table "borehole_porperm_ones", force: :cascade do |t|
+    t.string  "well"
+    t.string  "andate"
+    t.string  "genfile"
+    t.string  "wellfile"
+    t.string  "remarks"
+    t.string  "uno"
+    t.decimal "latit"
+    t.decimal "longit"
+    t.integer "eno"
+    t.string  "access_code"
+    t.integer "ano"
   end
 
   create_table "borehole_remarkws", force: :cascade do |t|
@@ -429,5 +443,10 @@ ActiveRecord::Schema.define(version: 20150805025638) do
   add_index "handlers", ["borehole_id"], name: "index_handlers_on_borehole_id"
   add_index "handlers", ["or_status"], name: "index_handlers_on_or_status"
   add_index "handlers", ["or_transfer"], name: "index_handlers_on_or_transfer"
+
+  create_table "porperm_ones", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 end
