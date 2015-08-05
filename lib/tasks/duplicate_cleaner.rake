@@ -61,6 +61,7 @@ def resolve_model(delete,eno)
 end
 
 def resolve_instance(instance,eno)
+  puts "Resolving instance of #{instance.class} with eno: #{instance.eno}"
   begin
     instance.eno=eno
     instance.save
