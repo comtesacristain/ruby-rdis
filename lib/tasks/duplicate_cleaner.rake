@@ -7,6 +7,7 @@ namespace :duplicate_cleaner do
 end
 
 def delete_duplicates
+  puts "Deleting duplicates"
   duplicates = Duplicate.limit(100)
   duplicates.transaction do
     duplicates.each do |duplicate|
