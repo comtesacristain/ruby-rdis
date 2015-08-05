@@ -36,7 +36,6 @@ def delete_duplicates
         rescue ActiveRecord::RecordNotFound => e
           puts e
         rescue => e
-          raise ActiveRecord::Rollback
           puts e.message
         ensure
           deleted_borehole.handler.final_status ="DELETED"
