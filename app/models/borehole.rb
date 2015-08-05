@@ -6,7 +6,7 @@ class Borehole < ActiveRecord::Base
   
   has_one :handler
   
-  has_one :well, :class_name => "BoreholeWell", :foreign_key => :eno
+  has_one :well, :class_name => "BoreholeWell", :foreign_key => :eno, :primary_key => :eno
   has_many :well_confids, :class_name => "BoreholeWellConfid", :foreign_key => :eno
   has_many :samples, :class_name => "BoreholeSample", :foreign_key => :eno
   has_many :entity_attributes, :class_name => "BoreholeEntityAttributes", :foreign_key => :eno
