@@ -2,6 +2,10 @@ namespace :duplicate_cleaner do
   task delete_duplicates: :environment do
     delete_duplicates
   end
+  
+  task preemptive_backup: :environment do
+    preemptive_backup
+  end
 end
 
 def delete_duplicates
@@ -80,6 +84,16 @@ def resolve_instance(instance,eno)
     end
   rescue => e
     puts "Some other exception: #{e.message}"
+  end
+end
+
+def preemptive_backup
+  duplicates=Duplicate.all
+  duplciates.each do |duplicate|
+    deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
+    deleted_boreholes.each do |deleted_borehole|
+      backup_borehole(deleted_borehole)
+    end
   end
 end
 
