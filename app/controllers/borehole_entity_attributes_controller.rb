@@ -1,7 +1,8 @@
 class BoreholeEntityAttributesController < ApplicationController
   def index
-    @columns = BoreholeEntityAttribute.column_names
-    @records = BoreholeEntityAttribute.all
+    klass = BoreholeEntityAttribute
+    @columns = klass.column_names
+    @records = klass.all
     respond_to do |format|
       format.xlsx
     end

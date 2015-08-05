@@ -1,7 +1,8 @@
 class BoreholeMineralAttributesController < ApplicationController
   def index
-    @columns = BoreholeMineralAttribute.column_names
-    @records = BoreholeMineralAttribute.all
+    klass = BoreholeMineralAttribute
+    @columns = klass.column_names
+    @records = klass.all
     respond_to do |format|
       format.xlsx
     end
