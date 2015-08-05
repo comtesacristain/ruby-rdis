@@ -32,18 +32,15 @@ def delete_duplicates
           models.each do |model|
             resolve_model(entity.send(model),kept_borehole.eno)
           end
-          entity.delete unless entity.nil?
+          entity.delete
         rescue ActiveRecord::RecordNotFound => e
           puts e
-        rescue => e
-          puts e.message
         ensure
           deleted_borehole.handler.final_status ="DELETED"
         end
       end
       duplicate.resolved="Y"
       duplicate.save
-     
     end
   end
 end
@@ -66,7 +63,7 @@ def resolve_instance(instance,eno)
     instance.eno=eno
     changes = instance.changes
     instance.save
-    puts "Instance of #{instance.class} with eno: #{hanges["eno"][0]} has been transferred to #{changes["eno"][1]}"
+    puts "Instance of #{instance.class} with eno: #{changes["eno"][0]} has been transferred to #{changes["eno"][1]}"
   rescue ActiveRecord::StatementInvalid => e
     instance.restore_attributes
     puts "Something happened - keep #{eno}, delete #{instance.eno}"
