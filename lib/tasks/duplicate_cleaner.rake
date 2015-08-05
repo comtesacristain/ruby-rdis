@@ -45,8 +45,7 @@ def delete_duplicates
   end
 end
 
-def resolve_model(delete,keep_eno)
-  puts keep_eno
+def resolve_model(delete,eno)
   case 
   when delete.is_a?(ActiveRecord::Base)
    resolve_instance(delete,eno)
