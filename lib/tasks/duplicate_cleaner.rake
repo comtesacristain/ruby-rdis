@@ -46,6 +46,7 @@ def delete_duplicates
 end
 
 def resolve_model(delete,keep_eno)
+  puts keep_eno
   case 
   when delete.is_a?(ActiveRecord::Base)
     delete.delete
@@ -54,8 +55,13 @@ def resolve_model(delete,keep_eno)
       begin
         d.eno = keep_eno
         d.save
-      rescue
-        d.delete
+      rescue ActiveRecord::StatementInvalid => e
+        case e
+        when /ORA-01031/
+          puts "You have insufficient priveleges to update #{delete.class.table_name}"
+        end
+      rescue => e
+        puts "Some other exception #{e}"
       end
     end
   when delete.is_a?(NilClass)
