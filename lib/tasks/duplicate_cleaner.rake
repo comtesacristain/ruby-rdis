@@ -45,7 +45,7 @@ def delete_duplicates
   end
 end
 
-def resolvemodel(delete,keep_eno)
+def resolve_model(delete,keep_eno)
   delete.each do |d|
     begin
       d.eno = keep_eno
