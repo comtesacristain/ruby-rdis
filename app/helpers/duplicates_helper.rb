@@ -10,8 +10,8 @@ module DuplicatesHelper
     return row
 	end
 
-	def get_row_class(auto_remediation)
-		case auto_remediation
+	def get_row_class(remediation)
+		case remediation
 		when "DELETE"
 			return :delete
 		when "KEEP"

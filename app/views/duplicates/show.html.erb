@@ -19,7 +19,7 @@
 	  </tr>
   
   <% @duplicate.boreholes.each do |borehole| %>
-  <% row_class = get_row_class(borehole.handler.auto_remediation) %>
+  <% row_class = get_row_class(borehole.handler.manual_remediation) %>
   <tr class='<%= row_class%>'>
 	  <td><%=borehole.eno%></td>
 	  <td><%=link_to borehole.entityid, borehole%></td>
@@ -106,60 +106,8 @@
  		
 </table>
 
-<h2>Well remediation</h2>
-<% unless @wells.empty?%>
-	<table class="remediation">
-		<tr>
-			<th>ENO</th>
-			<th>Well Type</th>
-			<th>Purpose</th>
-			<th>On/Off</th>
-			<th>Title</th>
-			<th>Classification</th>
-			<th>Status</th>
-			<th>Ground Elevation</th>
-			<th>Operator</th>
-			<th>UNO</th>
-			<th>Start Date</th>
-			<th>Completion Date</th>
-			<th>Comments</th>
-			<th>Total Depth</th>
-			<th>Originator</th>
-			<th>ORIGNO</th>
-		</tr>
-		<% @wells.each do |well| %>
-			<tr>
-				<td><%= well.eno %></td>
-				<td><%= well.welltype %></td>
-				<td><%= well.purpose %></td>
-				<td><%= well.on_off %></td>
-				<td><%= well.title %></td>
-				<td><%= well.classification %></td>
-				<td><%= well.status %></td>
-				<td><%= well.ground_elev %></td>
-				<td><%= well.operator %></td>
-				<td><%= well.uno %></td>
-				<td><%= well.start_date %></td>
-				<td><%= well.completion_date %></td>
-				<td><%= well.comments %></td>
-				<td><%= well.total_depth %></td>
-				<td><%= well.originator %></td>
-				<td><%= well.origno %></td>
-			</tr> <!-- Kept-->
-		<% end %>
-		<tr>
-			<td><%#= @duplicate.keep %></td>
-			<!--<%#= remediated_well %>-->
-			
-			
-		</tr> <!-- remediated -->
- 		
-</table>
-<% else %>
-<div>
-	No wells.
-</div>
-<% end %>
+
+
 
 <%# if @duplicate.alias_check =="Y"%>
 <%#= deleted_boreholes.pluck(:entityid).to_sentence %>
