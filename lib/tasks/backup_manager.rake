@@ -17,7 +17,7 @@ def create_migrations
         [k,v.type]
       end
     end ]
-    attributes = attribute_hash.map{|k,v| "#{k}:#{v}"}
+  
     backup_string = "Borehole#{model.to_s.classify}"
     
    
