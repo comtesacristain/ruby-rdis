@@ -12,7 +12,7 @@ end
 def delete_duplicates
   puts "Deleting duplicates"
   models = Entity.reflections.keys
-  duplicates = Duplicate.limit(1).offset(60)
+  duplicates = Duplicate.limit(70)
   duplicates.transaction do
     duplicates.each do |duplicate|
       puts "Resolving duplicate_id #{duplicate.id}"
