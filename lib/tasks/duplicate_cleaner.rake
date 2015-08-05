@@ -26,25 +26,27 @@ def delete_duplicates
         
         begin
           puts "Deleting borehole with eno #{deleted_borehole.eno}"
+          deleted_borehole.handler.final_status ="DELETED"
           entity = deleted_borehole.entity
-          
-          
           models.each do |model|
             resolve_model(entity.send(model),kept_borehole.eno)
           end
           entity.delete
-          deleted_borehole.handler.final_status ="DELETED"
+          
         rescue ActiveRecord::RecordNotFound => e
           puts e
         rescue ActiveRecord::StatementInvalid =>e
           puts "STATEMENT INVALD"
-          deleted_borehole.handler.final_status =nil
-          duplicate.resolved="N"
+          deleted_borehole.handler.final_status ="REMAINS"
         ensure
          deleted_borehole.handler.save
         end
       end
-      duplicate.resolved="Y"
+      if deleted_boreholes.where(handlers:{final_status:"REMAINS"}).exists?
+        duplicate.resolved="N"
+      else
+        duplicate.resolved="Y"
+      end
       duplicate.save
     end
   end
