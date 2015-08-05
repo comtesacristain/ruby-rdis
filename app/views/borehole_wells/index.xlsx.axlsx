@@ -5,7 +5,7 @@ wb.add_worksheet(name: "Wells") do |sheet|
  
  
  
-  @borehole_wells.each do |borehole_well|
-  	sheet.add_row @columns.map { |column|  borehole_well[column] }
+  @records.each do |record|
+  	sheet.add_row @columns.map { |column|  record[column] }
   end
 end

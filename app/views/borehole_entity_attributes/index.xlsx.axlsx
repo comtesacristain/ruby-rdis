@@ -5,7 +5,7 @@ wb.add_worksheet(name: "EntityAttributes") do |sheet|
  
  
  
-  @entity_attributes.each do |entity_attribute|
-  	sheet.add_row @columns.map { |column|  entity_attribute[column] }
+  @records.each do |record|
+  	sheet.add_row @columns.map { |column|  record[column] }
   end
 end
