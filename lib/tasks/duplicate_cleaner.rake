@@ -61,8 +61,7 @@ end
 
 def resolve_instance(instance,eno)
   begin
-    instance.eno = eno
-    instance.save
+    instance.update(eno:eno)
   rescue ActiveRecord::StatementInvalid => e
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
