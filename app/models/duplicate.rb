@@ -7,6 +7,8 @@ class Duplicate < ActiveRecord::Base
   
   has_many :wells, :through => :boreholes, :class_name => "BoreholeWell"
   
+  has_many :well_confids, :through => :boreholes, :class_name => "BoreholeWellConfid"
+  
   accepts_nested_attributes_for :handlers
 
   def well_picks 
