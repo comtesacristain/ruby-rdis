@@ -46,13 +46,19 @@ def delete_duplicates
 end
 
 def resolve_model(delete,keep_eno)
-  delete.each do |d|
-    begin
-      d.eno = keep_eno
-      d.save
-    rescue
-      d.delete
+  case 
+  when delete.is_a?(ActiveRecord::Base)
+    delete.delete
+  when delete.is_a?(ActiveRecord::Associations::CollectionProxy)
+    delete.each do |d|
+      begin
+        d.eno = keep_eno
+        d.save
+      rescue
+        d.delete
+      end
     end
+  when delete.is_a?(NilClass)
   end
 end
 
