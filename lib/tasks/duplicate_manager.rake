@@ -209,7 +209,7 @@ def load_or_review
         borehole.handler[:manual_transfer] = item[:final_transfer]
         borehole.handler[:or_reference] = item[:or_reference]
         borehole.handler[:or_final_comment] = item[:or_comment_final]
-        borehole.handler[:manual_remediation] = item[:or_review]
+        borehole.handler[:manual_remediation] = item[:or_review].upcase
         if borehole.handler.manual_remediation != borehole.handler.auto_remediation 
           auto_approved = "N"
         end
