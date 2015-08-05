@@ -15,7 +15,7 @@ def delete_duplicates
   duplicates = Duplicate.limit(20).offset(50)
   duplicates.transaction do
     duplicates.each do |duplicate|
-   
+      puts "Resolving duplicate_id #{duplicate.id}"
       kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
       deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
       # deleted_borehole = deleted_boreholes.first
@@ -70,20 +70,23 @@ def resolve_instance(instance,eno)
     
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-      raise ActiveRecord::Rollback
+      
       puts "Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}"
-      instance.restore_attributes
       instance.delete
+      raise ActiveRecord::Rollback
     when /ORA-01031/
-      raise ActiveRecord::Rollback
       puts "You have insufficient priveleges to update #{instance.class.table_name}"
-    else
       raise ActiveRecord::Rollback
+      
+    else
       puts "Some other Oracle exception: #{e.message}"
+      raise ActiveRecord::Rollback
+      
     end
   rescue => e
-    raise ActiveRecord::Rollback
     puts "Some other exception: #{e.message}"
+    raise ActiveRecord::Rollback
+    
   end
 end
 
