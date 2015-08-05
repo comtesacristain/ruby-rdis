@@ -66,7 +66,7 @@ def resolve_instance(instance,eno)
     o_
     instance.eno=eno
     instance.save
-    puts "Instance of #{instance.class} with eno: #{instance.changes["eno"][0]} has been transferred to #{instance.changes["eno"][1}"
+    puts "Instance of #{instance.class} with eno: #{instance.changes["eno"][0]} has been transferred to #{instance.changes["eno"][1]}"
   rescue ActiveRecord::StatementInvalid => e
     instance.restore_attributes
     puts "Something happened - keep #{eno}, delete #{instance.eno}"
