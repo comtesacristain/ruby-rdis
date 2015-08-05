@@ -11,6 +11,7 @@ class Entity < ActiveRecord::Base
   has_many :well_confids, :foreign_key => :eno
   
   has_many :remarkws, :foreign_key => :eno
+  has_many :resultws, :foreign_key => :eno
   has_many :stratigraphies, :foreign_key => :eno
   has_many :resfacs_remarks, :foreign_key => :eno
   has_one :sidetrack, :foreign_key => :eno
