@@ -15,7 +15,7 @@ def delete_duplicates
       deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
       # deleted_borehole = deleted_boreholes.first
       deleted_boreholes.each do |deleted_borehole|
-        
+        backup_borehole(deleted_borehole)
         deleted_borehole.entity.stratigraphies.update_all(eno:kept_borehole.eno)
         
         deleted_borehole.entity.samples.update_all(eno:kept_borehole.eno)
