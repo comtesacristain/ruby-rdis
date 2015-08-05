@@ -12,7 +12,9 @@ Rails.application.routes.draw do
   
   resources :boreholes 
   
-  resources :borehole_wells, :borehole_mineral_attributes, :borehole_entity_attributes
+  resources :borehole_wells
+  resources :borehole_mineral_attributes
+  resources :borehole_entity_attributes
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
