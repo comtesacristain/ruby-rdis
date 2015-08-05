@@ -63,7 +63,6 @@ end
 def resolve_instance(instance,eno)
   puts "Resolving instance of #{instance.class} with eno: #{instance.eno}"
   begin
-    o_
     instance.eno=eno
     instance.save
     puts "Instance of #{instance.class} with eno: #{instance.changes["eno"][0]} has been transferred to #{instance.changes["eno"][1]}"
