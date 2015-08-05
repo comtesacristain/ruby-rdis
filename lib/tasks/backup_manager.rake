@@ -17,7 +17,7 @@ def create_migrations
         [k,v.type]
       end
     end ]
-    attribute_strings = attribute_hash.map{|k,v| "#{k}:#{v}"}
+    attributes = attribute_hash.map{|k,v| "#{k}:#{v}"}
     backup_string = "Borehole#{model.to_s.classify}"
     
    
@@ -27,10 +27,12 @@ def create_migrations
       backup_columns.each { |c| attribute_hash.delete(c)  }
       migration_string = "AddColumnsTo#{backup_string}"
       unless attribute_hash.empty?
+        attributes = attribute_hash.map{|k,v| "#{k}:#{v}"}
         Rails::Generators.invoke("active_record:migration", [migration_string, attributes].flatten)
       end
     rescue NameError => x
       creation_string = "Create#{backup_string}"
+      attributes = attribute_hash.map{|k,v| "#{k}:#{v}"}
        Rails::Generators.invoke("active_record:model", [backup_string, attributes].flatten)
        Rails::Generators.invoke("active_record:migration", [creation_string, attributes].flatten)
     end
