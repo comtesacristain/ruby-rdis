@@ -16,6 +16,10 @@
 			<td><%= label_tag :or_status, "OR Status:" %></td>
 			<td><%= select_tag :or_status, options_for_select([nil,Handler.pluck(:or_status).uniq].flatten,params[:or_status]) %></td>		
 		</tr>
+		<tr>
+			<td><%= label_tag :resolved, "Resolved?" %></td>
+			<td><%= select_tag :resolved, options_for_select(yes_no_all, params[:resolved]) %></td>		
+		</tr>
 	</table>
 	<%=submit_tag "Search", :name=>nil %>
 <% end %>

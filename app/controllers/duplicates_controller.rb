@@ -25,6 +25,9 @@ class DuplicatesController < ApplicationController
     unless params[:manual_remediation].blank?
       scope=scope.where(:manual_remediation=>params[:manual_remediation])
     end 
+    unless params[:resolved].blank?
+      scope=scope.where(:resolved=>params[:resolved])
+    end 
     unless params[:or_status].blank?
       scope=scope.joins(:boreholes=>:handler).where(:handlers=>{:or_status=>"#{params[:or_status]}"})
     end
