@@ -1,0 +1,2 @@
+module ResultwsHelper
+end

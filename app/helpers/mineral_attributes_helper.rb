@@ -1,0 +1,2 @@
+module MineralAttributesHelper
+end

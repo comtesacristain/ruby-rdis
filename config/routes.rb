@@ -1,4 +1,38 @@
 Rails.application.routes.draw do
+  get 'mineral_attributes/index'
+
+  get 'entity_attributes/index'
+
+  get 'wdata_twos/index'
+
+  get 'wdata_ones/index'
+
+  get 'porperm_picks/index'
+
+  get 'porperm_twos/index'
+
+  get 'porperm_ones/index'
+
+  get 'sidetracks/index'
+
+  get 'resfacs_remarks/index'
+
+  get 'stratigraphies/index'
+
+  get 'dir_survey_stations/index'
+
+  get 'dir_surveys/index'
+
+  get 'resultws/index'
+
+  get 'remarkws/index'
+
+  get 'well_confids/index'
+
+  get 'samples/index'
+
+  get 'wells/index'
+
   resources :duplicates do
     member do
       put :qa
