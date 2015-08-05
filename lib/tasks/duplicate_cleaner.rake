@@ -64,9 +64,10 @@ end
 
 
 def backup_borehole(borehole)
+  models = Entity.reflections.keys
   begin
     entity = borehole.entity 
-    puts borehole.eno
+    puts "Backing up entity: #{borehole.eno}"
     # entity = Borehole.first.entity
     models.each do |model|
       model_instance = entity.send(model)
