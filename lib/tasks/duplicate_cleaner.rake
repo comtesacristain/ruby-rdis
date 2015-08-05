@@ -30,6 +30,8 @@ def delete_duplicates
           fix_constrained_model(entity.remarkws,kept_borehole.eno)
           fix_constrained_model(entity.resfacs_remarks,kept_borehole.eno)
           fix_constrained_model(entity.entity_attributes,kept_borehole.eno)
+          
+          fix_constrained_model(entity.porperm_twos,kept_borehole.eno)
           # deleted_borehole.entity.entity_attributes
           # kept_borehole.entity.entity_attributes.size
       
