@@ -33,7 +33,7 @@ def create_migrations
     rescue NameError => x
       creation_string = "Create#{backup_string}"
       attributes = attribute_hash.map{|k,v| "#{k}:#{v}"}
-       Rails::Generators.invoke("active_record:model", [backup_string, attributes].flatten)
+       Rails::Generators.invoke("active_record:model", [backup_string].flatten)
        Rails::Generators.invoke("active_record:migration", [creation_string, attributes].flatten)
     end
     
