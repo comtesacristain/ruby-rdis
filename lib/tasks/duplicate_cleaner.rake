@@ -4,6 +4,13 @@ namespace :duplicate_cleaner do
     delete_duplicates
   end
   
+  task test: :environment do
+    test
+  end
+end
+
+def test
+  puts "test"
 end
 
 def delete_duplicates
