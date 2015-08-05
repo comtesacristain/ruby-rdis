@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Poperm1") do |sheet|
+  sheet.add_row @columns.map {|column| column.upcase}
+ 
+ 
+ 
+  @records.each do |record|
+  	sheet.add_row @columns.map { |column|  record[column] }
+  end
+end
