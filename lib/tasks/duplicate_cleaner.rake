@@ -9,10 +9,7 @@ end
 
 def delete_duplicates
   puts "Deleting duplicates"
-end
-
-def bla
-  duplicates = Duplicate.limit(100)
+  duplicates = Duplicate.limit(50)
   duplicates.transaction do
     duplicates.each do |duplicate|
    
