@@ -12,7 +12,7 @@ end
 def delete_duplicates
   puts "Deleting duplicates"
   models = Entity.reflections.keys
-  duplicates = Duplicate.limit(20).offset(50)
+  duplicates = Duplicate.limit(10).offset(50)
   duplicates.transaction do
     duplicates.each do |duplicate|
       puts "Resolving duplicate_id #{duplicate.id}"
@@ -124,6 +124,7 @@ def backup_instance(instance)
   backup_class_name = "Borehole#{class_name}"
   backup_class = backup_class_name.constantize
   attributes=remove_dodgy_attributes(instance.attributes)
+  puts "Backing up instance of #{class_name} with eno #{instance.eno}"
   object = backup_class.find_or_initialize_by(attributes)
   object.save
 end
