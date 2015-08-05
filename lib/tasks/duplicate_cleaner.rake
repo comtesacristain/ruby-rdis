@@ -12,7 +12,7 @@ end
 def delete_duplicates
   puts "Deleting duplicates"
   models = Entity.reflections.keys
-  duplicates = Duplicate.limit(50)
+  duplicates = Duplicate.limit(20).offset(50)
   duplicates.transaction do
     duplicates.each do |duplicate|
    
@@ -36,15 +36,15 @@ def delete_duplicates
         rescue ActiveRecord::RecordNotFound => e
           puts e
         rescue => e
+          raise ActiveRecord::Rollback
           puts e.message
         ensure
           deleted_borehole.handler.final_status ="DELETED"
         end
       end
-      
+      duplicate.resolved="Y"
      
     end
-     # raise ActiveRecord::Rollback # Do this because we're testing
   end
 end
 
@@ -65,8 +65,9 @@ def resolve_instance(instance,eno)
     instance.eno=eno
     instance.save
   rescue ActiveRecord::StatementInvalid => e
-    puts "Something happened - keep #{eno}, delete #{instance.eno}"
     instance.restore_attributes
+    puts "Something happened - keep #{eno}, delete #{instance.eno}"
+    
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
       raise ActiveRecord::Rollback
