@@ -36,7 +36,7 @@ def delete_duplicates
           ## deleted_borehole.entity.entity_attributes.update_all(eno:kept_borehole.eno)
           ## deleted_borehole.entity.entity_attributes.update_all(eno:kept_borehole.eno)   
           ##
-     
+          entity.porperm_one.delete unless entity.porperm_one.nil?
           entity.sidetrack.delete unless entity.sidetrack.nil?
           entity.well.delete unless entity.well.nil?
           entity.delete unless entity.nil?
@@ -47,6 +47,7 @@ def delete_duplicates
         end
       end
       duplicate.resolved = "Y"
+      raise ActiveRecord::Rollback
     end
   end
 end
