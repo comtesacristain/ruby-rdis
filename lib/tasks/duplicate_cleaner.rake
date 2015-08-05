@@ -12,7 +12,7 @@ end
 def delete_duplicates
   puts "Deleting duplicates"
   models = Entity.reflections.keys
-  duplicates = Duplicate.limit(10).offset(50)
+  duplicates = Duplicate.limit(1).offset(60)
   duplicates.transaction do
     duplicates.each do |duplicate|
       puts "Resolving duplicate_id #{duplicate.id}"
@@ -63,9 +63,10 @@ end
 def resolve_instance(instance,eno)
   puts "Resolving instance of #{instance.class} with eno: #{instance.eno}"
   begin
+    o_
     instance.eno=eno
     instance.save
-    puts "Instance of #{instance.class} with eno: #{instance.eno} has been transferred to #{eno}"
+    puts "Instance of #{instance.class} with eno: #{instance.changes["eno"][0]} has been transferred to #{instance.changes["eno"][1}"
   rescue ActiveRecord::StatementInvalid => e
     instance.restore_attributes
     puts "Something happened - keep #{eno}, delete #{instance.eno}"
