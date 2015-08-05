@@ -24,12 +24,12 @@ def delete_duplicates
           backup_borehole(deleted_borehole)
           entity.stratigraphies.update_all(eno:kept_borehole.eno)
         
-          deleted_borehole.entity.samples.update_all(eno:kept_borehole.eno)
+          entity.samples.update_all(eno:kept_borehole.eno)
           # kept_borehole.entity.stratigraphies
           ##
-          fix_constrained_model(deleted_borehole.entity.remarkws,kept_borehole.eno)
-          fix_constrained_model(deleted_borehole.entity.resfacs_remarks,kept_borehole.eno)
-          fix_constrained_model(deleted_borehole.entity.entity_attributes,kept_borehole.eno)
+          fix_constrained_model(entity.remarkws,kept_borehole.eno)
+          fix_constrained_model(entity.resfacs_remarks,kept_borehole.eno)
+          fix_constrained_model(entity.entity_attributes,kept_borehole.eno)
           # deleted_borehole.entity.entity_attributes
           # kept_borehole.entity.entity_attributes.size
       
@@ -37,9 +37,9 @@ def delete_duplicates
           ## deleted_borehole.entity.entity_attributes.update_all(eno:kept_borehole.eno)   
           ##
      
-          deleted_borehole.entity.sidetrack.delete unless deleted_borehole.entity.sidetrack.nil?
-          deleted_borehole.entity.well.delete unless deleted_borehole.entity.well.nil?
-          deleted_borehole.entity.delete unless deleted_borehole.entity.nil?
+          entity.sidetrack.delete unless entity.sidetrack.nil?
+          entity.well.delete unless entity.well.nil?
+          entity.delete unless entity.nil?
         rescue ActiveRecord::RecordNotFound => e
           puts e
         ensure
