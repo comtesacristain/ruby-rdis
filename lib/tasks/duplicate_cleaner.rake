@@ -34,6 +34,8 @@ def delete_duplicates
           entity.delete unless entity.nil?
         rescue ActiveRecord::RecordNotFound => e
           puts e
+        rescue => e
+          puts e.message
         ensure
           deleted_borehole.handler.final_status ="DELETED"
         end
