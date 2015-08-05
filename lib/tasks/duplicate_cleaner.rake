@@ -18,15 +18,18 @@ def delete_duplicates
       # deleted_borehole = deleted_boreholes.first
       deleted_boreholes.each do |deleted_borehole|
         puts deleted_borehole.eno
-        backup_borehole(deleted_borehole)
-        deleted_borehole.entity.stratigraphies.update_all(eno:kept_borehole.eno)
+        begin
+          entity = deleted_borehole.entity
+          
+          backup_borehole(deleted_borehole)
+          entity.stratigraphies.update_all(eno:kept_borehole.eno)
         
-        deleted_borehole.entity.samples.update_all(eno:kept_borehole.eno)
+          deleted_borehole.entity.samples.update_all(eno:kept_borehole.eno)
           # kept_borehole.entity.stratigraphies
           ##
-        fix_constrained_model(deleted_borehole.entity.remarkws,kept_borehole.eno)
-        fix_constrained_model(deleted_borehole.entity.resfacs_remarks,kept_borehole.eno)
-        fix_constrained_model(deleted_borehole.entity.entity_attributes,kept_borehole.eno)
+          fix_constrained_model(deleted_borehole.entity.remarkws,kept_borehole.eno)
+          fix_constrained_model(deleted_borehole.entity.resfacs_remarks,kept_borehole.eno)
+          fix_constrained_model(deleted_borehole.entity.entity_attributes,kept_borehole.eno)
           # deleted_borehole.entity.entity_attributes
           # kept_borehole.entity.entity_attributes.size
       
@@ -34,10 +37,16 @@ def delete_duplicates
           ## deleted_borehole.entity.entity_attributes.update_all(eno:kept_borehole.eno)   
           ##
      
-        deleted_borehole.entity.sidetrack.delete unless deleted_borehole.entity.sidetrack.nil?
-        deleted_borehole.entity.well.delete unless deleted_borehole.entity.sidetrack.nil?
-        deleted_borehole.entity.delete unless deleted_borehole.entity.nil?
+          deleted_borehole.entity.sidetrack.delete unless deleted_borehole.entity.sidetrack.nil?
+          deleted_borehole.entity.well.delete unless deleted_borehole.entity.sidetrack.nil?
+          deleted_borehole.entity.delete unless deleted_borehole.entity.nil?
+        rescue ActiveRecord::RecordNotFound => e
+          puts e
+        ensure
+          deleted_borehole.handler.final_status ="DELETED"
+        end
       end
+      duplicate.resolved = "Y"
     end
   end
 end
