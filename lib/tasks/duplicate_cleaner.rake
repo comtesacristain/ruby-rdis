@@ -41,7 +41,7 @@ def delete_duplicates
       duplicate.resolved = "Y"
      
     end
-     raise ActiveRecord::Rollback
+     raise ActiveRecord::Rollback # Do this because we're testing
   end
 end
 
@@ -65,7 +65,7 @@ def resolve_instance(instance,eno)
   rescue ActiveRecord::StatementInvalid => e
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-      puts "Can't mo data, must delete #{d.class.table_name} with eno: #{d.eno}"
+      puts "Can't move data, must delete #{d.class.table_name} with eno: #{d.eno}"
       d.delete
     when /ORA-01031/
       puts "You have insufficient priveleges to update #{delete.class.table_name}"
