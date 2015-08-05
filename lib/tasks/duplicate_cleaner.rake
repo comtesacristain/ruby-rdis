@@ -19,6 +19,7 @@ def delete_duplicates
       kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
       deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
       # deleted_borehole = deleted_boreholes.first
+      
       deleted_boreholes.each do |deleted_borehole|
         
         backup_borehole(deleted_borehole)
@@ -40,10 +41,10 @@ def delete_duplicates
           deleted_borehole.handler.final_status ="DELETED"
         end
       end
-      duplicate.resolved = "Y"
+      
      
     end
-     raise ActiveRecord::Rollback # Do this because we're testing
+     # raise ActiveRecord::Rollback # Do this because we're testing
   end
 end
 
@@ -61,18 +62,26 @@ end
 
 def resolve_instance(instance,eno)
   begin
-    instance.update(eno:eno)
+    instance.eno=eno
+    instance.save
   rescue ActiveRecord::StatementInvalid => e
+    puts "Something happened - keep #{eno}, delete #{instance.eno}"
+    instance.restore_attributes
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
+      raise ActiveRecord::Rollback
       puts "Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}"
+      instance.restore_attributes
       instance.delete
     when /ORA-01031/
+      raise ActiveRecord::Rollback
       puts "You have insufficient priveleges to update #{instance.class.table_name}"
     else
+      raise ActiveRecord::Rollback
       puts "Some other Oracle exception: #{e.message}"
     end
   rescue => e
+    raise ActiveRecord::Rollback
     puts "Some other exception: #{e.message}"
   end
 end
