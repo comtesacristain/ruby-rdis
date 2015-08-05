@@ -64,36 +64,30 @@ end
 
 
 def backup_borehole(borehole)
-  duplicates = Duplicate.all
-  models = Entity.reflections.keys
-  duplicates.each do |duplicate|
-    boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
-    boreholes.each do |borehole|
-      begin
-        entity = borehole.entity 
-        puts borehole.eno
-        # entity = Borehole.first.entity
-        models.each do |model|
-          model_instance = entity.send(model)
-          case 
-          when model_instance.is_a?(ActiveRecord::Base)
-            backup_instance(model_instance)
-          when model_instance.is_a?(ActiveRecord::Associations::CollectionProxy)
-            model_instance.each do |mi|
-              backup_instance(mi)
-            end
-          when model_instance.is_a?(NilClass)
-            "Nil object found"
-          else 
-            "Blabla"
-          end
+  begin
+    entity = borehole.entity 
+    puts borehole.eno
+    # entity = Borehole.first.entity
+    models.each do |model|
+      model_instance = entity.send(model)
+      case 
+      when model_instance.is_a?(ActiveRecord::Base)
+        backup_instance(model_instance)
+      when model_instance.is_a?(ActiveRecord::Associations::CollectionProxy)
+        model_instance.each do |mi|
+          backup_instance(mi)
         end
-        rescue ActiveRecord::RecordNotFound => ex
-          puts ex
-        end
+      when model_instance.is_a?(NilClass)
+        "Nil object found"
+      else 
+        "Blabla"
+      end
     end
+  rescue ActiveRecord::RecordNotFound => ex
+    puts ex
   end
 end
+
 
 def backup_instance(instance)
   class_name = instance.class.to_s
