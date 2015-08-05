@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Wells") do |sheet|
-  sheet.add_row [@columns]
+  sheet.add_row @columns
  
  
  
