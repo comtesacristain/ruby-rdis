@@ -7,7 +7,7 @@ namespace :duplicate_cleaner do
 end
 
 def delete_duplicates
-  duplicates = Duplicate.limit(50)
+  duplicates = Duplicate.limit(100)
   duplicates.transaction do
     duplicates.each do |duplicate|
    
@@ -15,6 +15,7 @@ def delete_duplicates
       deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
       # deleted_borehole = deleted_boreholes.first
       deleted_boreholes.each do |deleted_borehole|
+        puts deleted_borehole.eno
         backup_borehole(deleted_borehole)
         deleted_borehole.entity.stratigraphies.update_all(eno:kept_borehole.eno)
         
