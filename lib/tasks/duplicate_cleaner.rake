@@ -2,17 +2,12 @@ namespace :duplicate_cleaner do
   task delete_duplicates: :environment do
     delete_duplicates
   end
-  
-
 end
-
-
-
 
 def delete_duplicates
   puts "Deleting duplicates"
   models = Entity.reflections.keys
-  duplicates = Duplicate.limit(70)
+  duplicates = Duplicate.limit(10)
   duplicates.transaction do
     duplicates.each do |duplicate|
       puts "Resolving duplicate_id #{duplicate.id}"
