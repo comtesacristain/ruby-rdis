@@ -37,7 +37,7 @@ def delete_duplicates
         rescue ActiveRecord::RecordNotFound => e
           puts e
         rescue ActiveRecord::StatementInvalid =>e
-          puts e
+          puts "STATEMENT INVALD"
           deleted_borehole.handler.final_status =nil
           duplicate.resolved="N"
         ensure
