@@ -33,10 +33,15 @@ def delete_duplicates
             resolve_model(entity.send(model),kept_borehole.eno)
           end
           entity.delete
+          deleted_borehole.handler.final_status ="DELETED"
         rescue ActiveRecord::RecordNotFound => e
           puts e
+        rescue ActiveRecord::StatementInvalid =>e
+          puts e
+          deleted_borehole.handler.final_status =nil
+          duplicate.resolved="N"
         ensure
-          deleted_borehole.handler.final_status ="DELETED"
+         deleted_borehole.handler.save
         end
       end
       duplicate.resolved="Y"
