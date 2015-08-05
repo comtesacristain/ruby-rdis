@@ -254,17 +254,7 @@ def or_duplicates
    end
 end
 
-def delete_duplicates
-  duplicates=Duplicate.where(manual_remediation:"Y")
-  duplicates.each do |duplicate|
-    boreholes = duplicate.boreholes
-    #boreholes.
-  end
-end
 
-def create_archives
-  duplicates.each
-end
 
 def find_duplicates(d=0)
   connection=OCI8.new(*oracle_connection)
@@ -630,43 +620,6 @@ end
 def name_query(name)
 
   return "select #{borehole_query_string} from a.entities e where upper(e.entityid) like upper('#{name}') and entity_type in ('DRILLHOLE','WELL')"
-end
-
-def load_samples
-  connection=OCI8.new(*oracle_connection)
-  duplicates.each do |duplicate|
-    boreholes = duplicate.boreholes
-    boreholes.each do |borehole|
-      statement = "select #{sample_query_string} from a.samples s where eno =  #{borehole.eno}"
-      cursor=connection.exec(statement)
-      cursor.fetch_hash do |row|
-        sample = BoreholeSample.find_or_initialize_by(sampleno:row["SAMPLENO"])
-        puts "Loading sample #{sample.sampleno}"
-        sample.update(sample_attr_hash(row))
-        borehole.sample= sample
-        borehole.save
-      end
-    end
-  end
-end
-
-def load_wells
-  connection=OCI8.new(*oracle_connection)
-  duplicates = Duplicate.all
-  duplicates.each do |duplicate|
-    boreholes = duplicate.boreholes
-    boreholes.each do |borehole|
-      statement = "select #{well_query_string} from npm.wells w where eno =  #{borehole.eno}"
-      cursor=connection.exec(statement)
-      cursor.fetch_hash do |row|
-        well = BoreholeWell.find_or_initialize_by(eno:row["ENO"])
-        puts "Loading well #{well.eno}"
-        well.update(well_attr_hash(row))
-        borehole.well = well
-        borehole.save
-      end
-    end
-  end
 end
 
 

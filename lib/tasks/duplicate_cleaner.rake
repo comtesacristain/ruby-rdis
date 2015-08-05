@@ -1,21 +1,16 @@
 namespace :duplicate_cleaner do
-  desc "TODO"
   task delete_duplicates: :environment do
     delete_duplicates
   end
   
-  task test: :environment do
-    test
-  end
+
 end
 
-def test
-  puts "test"
-end
 
 def delete_duplicates
   puts "Deleting duplicates"
 end
+
 def bla
   duplicates = Duplicate.limit(100)
   duplicates.transaction do
