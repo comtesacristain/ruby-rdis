@@ -89,7 +89,7 @@ end
 
 def preemptive_backup
   duplicates=Duplicate.all
-  duplciates.each do |duplicate|
+  duplicates.each do |duplicate|
     deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
     deleted_boreholes.each do |deleted_borehole|
       backup_borehole(deleted_borehole)
