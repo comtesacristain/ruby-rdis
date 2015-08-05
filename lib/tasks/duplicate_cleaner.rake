@@ -49,27 +49,33 @@ def resolve_model(delete,keep_eno)
   puts keep_eno
   case 
   when delete.is_a?(ActiveRecord::Base)
-    delete.delete
+   resolve_instance(delete,eno)
   when delete.is_a?(ActiveRecord::Associations::CollectionProxy)
     delete.each do |d|
-      begin
-        d.eno = keep_eno
-        d.save
-      rescue ActiveRecord::StatementInvalid => e
-        case e.message
-        when /ORA-01031/
-          puts "You have insufficient priveleges to update #{delete.class.table_name}"
-        else
-          puts "Different Oracle Error: #{e}"
-        end
-      rescue => e
-        puts "Some other exception #{e}"
-      end
+      resolve_instance(d,eno)
     end
   when delete.is_a?(NilClass)
   end
 end
 
+def resolve_instance(instance,eno)
+  begin
+    instance.eno = eno
+    instance.save
+  rescue ActiveRecord::StatementInvalid => e
+    case e.message
+    when /ORA-00001: unique constraint/ # Can't copy data, must delete
+      puts "Can't mo data, must delete #{d.class.table_name} with eno: #{d.eno}"
+      d.delete
+    when /ORA-01031/
+      puts "You have insufficient priveleges to update #{delete.class.table_name}"
+    else
+      puts "Some other Oracle exception: #{e.message}"
+    end
+  rescue => e
+    puts "Some other exception: #{e.message}"
+  end
+end
 
 
 def backup_borehole(borehole)
