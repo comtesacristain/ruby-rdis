@@ -65,10 +65,10 @@ def resolve_instance(instance,eno)
   rescue ActiveRecord::StatementInvalid => e
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-      puts "Can't move data, must delete #{d.class.table_name} with eno: #{d.eno}"
-      d.delete
+      puts "Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}"
+      instance.delete
     when /ORA-01031/
-      puts "You have insufficient priveleges to update #{delete.class.table_name}"
+      puts "You have insufficient priveleges to update #{instance.class.table_name}"
     else
       puts "Some other Oracle exception: #{e.message}"
     end
