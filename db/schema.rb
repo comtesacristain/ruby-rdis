@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804065212) do
+ActiveRecord::Schema.define(version: 20150805025638) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -421,6 +421,7 @@ ActiveRecord::Schema.define(version: 20150804065212) do
     t.integer  "manual_transfer"
     t.string   "or_final_comment"
     t.string   "or_reference"
+    t.string   "final_status"
   end
 
   add_index "handlers", ["auto_remediation"], name: "index_handlers_on_auto_remediation"
