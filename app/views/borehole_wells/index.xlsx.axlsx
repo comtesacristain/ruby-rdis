@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Wells") do |sheet|
+  sheet.add_row [@columns]
+ 
+ 
+ 
+  @borehole_wells.each do |borehole_well|
+  	sheet.add_row @columns.map { |column|  borehole_well[col] }
+  end
+end
