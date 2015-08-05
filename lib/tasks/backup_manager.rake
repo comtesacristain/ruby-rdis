@@ -13,6 +13,8 @@ def create_migrations
     attribute_hash = Hash[model_class.columns_hash.map do |k,v|
       if k == "attribute"
         ["a_attribute",v.type]
+      elsif k =="type"
+        ["t_type",v.type]
       else 
         [k,v.type]
       end

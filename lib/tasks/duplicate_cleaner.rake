@@ -107,7 +107,8 @@ end
 def remove_dodgy_attributes(attributes)
   if attributes["attribute"]
     attributes["a_attribute"] = attributes.delete "attribute"
-    
+  elsif attributes["type"]
+      attributes["t_type"] = attributes.delete "type"
   end
   return attributes
 end
