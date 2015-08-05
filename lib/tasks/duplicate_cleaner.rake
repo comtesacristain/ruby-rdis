@@ -47,8 +47,9 @@ def delete_duplicates
         end
       end
       duplicate.resolved = "Y"
-      raise ActiveRecord::Rollback
+     
     end
+     raise ActiveRecord::Rollback
   end
 end
 
