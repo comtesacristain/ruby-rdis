@@ -56,7 +56,7 @@ def resolve_model(delete,keep_eno)
         d.eno = keep_eno
         d.save
       rescue ActiveRecord::StatementInvalid => e
-        case e
+        case e.message
         when /ORA-01031/
           puts "You have insufficient priveleges to update #{delete.class.table_name}"
         else
