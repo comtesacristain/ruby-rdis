@@ -43,6 +43,7 @@ def delete_duplicates
         end
       end
       duplicate.resolved="Y"
+      duplicate.save
      
     end
   end
@@ -64,8 +65,9 @@ def resolve_instance(instance,eno)
   puts "Resolving instance of #{instance.class} with eno: #{instance.eno}"
   begin
     instance.eno=eno
+    changes = instance.changes
     instance.save
-    puts "Instance of #{instance.class} with eno: #{instance.changes["eno"][0]} has been transferred to #{instance.changes["eno"][1]}"
+    puts "Instance of #{instance.class} with eno: #{hanges["eno"][0]} has been transferred to #{changes["eno"][1]}"
   rescue ActiveRecord::StatementInvalid => e
     instance.restore_attributes
     puts "Something happened - keep #{eno}, delete #{instance.eno}"
