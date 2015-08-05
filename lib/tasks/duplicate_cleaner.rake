@@ -32,6 +32,7 @@ def delete_duplicates
           fix_constrained_model(entity.entity_attributes,kept_borehole.eno)
           
           fix_constrained_model(entity.porperm_twos,kept_borehole.eno)
+          fix_constrained_model(entity.porperm_picks,kept_borehole.eno)
           # deleted_borehole.entity.entity_attributes
           # kept_borehole.entity.entity_attributes.size
       
@@ -56,14 +57,12 @@ def delete_duplicates
 end
 
 def fix_constrained_model(delete,keep_eno)
-  delete.transaction do
-    delete.each do |d|
-      begin
-        d.eno = keep_eno
-        d.save
-      rescue
-          d.delete
-      end
+  delete.each do |d|
+    begin
+      d.eno = keep_eno
+      d.save
+    rescue
+      d.delete
     end
   end
 end
