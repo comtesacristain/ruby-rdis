@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150805051745) do
+ActiveRecord::Schema.define(version: 20150805053925) do
 
   create_table "borehole_duplicates", force: :cascade do |t|
     t.integer  "borehole_id"
@@ -77,6 +77,14 @@ ActiveRecord::Schema.define(version: 20150805051745) do
     t.integer "ano"
   end
 
+  create_table "borehole_porperm_picks", force: :cascade do |t|
+    t.string  "uno"
+    t.string  "pick"
+    t.integer "eno"
+    t.string  "access_code"
+    t.integer "ano"
+  end
+
   create_table "borehole_porperm_twos", force: :cascade do |t|
     t.string  "well"
     t.integer "coreno"
@@ -126,6 +134,21 @@ ActiveRecord::Schema.define(version: 20150805051745) do
     t.string  "access_code"
     t.integer "ano"
     t.decimal "rfs_rmksno"
+  end
+
+  create_table "borehole_resultws", force: :cascade do |t|
+    t.string   "uno"
+    t.string   "type"
+    t.string   "reference"
+    t.string   "location"
+    t.datetime "release"
+    t.string   "remark"
+    t.datetime "rec_date"
+    t.datetime "updated"
+    t.string   "db_source"
+    t.integer  "eno"
+    t.string   "access_code"
+    t.integer  "ano"
   end
 
   create_table "borehole_samples", force: :cascade do |t|
