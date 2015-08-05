@@ -14,6 +14,7 @@ class Entity < ActiveRecord::Base
   has_many :stratigraphies, :foreign_key => :eno
   has_many :resfacs_remarks, :foreign_key => :eno
   has_one :sidetrack, :foreign_key => :eno
+  has_one :porperm_one, :foreign_key => :eno
   
   has_many :entity_attributes, :foreign_key => :eno
   has_many :mineral_attributes, :foreign_key => :eno
