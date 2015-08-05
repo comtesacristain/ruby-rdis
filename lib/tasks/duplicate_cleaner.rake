@@ -38,7 +38,7 @@ def delete_duplicates
           ##
      
           deleted_borehole.entity.sidetrack.delete unless deleted_borehole.entity.sidetrack.nil?
-          deleted_borehole.entity.well.delete unless deleted_borehole.entity.sidetrack.nil?
+          deleted_borehole.entity.well.delete unless deleted_borehole.entity.well.nil?
           deleted_borehole.entity.delete unless deleted_borehole.entity.nil?
         rescue ActiveRecord::RecordNotFound => e
           puts e
