@@ -4,17 +4,14 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
   sheet.add_row ["DUPLICATE_ID","BOREHOLE_ID","ENO",
     "AUTO_REMEDIATION","AUTO_TRANSFER","OR_REMEDIATION","OR_TRANSFER","OR_COMMENT","FINAL_REMEDIATION",
     "FINAL_TRANSFER","FINAL_COMMENTS","RESOLVED_NAME"]
- 
- 
- 
   @duplicates.each.with_index(1) do |duplicate|
   	boreholes= duplicate.boreholes.order(:entityid)
-  	boreholes.each_with_index do |borehole,i|
+  	boreholes.each do |borehole|
       wells_row =get_wells_row(borehole.well)
       row =[duplicate.id, borehole.id, borehole.eno, borehole.handler.auto_remediation,
         borehole.handler.auto_transfer,borehole.handler.or_status,borehole.handler.or_transfer,
         borehole.handler.or_comment,borehole.handler.manual_remediation,
-        borehole.handler.manual_transfer, duplicate.comments, duplicate.resolved_name].flatten
+        borehole.handler.manual_transfer, duplicate.comments, duplicate.resolved_name]
       sheet.add_row row
     end
   end
