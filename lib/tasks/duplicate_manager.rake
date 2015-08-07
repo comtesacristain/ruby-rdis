@@ -240,8 +240,8 @@ def last_pass
              deleted_borehole.handler.manual_remediation="KEEP"
              kept_borehole.handler.manual_remediation="DELETE"
              puts "Resolved - deletion status switched"
-             deleted_borehole.save
-             kept_borehole.save
+             deleted_borehole.handler.save
+             kept_borehole.handler.save
            else
              if kept_borehole.entity.dir_surveys.exists?
                 puts "Can't resolve - both have DEVIANT"
