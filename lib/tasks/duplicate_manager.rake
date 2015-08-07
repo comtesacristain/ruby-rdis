@@ -232,13 +232,21 @@ def last_pass
      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
      deleted_boreholes.each do |deleted_borehole|
        begin
-         entity = deleted_borehole.entity
+         deleted_entity = deleted_borehole.entity
        
        if entity.dir_surveys.exists?
          puts "Can't delete #{entity.eno}"
+         unless kept_borehole.entity.dir_surveys.exists?
+           deleted_borehole.handler.manual_remediation="KEEP"
+           kept_borehole.handler.manual_remediation="DELETE"
+           puts "Resolved - deletion status switched"
+           deleted_borehole.save
+           kept_borehole.save
+         else
+           puts "Can't resolve - both have DEVIANT"
        end
        rescue ActiveRecord::RecordNotFound => e
-         puts e.message
+         #puts e.message
        end
      end
   end
