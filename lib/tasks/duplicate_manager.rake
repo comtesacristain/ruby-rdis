@@ -82,6 +82,7 @@ def find_and_rank
 end
 
 def load_boreholes(n=nil)
+  @log.info("Loading boreholes from Oracle into backup database")
   connection=OCI8.new(*oracle_connection)
   statement = "select #{borehole_query_string} from a.entities e where entity_type in ('DRILLHOLE', 'WELL')"
   unless n.nil?
