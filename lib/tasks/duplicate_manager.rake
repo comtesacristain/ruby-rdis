@@ -95,7 +95,7 @@ def load_boreholes(n=nil)
     handler = Handler.new
     borehole.handler = handler
     borehole.save
-    @log.info("Loaded borehole: #{row["ENO"]}" )
+    @log.info("Loaded borehole: #{borehole.eno}, #{borehole.entityid}, #{borehole.entity_type}")
   end
 end
 
