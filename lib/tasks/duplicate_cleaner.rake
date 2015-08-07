@@ -30,12 +30,10 @@ def delete_duplicate(duplicate)
       puts "Deleting borehole with eno #{deleted_borehole.eno}"
       deleted_borehole.handler.final_status ="DELETED"
       entity = deleted_borehole.entity
-      ActiveRecord::Base.transaction do
-        models.each do |model|
-          resolve_model(entity.send(model),kept_borehole.eno)
-        end
-        entity.delete
-      end  
+      models.each do |model|
+        resolve_model(entity.send(model),kept_borehole.eno)
+      end
+      entity.delete  
     rescue ActiveRecord::RecordNotFound => e
       puts e
     rescue ActiveRecord::StatementInvalid =>e
