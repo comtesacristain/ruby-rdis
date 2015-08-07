@@ -3,7 +3,7 @@ wb = xlsx_package.workbook
 wb.add_worksheet(name: "Duplicates") do |sheet|
   sheet.add_row ["DUPLICATE_ID","BOREHOLE_ID","ENO",
     "AUTO_REMEDIATION","AUTO_TRANSFER","OR_REMEDIATION","OR_TRANSFER","OR_COMMENT","FINAL_REMEDIATION",
-    "FINAL_TRANSFER","FINAL_COMMENTS","RESOLVED_NAME"], style: wb.styles.add_style(header_style)
+    "FINAL_TRANSFER","FINAL_COMMENTS","RESOLVED_NAME"]
  
  
  
