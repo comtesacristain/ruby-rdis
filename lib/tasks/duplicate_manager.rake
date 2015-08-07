@@ -15,6 +15,11 @@ namespace :duplicate_manager do
   end
   
   desc "TODO"
+  task load_spreadsheet: :environment do
+    load_spreadsheet
+  end
+  
+  desc "TODO"
   task find_duplicates: :environment do
     find_duplicates
   end
@@ -44,11 +49,6 @@ namespace :duplicate_manager do
     last_pass
   end
   
-
-  desc "Test environment"
-  task test_env: :environment do
-    test_env
-  end
   
 end
 
@@ -101,6 +101,7 @@ def load_boreholes(n=nil)
 end
 
 def load_spreadsheet 
+  @log.info("\nLoading remediation spreadsheet provided by Ollie Raymond")
   spreadsheet = 'duplicate_boreholes_analysis_Jan2015.xlsx'
   wb =Roo::Spreadsheet.open(spreadsheet)
   sheet = wb.sheet(0)
@@ -135,16 +136,15 @@ def load_spreadsheet
         handler.or_status = "other"
       end
       handler.save
-    else
-      if Rails.env == "production"
-        puts "Borehole #{eno} not a DRILLHOLE or WELL"
-      end
+      @log.info("Borehole #{borehole.eno}, given status '#{handler.or_status}'")
+    else 
     end
-    puts "#{eno}, #{orc}"
+    
   end
 end
 
 def load_manual_backup
+  @log.info("\nLoading backup of manually identified boreholes.")
   spreadsheet = 'backup.xlsx'
   wb =Roo::Spreadsheet.open(spreadsheet)
   sheet = wb.sheet(0)
