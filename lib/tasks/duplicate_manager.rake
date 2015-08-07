@@ -234,9 +234,9 @@ def last_pass
        begin
          deleted_entity = deleted_borehole.entity
        
-         if deleted_entity.dir_surveys.exists?
+         if deleted_entity.dir_surveys.exists? or deleted_entity.well_confids.exists?
            puts "Can't delete #{deleted_entity.eno}"
-           unless kept_borehole.entity.dir_surveys.exists?
+           unless kept_borehole.entity.dir_surveys.exists? or kept_borehole.entity.well_confids.exists?
              deleted_borehole.handler.manual_remediation="KEEP"
              kept_borehole.handler.manual_remediation="DELETE"
              puts "Resolved - deletion status switched"
