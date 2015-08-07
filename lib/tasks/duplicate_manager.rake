@@ -136,8 +136,9 @@ def load_spreadsheet
         handler.or_status = "other"
       end
       handler.save
-      @log.info("Borehole #{borehole.eno}, given status '#{handler.or_status}'")
+      @log.info("Borehole #{borehole.eno}, #{borehole.entityid} - given status '#{handler.or_status}'")
     else 
+      @log.info("Borehole #{eno} not found in Oracle database'")
     end
     
   end
@@ -270,6 +271,7 @@ def run_determination
   
 end
 
+#Make part of last pass
 def resolve_names_and_aliases
   duplicates = Duplicate.all
   duplicates.each do |duplicate|
@@ -312,12 +314,12 @@ def find_duplicates(d=0)
     
     geom = borehole.geom
     name = borehole.entityid
-    if geom == "NULL"
-      puts "Searching for duplicates for borehole #{borehole.eno} with name #{name}"
+    if geom == "NULL" && d == 0
+      @log.info("Searching for duplicates for borehole #{borehole.eno}, #{borehole.entityid} using name #{name}")
       statement = name_query(name)
       kind="name"
     else
-      puts "Searching for duplicates around borehole #{borehole.eno} within #{d} metres"   
+      @log.info("Searching for duplicates around borehole #{borehole.eno}, #{borehole.entityid}  within #{d} metres")
       statement=spatial_query(geom,d)
       kind = "#{d}m"
     end
@@ -339,14 +341,15 @@ def group_by_name(duplicates)
   sampleno_names=names.select{|n| n.match(/\A[0-9]{14}\z/) } # Check if array of ENTITYIDs contains 14 character strings completely composed of numbers
   unless sampleno_names.empty?
     if (names-sampleno_names).empty?
-      puts "Grouping by EID_QUALIFIER ..."
+      
       duplicate_attr = "EID_QUALIFIER"
       names=duplicates.map{|d|  d[duplicate_attr]}
+      @log.info("Grouping by EID_QUALIFIER")
     else
       names=names-sampleno_names
     end
   end
-  puts "Grouping names: #{names.join(',')}"
+  @log.info("Grouping names: #{names.join(',')}")
   nh = names_hash(names)
   grouped_names = nh.values.select{|v| v.size > 1}
   named_duplicates =Array.new
@@ -369,8 +372,9 @@ end
 
 def insert_duplicates(duplicates,kind='100m')
   enos = duplicates.map{|d| d["ENO"]}
-  puts "Inserting boreholes into database with enos #{enos.join(',')}"
+  
   duplicate_group = find_or_create_duplicate_by_boreholes(enos,kind)
+  @log.info("Paired boreholes with enos #{enos.join(',')} as duplicate #{duplicate_group.id}")
   duplicates.each do | d |
     borehole = Borehole.find_by(eno:d["ENO"])
     if borehole.nil?
@@ -468,7 +472,7 @@ end
 
 def has_holes(boreholes)
   enos = boreholes.map do |borehole|
-    if ! borehole.entity.well.nil?
+    if !borehole.entity.well.nil?
       borehole.entity.well.well_confids.empty? ?  nil : borehole.eno 
     end
   end
