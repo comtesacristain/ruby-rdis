@@ -234,18 +234,18 @@ def last_pass
        begin
          deleted_entity = deleted_borehole.entity
        
-       if entity.dir_surveys.exists?
-         puts "Can't delete #{entity.eno}"
-         unless kept_borehole.entity.dir_surveys.exists?
-           deleted_borehole.handler.manual_remediation="KEEP"
-           kept_borehole.handler.manual_remediation="DELETE"
-           puts "Resolved - deletion status switched"
-           deleted_borehole.save
-           kept_borehole.save
-         else
-           puts "Can't resolve - both have DEVIANT"
+         if deleted_entity.dir_surveys.exists?
+           puts "Can't delete #{deleted_entity.eno}"
+           unless kept_borehole.entity.dir_surveys.exists?
+             deleted_borehole.handler.manual_remediation="KEEP"
+             kept_borehole.handler.manual_remediation="DELETE"
+             puts "Resolved - deletion status switched"
+             deleted_borehole.save
+             kept_borehole.save
+           else
+             puts "Can't resolve - both have DEVIANT"
+           end
          end
-       end
        rescue ActiveRecord::RecordNotFound => e
          #puts e.message
        end
