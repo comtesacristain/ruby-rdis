@@ -45,10 +45,6 @@ namespace :duplicate_manager do
   
 end
 
-def test_env
-  puts Rails.env
-  puts oracle_connection
-end
 
 def oracle_connection
   return [ db[oracle_instance]["username"], db[oracle_instance]["password"], db[oracle_instance]["database"] ] 
@@ -179,7 +175,7 @@ def load_manual_backup
 end
 
 def load_or_review
-  columns=[:duplicate_id,:eno,:final_transfer,:or_review,:or_reference,:or_comment_final] #
+  columns=[:duplicate_id,:eno,:final_transfer,:or_review,:or_reference,:or_comment_final]
   spreadsheet = 'or_review.xlsx'
   wb =Roo::Spreadsheet.open(spreadsheet)
   review_duplicates = Hash.new
@@ -219,6 +215,31 @@ def load_or_review
       duplicate.save
     end
   end
+end
+
+
+
+def last_pass
+  duplicates = Duplicate.all
+  duplicates.each do |duplicate|
+     deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"}) 
+     kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
+     deleted_borehole.each do |deleted_borehole|
+       entity = deleted_borehole.entity
+       if entity.dir_survey.exists?
+         puts "Can't delete"
+       end
+     end
+  end
+end
+
+def run_determination
+  duplicates =  Duplicate.all
+  duplicates.each do |duplicate|
+    
+  
+  end
+  
 end
 
 def resolve_names_and_aliases
