@@ -41,3 +41,10 @@ def create_migrations
     
   end
 end
+
+def create_controllers
+  models = Entity.reflections.keys.map{|k| "borehole_#{k.pluralize}" }
+  models.each do |model|
+    Rails::Generators.invoke("controller", [model, :index])
+  end
+end

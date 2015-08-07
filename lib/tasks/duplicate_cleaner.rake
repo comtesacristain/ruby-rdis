@@ -9,47 +9,50 @@ namespace :duplicate_cleaner do
 end
 
 def delete_duplicates
-  puts "Deleting duplicates"
-  models = Entity.reflections.keys
-  duplicates = Duplicate.offset(70).limit(5)
+  puts "Deleting all duplicates"
+  
+  duplicates = Duplicate.all
   duplicates.transaction do
     duplicates.each do |duplicate|
-      puts "Resolving duplicate_id #{duplicate.id}"
-      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
-      deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
-
-      
-      deleted_boreholes.each do |deleted_borehole|
-        
-        backup_borehole(deleted_borehole)
-        
-        begin
-          puts "Deleting borehole with eno #{deleted_borehole.eno}"
-          deleted_borehole.handler.final_status ="DELETED"
-          entity = deleted_borehole.entity
-          models.each do |model|
-            resolve_model(entity.send(model),kept_borehole.eno)
-          end
-          entity.delete
-          
-        rescue ActiveRecord::RecordNotFound => e
-          puts e
-        rescue ActiveRecord::StatementInvalid =>e
-          puts "STATEMENT INVALD"
-          deleted_borehole.handler.final_status ="REMAINS"
-        ensure
-         deleted_borehole.handler.save
-        end
-      end
-      if deleted_boreholes.where(handlers:{final_status:"REMAINS"}).exists?
-        duplicate.resolved="N"
-      else
-        duplicate.resolved="Y"
-      end
-      duplicate.save
+      delete_duplicate(duplicate)
     end
   end
 end
+   
+def delete_duplicate(duplicate) 
+  models = Entity.reflections.keys
+  puts "Resolving duplicate_id #{duplicate.id}"
+  kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
+  deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})    
+  deleted_boreholes.each do |deleted_borehole|
+    backup_borehole(deleted_borehole)
+    begin
+      puts "Deleting borehole with eno #{deleted_borehole.eno}"
+      deleted_borehole.handler.final_status ="DELETED"
+      entity = deleted_borehole.entity
+      ActiveRecord::Base.transaction do
+        models.each do |model|
+          resolve_model(entity.send(model),kept_borehole.eno)
+        end
+        entity.delete
+      end  
+    rescue ActiveRecord::RecordNotFound => e
+      puts e
+    rescue ActiveRecord::StatementInvalid =>e
+      puts "STATEMENT INVALID"
+      deleted_borehole.handler.final_status ="REMAINS"
+    ensure
+      deleted_borehole.handler.save
+    end
+  end
+  if deleted_boreholes.where(handlers:{final_status:"REMAINS"}).exists?
+    duplicate.resolved="N"
+  else
+    duplicate.resolved="Y"
+  end
+  duplicate.save
+end
+
 
 def resolve_model(delete,eno)
   case 
@@ -75,15 +78,16 @@ def resolve_instance(instance,eno)
     puts "Something happened - keep #{eno}, delete #{instance.eno}"
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-      puts "Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}"
-      instance.delete
-    when /ORA-01031/
-      puts "You have insufficient priveleges to update #{instance.class.table_name}"
+    puts "Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}"
+    instance.delete
+    #when /ORA-01031/
+    #  puts "You have insufficient priveleges to update #{instance.class.table_name}"
     else
-      puts "Some other Oracle exception: #{e.message}"      
+    puts "Some other Oracle exception: #{e.message}"      
+    raise ActiveRecord::Rollback
     end
-  rescue => e
-    puts "Some other exception: #{e.message}"
+    #rescue => e
+    #puts "Some other exception: #{e.message}"
   end
 end
 

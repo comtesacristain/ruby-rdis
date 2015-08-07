@@ -231,9 +231,12 @@ def last_pass
      deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"}) 
      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
      deleted_boreholes.each do |deleted_borehole|
-       entity = deleted_borehole.entity
-       if entity.dir_survey.exists?
-         puts "Can't delete"
+       begin
+         entity = deleted_borehole.entity
+       rescue ActiveRecord::RecordNotFound => e
+         puts e.message
+       if entity.dir_surveys.exists?
+         puts "Can't delete #{entity.eno}"
        end
      end
   end
