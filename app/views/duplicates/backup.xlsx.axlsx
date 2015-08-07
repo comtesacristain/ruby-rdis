@@ -11,7 +11,7 @@ wb.add_worksheet(name: "Duplicates") do |sheet|
       row =[duplicate.id, borehole.id, borehole.eno, borehole.handler.auto_remediation,
         borehole.handler.auto_transfer,borehole.handler.or_status,borehole.handler.or_transfer,
         borehole.handler.or_comment,borehole.handler.manual_remediation,
-        borehole.handler.manual_transfer, duplicate.comments, duplicate.resolved_name]
+        borehole.handler.manual_transfer, duplicate.comments] #, duplicate.resolved_name]
       sheet.add_row row
     end
   end
