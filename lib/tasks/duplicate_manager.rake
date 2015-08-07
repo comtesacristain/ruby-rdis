@@ -247,7 +247,7 @@ def last_pass
                 puts "Can't resolve - both have DEVIANT"
              end
              if kept_borehole.entity.well_confids.exists?
-              puts "Can't resolve - both have WELL_CONFIDS"
+              puts "Can't resolve - both have WELL_CONFIDS - enos #{kept_borehole.eno}, #{deleted_borehole.eno}"
              end
            end
          end
