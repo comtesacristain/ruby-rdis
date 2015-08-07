@@ -38,6 +38,12 @@ namespace :duplicate_manager do
     load_manual_backup
   end
 
+  desc "TODO"
+  task last_pass: :environment do
+    last_pass
+  end
+  
+
   desc "Test environment"
   task test_env: :environment do
     test_env
