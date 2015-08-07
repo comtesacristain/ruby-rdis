@@ -233,10 +233,12 @@ def last_pass
      deleted_boreholes.each do |deleted_borehole|
        begin
          entity = deleted_borehole.entity
-       rescue ActiveRecord::RecordNotFound => e
-         puts e.message
+       
        if entity.dir_surveys.exists?
          puts "Can't delete #{entity.eno}"
+       end
+       rescue ActiveRecord::RecordNotFound => e
+         puts e.message
        end
      end
   end
