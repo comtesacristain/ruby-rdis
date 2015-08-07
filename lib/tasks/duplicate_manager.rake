@@ -262,25 +262,44 @@ def last_pass
   end
 end
 
-def run_determination
+def last_pass
   duplicates =  Duplicate.all
   duplicates.each do |duplicate|
-    
-  
+    resolve_names_and_aliases(duplicate)
+    duplicate.determination = "DELETE" #DEFAULT
+    if duplicate.handlers.where(Handler.arel_table[:manual_remediation].not_eq("NONE")).empty?
+      duplicate.determination ="NONE"
+    elsif duplicate.handlers.where(Handler.arel_table[:manual_remediation].eq("DELETE")).exists?
+      if duplicate.handlers.where(Handler.arel_table[:manual_remediation].not_eq("KEEP")).empty?
+        duplicate.determination ="NO KEEP"
+      elsif duplicate.handlers.where(Handler.arel_table[:manual_remediation].not_eq("KEEP")).exists?
+        deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})    
+        deleted_boreholes.each do |deleted_borehole|
+          begin
+            entity = deleted_borehole.entity
+            if entity.dir_surveys.exists?
+              duplicate.determination ="DEVIANT"
+            elsif entity.well_confids.exists?
+              duplicate.determination ="HOLES"
+            end
+          rescue ActiveRecord::RecordNotFound => e
+            duplicate.determination ="DELETE"
+            duplicate.resolved = "Y"
+          end
+        end
+      end
+    end
+    duplicate.save  
   end
-  
 end
 
 #Make part of last pass
-def resolve_names_and_aliases
-  duplicates = Duplicate.all
-  duplicates.each do |duplicate|
+def resolve_names_and_aliases(duplicate)
     final_comments = duplicate.handlers.pluck(:or_final_comment)
     duplicate.alias_check = final_comments.any?{|c| /use name as alias/ =~ c} ? "Y" : "N"
     name = final_comments.select{|c| /name = / =~ c}
     duplicate.resolved_name = name.empty? ? nil : name.first.gsub(/name = /,"")
     duplicate.save
-  end
 end
 
 def get_columns_hash(column_headings,row)
@@ -394,6 +413,7 @@ end
 
 
 def rank_duplicates
+  @log.info("\nRanking identified duplicates")
   duplicates=Duplicate.all
   duplicates.each do |duplicate|
     boreholes = duplicate.boreholes
