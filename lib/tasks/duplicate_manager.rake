@@ -230,7 +230,7 @@ def last_pass
   duplicates.each do |duplicate|
      deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"}) 
      kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
-     deleted_borehole.each do |deleted_borehole|
+     deleted_boreholes.each do |deleted_borehole|
        entity = deleted_borehole.entity
        if entity.dir_survey.exists?
          puts "Can't delete"
