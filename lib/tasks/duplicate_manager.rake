@@ -244,6 +244,7 @@ def last_pass
            kept_borehole.save
          else
            puts "Can't resolve - both have DEVIANT"
+         end
        end
        rescue ActiveRecord::RecordNotFound => e
          #puts e.message
