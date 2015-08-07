@@ -1,4 +1,5 @@
 namespace :duplicate_manager do
+  @log = ActiveSupport::Logger.new('log/duplicate_manager.log')
   desc "TODO"
   task run_all: :environment do
     run_all
@@ -52,7 +53,7 @@ namespace :duplicate_manager do
 end
 
 
-log = ActiveSupport::Logger.new('log/duplicate_manager.log')
+
 
 def oracle_connection
   return [ db[oracle_instance]["username"], db[oracle_instance]["password"], db[oracle_instance]["database"] ] 
@@ -94,7 +95,7 @@ def load_boreholes(n=nil)
     handler = Handler.new
     borehole.handler = handler
     borehole.save
-    log.info("Loaded borehole: #{row["ENO"]}" 
+    @log.info("Loaded borehole: #{row["ENO"]}" 
   end
 end
 
