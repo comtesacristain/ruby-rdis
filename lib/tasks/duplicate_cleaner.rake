@@ -11,7 +11,7 @@ end
 def delete_duplicates
   puts "Deleting all duplicates"
   
-  duplicates = Duplicate.all
+  duplicates = Duplicate.where(determination:"DELETE").all
   duplicates.transaction do
     duplicates.each do |duplicate|
       delete_duplicate(duplicate)
