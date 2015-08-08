@@ -70,7 +70,7 @@ def run_all
   end
   find_and_rank
   load_manual_backup
-  load_or_backup
+  load_or_review
   last_pass
 end
 
