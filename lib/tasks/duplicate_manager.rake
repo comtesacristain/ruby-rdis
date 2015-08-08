@@ -311,6 +311,7 @@ def find_duplicates(d=0)
       statement=spatial_query(geom,d)
       kind = "#{d}m"
     end
+    puts statement
     cursor = connection.exec(statement)
     duplicates = Array.new
     cursor.fetch_hash{ |r| duplicates.push(r)}
