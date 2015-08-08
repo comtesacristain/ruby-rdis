@@ -313,10 +313,8 @@ def find_duplicates(d=0)
     end
     puts statement
     begin
-    cursor = connection.exec(statement)
-  rescue =>e
-    @log.info("Could not run duplicate detection, Oracle error: #{e.message}")
-  end
+      cursor = connection.exec(statement)
+    
     duplicates = Array.new
     cursor.fetch_hash{ |r| duplicates.push(r)}
     if duplicates.size >1
@@ -324,6 +322,11 @@ def find_duplicates(d=0)
       name_duplicates.each do |nd|
         insert_duplicates(nd,kind)
       end
+    end
+    
+    cursor.close
+    rescue =>e
+      @log.info("Could not run duplicate detection, Oracle error: #{e.message}")
     end
   end
 end
