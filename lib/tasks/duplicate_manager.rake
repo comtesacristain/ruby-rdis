@@ -304,7 +304,7 @@ def find_duplicates(d=0)
       @log.info("Searching for duplicates for borehole #{borehole.eno}, #{borehole.entityid} using name #{name}")
       statement = name_query(name)
       kind="name"
-    else
+    elsif geom != "NULL"
       @log.info("Searching for duplicates around borehole #{borehole.eno}, #{borehole.entityid}  within #{d} metres")
       statement=spatial_query(geom,d)
       kind = "#{d}m"
