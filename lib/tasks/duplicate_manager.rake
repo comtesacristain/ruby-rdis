@@ -312,7 +312,11 @@ def find_duplicates(d=0)
       kind = "#{d}m"
     end
     puts statement
+    begin
     cursor = connection.exec(statement)
+  rescue =>e
+    @log.info("Could not run duplicate detection, Oracle error: #{e.message}")
+  end
     duplicates = Array.new
     cursor.fetch_hash{ |r| duplicates.push(r)}
     if duplicates.size >1
