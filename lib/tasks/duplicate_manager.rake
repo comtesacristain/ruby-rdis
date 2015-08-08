@@ -230,39 +230,6 @@ end
 
 
 def last_pass
-  duplicates = Duplicate.all
-  duplicates.each do |duplicate|
-     deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"}) 
-     kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
-     deleted_boreholes.each do |deleted_borehole|
-       begin
-         deleted_entity = deleted_borehole.entity
-       
-         if deleted_entity.dir_surveys.exists? || deleted_entity.well_confids.exists?
-           puts "Can't delete #{deleted_entity.eno}"
-           unless kept_borehole.entity.dir_surveys.exists? || kept_borehole.entity.well_confids.exists?
-             deleted_borehole.handler.manual_remediation="KEEP"
-             kept_borehole.handler.manual_remediation="DELETE"
-             puts "Resolved - deletion status switched"
-             deleted_borehole.handler.save
-             kept_borehole.handler.save
-           else
-             if kept_borehole.entity.dir_surveys.exists?
-                puts "Can't resolve - both have DEVIANT"
-             end
-             if kept_borehole.entity.well_confids.exists?
-              puts "Can't resolve - both have WELL_CONFIDS - enos #{kept_borehole.eno}, #{deleted_borehole.eno}"
-             end
-           end
-         end
-       rescue ActiveRecord::RecordNotFound => e
-         #puts e.message
-       end
-     end
-  end
-end
-
-def last_pass
   duplicates =  Duplicate.all
   duplicates.each do |duplicate|
     resolve_names_and_aliases(duplicate)
@@ -687,7 +654,7 @@ def well_query_terms
 end
 
 def spatial_query(geom,d=100)
-  return "select #{borehole_query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance= #{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
+  return "select #{borehole_query_string} from a.entities e where sdo_within_distance(e.geom,#{geom},'distance=#{d},units=m')='TRUE' and entity_type in ('DRILLHOLE','WELL')"
 end
 
 def name_query(name)
