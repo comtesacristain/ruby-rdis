@@ -66,18 +66,18 @@ end
 
 def run_all
   load_boreholes
-  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/loaded_boreholes_#{Rails.env}.db")
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/loaded_boreholes_#{Rails.env}.sqlite3")
   if Handler.where.not(:or_status=>'undetermined').empty?
     load_spreadsheet
-    FileUtils.copy_file("db/#{Rails.env}.db","db/backup/loaded_spreadsheet_#{Rails.env}.db")
+    FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/loaded_spreadsheet_#{Rails.env}.sqlite3")
   end
   find_and_rank
   load_manual_backup
-  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/manual_backup_#{Rails.env}.db")
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/manual_backup_#{Rails.env}.sqlite3")
   load_or_review
-  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/ollie_review_#{Rails.env}.db")
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/ollie_review_#{Rails.env}.sqlite3")
   last_pass
-  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/final_duplicate_load_#{Rails.env}.db")
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/final_duplicate_load_#{Rails.env}.sqlite3")
 end
 
 def find_and_rank
