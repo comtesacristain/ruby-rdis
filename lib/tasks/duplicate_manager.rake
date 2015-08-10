@@ -1,3 +1,4 @@
+require 'fileutils'
 namespace :duplicate_manager do
   @log = ActiveSupport::Logger.new('log/duplicate_manager.log')
   desc "TODO"
@@ -65,22 +66,29 @@ end
 
 def run_all
   load_boreholes
+  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/loaded_boreholes_#{Rails.env}.db")
   if Handler.where.not(:or_status=>'undetermined').empty?
     load_spreadsheet
+    FileUtils.copy_file("db/#{Rails.env}.db","db/backup/loaded_spreadsheet_#{Rails.env}.db")
   end
   find_and_rank
   load_manual_backup
+  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/manual_backup_#{Rails.env}.db")
   load_or_review
+  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/ollie_review_#{Rails.env}.db")
   last_pass
+  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/final_duplicate_load_#{Rails.env}.db")
 end
 
 def find_and_rank
   or_duplicates
+  
   rank_duplicates
   distance_queries.each do |d|
      find_duplicates(d)
      rank_duplicates
   end
+  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/ranked_duplicates_#{Rails.env}.db")
 end
 
 def load_boreholes(n=nil)
