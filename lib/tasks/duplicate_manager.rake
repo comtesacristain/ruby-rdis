@@ -73,7 +73,7 @@ def run_all
   end
   find_and_rank
   load_manual_backup
-  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/manual_backup_#{Rails.env}.sqlite3")
+  
   load_or_review
   FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/ollie_review_#{Rails.env}.sqlite3")
   last_pass
@@ -88,7 +88,7 @@ def find_and_rank
      find_duplicates(d)
      rank_duplicates
   end
-  FileUtils.copy_file("db/#{Rails.env}.db","db/backup/ranked_duplicates_#{Rails.env}.db")
+  FileUtils.copy_file("db/#{Rails.env}.sqlite3","db/backup/ranked_duplicates_#{Rails.env}.sqlite3")
 end
 
 def load_boreholes(n=nil)
@@ -192,6 +192,7 @@ def load_manual_backup
       duplicate.save
     end
   end 
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/manual_backup_#{Rails.env}.sqlite3")
 end
 
 def load_or_review
