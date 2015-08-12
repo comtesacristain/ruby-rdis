@@ -57,7 +57,7 @@ def delete_duplicate(duplicate)
   end
   begin
     kept_entity = kept_borehole.entity
-    kept_entity.entityid = duplicate.resolved_name.nil? ? : duplicate.resolved_name
+    kept_entity.entityid = duplicate.resolved_name.nil? ?  kept_entity.entityid : duplicate.resolved_name
     kept_entity.save
   rescue => e
     @log.info("No kept borehole with eno #{kept_borehole.eno}. ERROR: #{e.message}")
