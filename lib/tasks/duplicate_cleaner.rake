@@ -136,8 +136,8 @@ def backup_borehole(borehole)
         @log.info("Unknown error for #{model}")
       end
     end
-  rescue ActiveRecord::RecordNotFound => ex
-    puts ex
+  rescue ActiveRecord::RecordNotFound => e
+    @log.info("Cannot back up borehole with eno #{borehole.eno}. ERROR: #{e.message}")
   end
 end
 
