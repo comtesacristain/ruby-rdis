@@ -39,9 +39,9 @@ def delete_duplicate(duplicate)
       end
       entity.delete  
     rescue ActiveRecord::RecordNotFound => e
-      puts e
+      @log.info("#{e.message}")
     rescue ActiveRecord::StatementInvalid =>e
-      @log.info("#{e.message}"
+      @log.info("#{e.message}")
       deleted_borehole.handler.final_status ="REMAINS"
     ensure
       deleted_borehole.handler.save
