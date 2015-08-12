@@ -119,9 +119,9 @@ def backup_borehole(borehole)
           backup_instance(mi)
         end
       when model_instance.is_a?(NilClass)
-        @backup_log.info("Nil object found")
+        @backup_log.info("Nil object found for #{model}")
       else 
-        @backup_log.info("Unknown error")
+        @backup_log.info("Unknown error for #{model}")
       end
     end
   rescue ActiveRecord::RecordNotFound => ex
@@ -135,7 +135,7 @@ def backup_instance(instance)
   backup_class_name = "Borehole#{class_name}"
   backup_class = backup_class_name.constantize
   attributes=remove_dodgy_attributes(instance.attributes)
-  @backup_log.info("Backing up instance of #{class_name} with eno #{instance.eno}")
+  @backup_log.info("Backing up instance of #{class_name} with eno #{instance.eno}, ")
   object = backup_class.find_or_initialize_by(attributes)
   object.save
 end
