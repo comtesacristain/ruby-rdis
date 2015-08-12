@@ -32,17 +32,22 @@ def delete_duplicate(duplicate)
     backup_borehole(deleted_borehole)
     begin
       @log.info("Deleting borehole with eno #{deleted_borehole.eno}")
-      deleted_borehole.handler.final_status ="DELETED"
+      
       entity = deleted_borehole.entity
       models.each do |model|
         resolve_model(entity.send(model),kept_borehole.eno)
       end
-      entity.delete  
+      begin
+        entity.delete  
+        deleted_borehole.handler.final_status ="DELETED"
+      rescue ActiveRecord::StatementInvalid =>e
+        @log.info("Can't delete borehole with eno #{deleted_borehole.eno}. ERROR: #{e.message}")
+        deleted_borehole.handler.final_status ="REMAINS"
+      end
     rescue ActiveRecord::RecordNotFound => e
-      @log.info("#{e.message}")
-    rescue ActiveRecord::StatementInvalid =>e
-      @log.info("#{e.message}")
-      deleted_borehole.handler.final_status ="REMAINS"
+      @log.info("Can't find borehole with eno #{deleted_borehole.eno}. ERROR: #{e.message}")
+      deleted_borehole.handler.final_status ="DELETED"
+    
     ensure
       deleted_borehole.handler.save
     end
@@ -91,7 +96,7 @@ def resolve_instance(instance,eno)
     #when /ORA-01031/
     #  puts "You have insufficient priveleges to update #{instance.class.table_name}"
     else
-    @log.info("Some other Oracle exception: #{e.message}")
+    @log.info("Some other Oracle exception. ERROR: #{e.message}")
     raise ActiveRecord::Rollback
     end
     #rescue => e
