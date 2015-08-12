@@ -28,7 +28,7 @@ def delete_duplicate(duplicate)
   @log.info("Resolving duplicate #{duplicate.id}")
   kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
   if kept_borehole.nil?
-    @log.info("No kept borehole for duplicate #{duplicate.id}")
+    @log.info("No kept borehole for duplicate #{duplicate.id}. Not proceeding")
     return  
   end
   deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})    
@@ -66,7 +66,6 @@ def delete_duplicate(duplicate)
     duplicate.resolved="Y"
   end
   duplicate.save
-  
 end
 
 
