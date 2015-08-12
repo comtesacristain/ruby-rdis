@@ -165,7 +165,7 @@ def load_manual_backup
   columns_hash = get_columns_hash(columns,sheet.row(1))
   duplicate_id=columns_hash.extract!(:duplicate_id)[:duplicate_id]
   ((sheet.first_row + 1)..sheet.last_row).each do |row|
-    puts row
+    puts sheet.row(row)
     review_duplicates[sheet.row(row)[duplicate_id].to_i] ||= []
     review=Hash.new
     columns_hash.each do |k,v| 
@@ -174,6 +174,7 @@ def load_manual_backup
         field = field.to_i
       end
       review[k] = field
+      puts review
     end
     review_duplicates[sheet.row(row)[duplicate_id].to_i].push(review)
   end
