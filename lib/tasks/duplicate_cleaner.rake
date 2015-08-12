@@ -1,9 +1,12 @@
 namespace :duplicate_cleaner do
+  
   task delete_duplicates: :environment do
+    @delete_log = ActiveSupport::Logger.new('log/deleter.log')
     delete_duplicates
   end
   
   task preemptive_backup: :environment do
+    @backup_log = ActiveSupport::Logger.new('log/backup.log')
     preemptive_backup
   end
 end
@@ -104,7 +107,7 @@ def backup_borehole(borehole)
   models = Entity.reflections.keys
   begin
     entity = borehole.entity 
-    puts "Backing up entity: #{borehole.eno}"
+    @backup_log.info("Backing up entity: #{borehole.eno}")
     # entity = Borehole.first.entity
     models.each do |model|
       model_instance = entity.send(model)
@@ -116,9 +119,9 @@ def backup_borehole(borehole)
           backup_instance(mi)
         end
       when model_instance.is_a?(NilClass)
-        "Nil object found"
+        @backup_log.info("Nil object found")
       else 
-        "Blabla"
+        @backup_log.info("Unknown error")
       end
     end
   rescue ActiveRecord::RecordNotFound => ex
@@ -132,7 +135,7 @@ def backup_instance(instance)
   backup_class_name = "Borehole#{class_name}"
   backup_class = backup_class_name.constantize
   attributes=remove_dodgy_attributes(instance.attributes)
-  puts "Backing up instance of #{class_name} with eno #{instance.eno}"
+  @backup_log.info("Backing up instance of #{class_name} with eno #{instance.eno}")
   object = backup_class.find_or_initialize_by(attributes)
   object.save
 end
