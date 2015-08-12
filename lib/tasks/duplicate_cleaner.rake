@@ -90,7 +90,7 @@ def resolve_instance(instance,eno)
 end
 
 def preemptive_backup
-  duplicates=Duplicate.all
+  duplicates = Duplicate.where(determination:"DELETE").all
   duplicates.each do |duplicate|
     deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})
     deleted_boreholes.each do |deleted_borehole|
