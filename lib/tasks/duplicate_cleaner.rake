@@ -25,8 +25,12 @@ end
    
 def delete_duplicate(duplicate) 
   models = Entity.reflections.keys
-  @log.info("Resolving duplicate_id #{duplicate.id}")
+  @log.info("Resolving duplicate #{duplicate.id}")
   kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
+  if kept_borehole.nil?
+    @log.info("No kept borehole for duplicate #{duplicate.id}")
+    return  
+  end
   deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})    
   deleted_boreholes.each do |deleted_borehole|
     backup_borehole(deleted_borehole)
@@ -47,14 +51,13 @@ def delete_duplicate(duplicate)
     rescue ActiveRecord::RecordNotFound => e
       @log.info("Can't find borehole with eno #{deleted_borehole.eno}. ERROR: #{e.message}")
       deleted_borehole.handler.final_status ="DELETED"
-    
     ensure
       deleted_borehole.handler.save
     end
   end
   begin
     kept_entity = kept_borehole.entity
-  rescue =>e
+  rescue => e
     @log.info("No kept borehole with eno #{kept_borehole.eno}. ERROR: #{e.message}")
   end
   if deleted_boreholes.where(handlers:{final_status:"REMAINS"}).exists?
