@@ -83,7 +83,7 @@ def run_all
   load_or_review
   
   last_pass
-  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/final_duplicate_load_#{Rails.env}.sqlite3")
+  
 end
 
 def find_and_rank
@@ -281,6 +281,7 @@ def last_pass
     end
     duplicate.save  
   end
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/final_duplicate_load_#{Rails.env}.sqlite3")
 end
 
 #Make part of last pass
