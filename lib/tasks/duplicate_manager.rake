@@ -46,8 +46,8 @@ namespace :duplicate_manager do
   end
 
   desc "TODO"
-  task load_or_backup: :environment do
-    load_or_backup
+  task load_or_review: :environment do
+    load_or_review
   end
 
 
@@ -81,7 +81,7 @@ def run_all
   load_manual_backup
   
   load_or_review
-  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/ollie_review_#{Rails.env}.sqlite3")
+  
   last_pass
   FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/final_duplicate_load_#{Rails.env}.sqlite3")
 end
@@ -227,7 +227,6 @@ def load_or_review
     end
     review_duplicates[sheet.row(row)[duplicate_id].to_i].push(review)
   end
-  
   review_duplicates.each do |k,a|
     enos = a.map{|h| h[:eno]}
     if duplicate = Duplicate.includes(:boreholes).find_by(boreholes:{eno:enos})
@@ -248,6 +247,7 @@ def load_or_review
       duplicate.save
     end
   end
+  FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/ollie_review_#{Rails.env}.sqlite3")
 end
 
 
