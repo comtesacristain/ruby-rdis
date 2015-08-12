@@ -1,12 +1,12 @@
 namespace :duplicate_cleaner do
-  
+  @delete_log = ActiveSupport::Logger.new('log/deleter.log')
+  @backup_log = ActiveSupport::Logger.new('log/backup.log')
   task delete_duplicates: :environment do
-    @delete_log = ActiveSupport::Logger.new('log/deleter.log')
+    
     delete_duplicates
   end
   
   task preemptive_backup: :environment do
-    @backup_log = ActiveSupport::Logger.new('log/backup.log')
     preemptive_backup
   end
 end
@@ -24,13 +24,13 @@ end
    
 def delete_duplicate(duplicate) 
   models = Entity.reflections.keys
-  puts "Resolving duplicate_id #{duplicate.id}"
+  @delete_log.info("Resolving duplicate_id #{duplicate.id}")
   kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
   deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})    
   deleted_boreholes.each do |deleted_borehole|
     backup_borehole(deleted_borehole)
     begin
-      puts "Deleting borehole with eno #{deleted_borehole.eno}"
+      @delete_log.info("Deleting borehole with eno #{deleted_borehole.eno}")
       deleted_borehole.handler.final_status ="DELETED"
       entity = deleted_borehole.entity
       models.each do |model|
@@ -40,7 +40,7 @@ def delete_duplicate(duplicate)
     rescue ActiveRecord::RecordNotFound => e
       puts e
     rescue ActiveRecord::StatementInvalid =>e
-      puts "STATEMENT INVALID"
+      @delete_log.info("#{e.message}"
       deleted_borehole.handler.final_status ="REMAINS"
     ensure
       deleted_borehole.handler.save
@@ -68,23 +68,23 @@ def resolve_model(delete,eno)
 end
 
 def resolve_instance(instance,eno)
-  puts "Resolving instance of #{instance.class} with eno: #{instance.eno}"
+  @delete_log.info("Resolving instance of #{instance.class} with eno: #{instance.eno}")
   begin
     instance.eno=eno
     changes = instance.changes
     instance.save
-    puts "Instance of #{instance.class} with eno: #{changes["eno"][0]} has been transferred to #{changes["eno"][1]}"
+    @delete_log.info("Instance of #{instance.class} with eno: #{changes["eno"][0]} has been transferred to #{changes["eno"][1]}")
   rescue ActiveRecord::StatementInvalid => e
     instance.restore_attributes
-    puts "Something happened - keep #{eno}, delete #{instance.eno}"
+    @delete_log.info("Something happened - keep #{eno}, delete #{instance.eno}")
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-    puts "Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}"
+    @delete_log.info("Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}")
     instance.delete
     #when /ORA-01031/
     #  puts "You have insufficient priveleges to update #{instance.class.table_name}"
     else
-    puts "Some other Oracle exception: #{e.message}"      
+    @delete_log.info("Some other Oracle exception: #{e.message}")
     raise ActiveRecord::Rollback
     end
     #rescue => e
@@ -135,7 +135,7 @@ def backup_instance(instance)
   backup_class_name = "Borehole#{class_name}"
   backup_class = backup_class_name.constantize
   attributes=remove_dodgy_attributes(instance.attributes)
-  @backup_log.info("Backing up instance of #{class_name} with eno #{instance.eno}, ")
+  @backup_log.info("Backing up instance of #{class_name} with eno #{instance.eno}")
   object = backup_class.find_or_initialize_by(attributes)
   object.save
 end
