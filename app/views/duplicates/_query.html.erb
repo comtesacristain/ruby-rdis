@@ -17,9 +17,15 @@
 			<td><%= select_tag :or_status, options_for_select([nil,Handler.pluck(:or_status).uniq].flatten,params[:or_status]) %></td>		
 		</tr>
 		<tr>
+			<td><%= label_tag :determination, "Determination" %></td>
+			<td><%= select_tag :determination, options_for_select([nil,Duplicate.pluck(:determination).uniq].flatten, params[:resolved]) %></td>		
+		</tr>
+		<tr>
 			<td><%= label_tag :resolved, "Resolved?" %></td>
 			<td><%= select_tag :resolved, options_for_select(yes_no_all, params[:resolved]) %></td>		
 		</tr>
+		
+		
 	</table>
 	<%=submit_tag "Search", :name=>nil %>
 <% end %>
