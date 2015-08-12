@@ -46,6 +46,12 @@ namespace :duplicate_manager do
   end
 
   desc "TODO"
+  task load_or_backup: :environment do
+    load_or_backup
+  end
+
+
+  desc "TODO"
   task last_pass: :environment do
     last_pass
   end
