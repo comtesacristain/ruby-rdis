@@ -163,14 +163,18 @@ def load_manual_backup
   columns=[:duplicate_id,:eno,:final_remediation,:final_transfer,:final_comments] #increase for OR edits
   
   columns_hash = get_columns_hash(columns,sheet.row(1))
+  duplicate_id=columns_hash.extract!(:duplicate_id)[:duplicate_id]
   ((sheet.first_row + 1)..sheet.last_row).each do |row|
-    review_duplicates[sheet.row(row)[columns_hash[:duplicate_id]].to_i] ||= []
+    review_duplicates[sheet.row(row)[duplicate_id].to_i] ||= []
     review=Hash.new
-    review[:eno] = sheet.row(row)[columns_hash[:eno]].to_i
-    review[:final_remediation] = sheet.row(row)[columns_hash[:final_remediation]]
-    review[:final_transfer] = sheet.row(row)[columns_hash[:final_transfer]].to_i
-    review[:final_comments] = sheet.row(row)[columns_hash[:final_comments]]
-    review_duplicates[sheet.row(row)[columns_hash[:duplicate_id]].to_i].push(review)
+    columns_hash.each do |k,v| 
+      field = sheet.row(row)[v]
+      if field.class == Float
+        field = field.to_i
+      end
+      review[k] = field
+    end
+    review_duplicates[sheet.row(row)[duplicate_id].to_i].push(review)
   end
   review_duplicates.each do |k,a|
     enos = a.map{|h| h[:eno]}
