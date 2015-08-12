@@ -18,7 +18,7 @@
 		</tr>
 		<tr>
 			<td><%= label_tag :determination, "Determination" %></td>
-			<td><%= select_tag :determination, options_for_select([nil,Duplicate.pluck(:determination).uniq].flatten, params[:resolved]) %></td>		
+			<td><%= select_tag :determination, options_for_select([nil,Duplicate.pluck(:determination).uniq].flatten, params[:determination]) %></td>		
 		</tr>
 		<tr>
 			<td><%= label_tag :resolved, "Resolved?" %></td>
