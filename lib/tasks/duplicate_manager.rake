@@ -59,9 +59,6 @@ namespace :duplicate_manager do
   
 end
 
-
-
-
 def oracle_connection
   return [ db[oracle_instance]["username"], db[oracle_instance]["password"], db[oracle_instance]["database"] ] 
 end
@@ -79,11 +76,8 @@ def run_all
   end
   find_and_rank
   load_manual_backup
-  
   load_or_review
-  
   last_pass
-  
 end
 
 def find_and_rank
@@ -249,8 +243,6 @@ def load_or_review
   end
   FileUtils.copy_file("#{Rails.root}/db/#{Rails.env}.sqlite3","#{Rails.root}/db/backup/ollie_review_#{Rails.env}.sqlite3")
 end
-
-
 
 def last_pass
   duplicates =  Duplicate.all
