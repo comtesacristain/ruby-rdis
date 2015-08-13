@@ -12,6 +12,7 @@ class Entity < ActiveRecord::Base
   has_many :bloblinks, :foreign_key => :source_no
   
   has_many :well_confids, :foreign_key => :eno
+  has_many :well_temps, :foreign_key => :eno
   
   has_many :remarkws, :foreign_key => :eno
   has_many :resultws, :foreign_key => :eno
