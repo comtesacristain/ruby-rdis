@@ -8,6 +8,8 @@ class Entity < ActiveRecord::Base
 	has_one :well, :foreign_key =>:eno
 	has_many :samples, :foreign_key => :eno
   
+  has_many :reflinks, :foreign_key => :eno
+  
   has_many :well_confids, :foreign_key => :eno
   
   has_many :remarkws, :foreign_key => :eno
@@ -15,6 +17,7 @@ class Entity < ActiveRecord::Base
   has_many :dir_surveys, :foreign_key => :eno
   has_many :dir_survey_stations, :foreign_key => :eno
   has_many :stratigraphies, :foreign_key => :eno
+  has_many :core_data, :foreign_key => :eno
   has_many :resfacs_remarks, :foreign_key => :eno
   has_one :sidetrack, :foreign_key => :eno
   has_one :porperm_one, :foreign_key => :eno
