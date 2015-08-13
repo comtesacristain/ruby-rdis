@@ -9,6 +9,7 @@ class Entity < ActiveRecord::Base
 	has_many :samples, :foreign_key => :eno
   
   has_many :reflinks, :foreign_key => :eno
+  has_many :bloblinks, :foreign_key => :eno
   
   has_many :well_confids, :foreign_key => :eno
   
