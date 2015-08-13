@@ -6,6 +6,11 @@ namespace :duplicate_cleaner do
     delete_duplicates
   end
   
+   task delete_unresolved_duplicates: :environment do
+    @log = ActiveSupport::Logger.new('log/delete_unresolved.log')
+    delete_unresolved_duplicates
+  end
+  
   task preemptive_backup: :environment do
     @log = ActiveSupport::Logger.new('log/backup.log')
     preemptive_backup
@@ -16,6 +21,17 @@ def delete_duplicates
   @log.info("Deleting all duplicates")
   
   duplicates = Duplicate.where(determination:"DELETE").all
+  duplicates.transaction do
+    duplicates.each do |duplicate|
+      delete_duplicate(duplicate)
+    end
+  end
+end
+
+def delete_unresolved_duplicates
+  @log.info("Deleting all unresolved duplicates")
+  
+  duplicates = Duplicate.where(determination:"DELETE",resolved:"N").all
   duplicates.transaction do
     duplicates.each do |duplicate|
       delete_duplicate(duplicate)
@@ -84,27 +100,27 @@ def resolve_model(delete,eno)
 end
 
 def resolve_instance(instance,eno)
+  resolved_eno=instance.eno
   @log.info("Resolving instance of #{instance.class} with eno: #{instance.eno}")
   begin
     instance.eno=eno
     changes = instance.changes
     instance.save
-    @log.info("Instance of #{instance.class} with eno: #{changes["eno"][0]} has been transferred to #{changes["eno"][1]}")
+    @log.info("Instance of #{instance.class} with eno: #{resolved_eno} has been transferred to #{eno}")
   rescue ActiveRecord::StatementInvalid => e
-    instance.restore_attributes
-    @log.info("Something happened - keep #{eno}, delete #{instance.eno}")
+    instance.eno=resolved_eno
+    @log.info("Something happened - keep #{eno}, delete #{resolved_eno}. ")
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-    @log.info("Can't move data, must delete #{instance.class.table_name} with eno: #{instance.eno}")
-    instance.delete
-    #when /ORA-01031/
-    #  puts "You have insufficient priveleges to update #{instance.class.table_name}"
+	  @log.info("Can't move data, must delete #{instance.class.table_name} with eno: #{resolved_eno}. ERROR: #{e.message}")
+      instance.delete
+    when /ORA-01031/
+      @log.info("You have insufficient priveleges to update #{instance.class.table_name}.")
     else
-    @log.info("Some other Oracle exception. ERROR: #{e.message}")
-    raise ActiveRecord::Rollback
+		@log.info("Some other Oracle exception. ERROR: #{e.message}")
     end
-    #rescue => e
-    #puts "Some other exception: #{e.message}"
+  rescue => e
+    @log.info("Cannot resolve #{instance.class} with eno: #{resolved_eno}, unknown error. ERROR: #{e.message}")
   end
 end
 
