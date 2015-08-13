@@ -18,7 +18,7 @@ namespace :duplicate_cleaner do
 end
 
 def delete_duplicates
-  @log.info("Deleting all duplicates")
+  @log.info("\n[INFO] Deleting all duplicates")
   
   duplicates = Duplicate.where(determination:"DELETE").all
   duplicates.transaction do
@@ -29,7 +29,7 @@ def delete_duplicates
 end
 
 def delete_unresolved_duplicates
-  @log.info("Deleting all unresolved duplicates")
+  @log.info("\n[INFO] Deleting all unresolved duplicates")
   
   duplicates = Duplicate.where(determination:"DELETE",resolved:"N").all
   duplicates.transaction do
@@ -41,17 +41,17 @@ end
    
 def delete_duplicate(duplicate) 
   models = Entity.reflections.keys
-  @log.info("Resolving duplicate #{duplicate.id}")
+  @log.info("[INFO] esolving duplicate #{duplicate.id}")
   kept_borehole = duplicate.boreholes.includes(:handler).find_by(handlers:{manual_remediation:"KEEP"})
   if kept_borehole.nil?
-    @log.info("No kept borehole for duplicate #{duplicate.id}. Not proceeding")
+    @log.info("[WARN] No kept borehole for duplicate #{duplicate.id}. Not proceeding")
     return  
   end
   deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{manual_remediation:"DELETE"})    
   deleted_boreholes.each do |deleted_borehole|
     backup_borehole(deleted_borehole)
     begin
-      @log.info("Deleting borehole with eno #{deleted_borehole.eno}")
+      @log.info("[INFO] Deleting borehole with eno #{deleted_borehole.eno}")
       
       entity = deleted_borehole.entity
       models.each do |model|
@@ -61,11 +61,11 @@ def delete_duplicate(duplicate)
         entity.delete  
         deleted_borehole.handler.final_status ="DELETED"
       rescue ActiveRecord::StatementInvalid =>e
-        @log.info("Can't delete borehole with eno #{deleted_borehole.eno}. ERROR: #{e.message}")
+        @log.info("[ERROR] Can't delete borehole with eno #{deleted_borehole.eno}. MESSAGE: #{e.message}")
         deleted_borehole.handler.final_status ="REMAINS"
       end
     rescue ActiveRecord::RecordNotFound => e
-      @log.info("Can't find borehole with eno #{deleted_borehole.eno}. ERROR: #{e.message}")
+      @log.info("[ERROR] Can't find borehole with eno #{deleted_borehole.eno}. MESSAGE: #{e.message}")
       deleted_borehole.handler.final_status ="DELETED"
     ensure
       deleted_borehole.handler.save
@@ -76,7 +76,7 @@ def delete_duplicate(duplicate)
     kept_entity.entityid = duplicate.resolved_name.nil? ?  kept_entity.entityid : duplicate.resolved_name
     kept_entity.save
   rescue => e
-    @log.info("No kept borehole with eno #{kept_borehole.eno}. ERROR: #{e.message}")
+    @log.info("[ERROR] No kept borehole with eno #{kept_borehole.eno}. MESSAGE: #{e.message}")
   end
   if deleted_boreholes.where(handlers:{final_status:"REMAINS"}).exists?
     duplicate.resolved="N"
@@ -101,26 +101,26 @@ end
 
 def resolve_instance(instance,eno)
   resolved_eno=instance.eno
-  @log.info("Resolving instance of #{instance.class} with eno: #{instance.eno}")
+  @log.info("[INFO] Resolving instance of #{instance.class} with primary key #{instance.id} belonging to borehole with eno: #{instance.eno}")
   begin
     instance.eno=eno
     changes = instance.changes
     instance.save
-    @log.info("Instance of #{instance.class} with eno: #{resolved_eno} has been transferred to #{eno}")
+    @log.info("[INFO] Instance of #{instance.class} with primary key #{instance.id} belonging to borehole with eno: #{resolved_eno} has been transferred to #{eno}")
   rescue ActiveRecord::StatementInvalid => e
     instance.eno=resolved_eno
-    @log.info("Something happened - keep #{eno}, delete #{resolved_eno}. ")
+    @log.info("[ERROR] Error occurred in trying to update #{instance.class} with primary key #{instance.id} belonging to borehole with eno: #{resolved_eno}. Could not transfer to #{eno}")
     case e.message
     when /ORA-00001: unique constraint/ # Can't copy data, must delete
-	  @log.info("Can't move data, must delete #{instance.class.table_name} with eno: #{resolved_eno}. ERROR: #{e.message}")
+	  @log.info("[ERROR] Can't move data, must delete #{instance.class.table_name} with primary key #{instance.id} belonging to borehole with eno: #{resolved_eno}. MESSAGE: #{e.message}")
       instance.delete
     when /ORA-01031/
-      @log.info("You have insufficient priveleges to update #{instance.class.table_name}.")
+      @log.info("[ERROR] You have insufficient priveleges to update #{instance.class.table_name}. MESSAGE: #{e.message}")
     else
-		@log.info("Some other Oracle exception. ERROR: #{e.message}")
+		@log.info("[ERROR] Some other Oracle exception. MESSAGE: #{e.message}")
     end
   rescue => e
-    @log.info("Cannot resolve #{instance.class} with eno: #{resolved_eno}, unknown error. ERROR: #{e.message}")
+    @log.info("[ERROR] Cannot resolve #{instance.class} with eno: #{resolved_eno}, unknown error. MESSAGE: #{e.message}")
   end
 end
 
@@ -139,7 +139,7 @@ def backup_borehole(borehole)
   models = Entity.reflections.keys
   begin
     entity = borehole.entity 
-    @log.info("Backing up entity: #{borehole.eno}")
+    @log.info("[INFO] Backing up borehole entity: #{borehole.eno}")
     # entity = Borehole.first.entity
     models.each do |model|
       model_instance = entity.send(model)
@@ -151,13 +151,13 @@ def backup_borehole(borehole)
           backup_instance(mi)
         end
       when model_instance.is_a?(NilClass)
-        @log.info("Nil object found for #{model}")
+        @log.info("[WARN] No record found for #{model.classify}")
       else 
-        @log.info("Unknown error for #{model}")
+        @log.info("[ERROR] Unknown error for #{model.classify}")
       end
     end
   rescue ActiveRecord::RecordNotFound => e
-    @log.info("Cannot back up borehole with eno #{borehole.eno}. ERROR: #{e.message}")
+    @log.info("Cannot back up borehole with eno #{borehole.eno}. MESSAGE: #{e.message}")
   end
 end
 
@@ -167,7 +167,7 @@ def backup_instance(instance)
   backup_class_name = "Borehole#{class_name}"
   backup_class = backup_class_name.constantize
   attributes=remove_dodgy_attributes(instance.attributes)
-  @log.info("Backing up instance of #{class_name} with eno #{instance.eno}")
+  @log.info("[INFO] Backing up instance of #{class_name} with primary key #{instance.id} belonging to borehole with eno #{instance.eno}")
   object = backup_class.find_or_initialize_by(attributes)
   object.save
 end
