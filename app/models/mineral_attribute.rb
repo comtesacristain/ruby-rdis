@@ -2,7 +2,7 @@ class MineralAttribute < ActiveRecord::Base
   establish_connection "oracle_#{Rails.env}"
 
   self.table_name = "mgd.entity_attribs"
-  self.primary_key = :eno
+  self.primary_key = :attribno
   set_date_columns :entrydate, :qadate, :confid_until, :lastupdate
 
   class << self
