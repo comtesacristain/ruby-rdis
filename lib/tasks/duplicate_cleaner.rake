@@ -21,10 +21,8 @@ def delete_duplicates
   @log.info("\n[INFO] Deleting all duplicates")
   
   duplicates = Duplicate.where(determination:"DELETE").all
-  duplicates.transaction do
-    duplicates.each do |duplicate|
-      delete_duplicate(duplicate)
-    end
+  duplicates.each do |duplicate|
+    delete_duplicate(duplicate)
   end
 end
 
@@ -32,10 +30,9 @@ def delete_unresolved_duplicates
   @log.info("\n[INFO] Deleting all unresolved duplicates")
   
   duplicates = Duplicate.where(determination:"DELETE",resolved:"N").all
-  duplicates.transaction do
-    duplicates.each do |duplicate|
-      delete_duplicate(duplicate)
-    end
+
+  duplicates.each do |duplicate|
+    delete_duplicate(duplicate)
   end
 end
    
@@ -179,4 +176,20 @@ def remove_dodgy_attributes(attributes)
       attributes["t_type"] = attributes.delete "type"
   end
   return attributes
+end
+
+def restore_duplicates
+  duplicates=Duplicate.where(restore:"Y")
+  duplicates.each do |duplicate|
+    restore_duplicate(duplicate)
+  end
+end
+
+def restore_duplicate(duplicate)
+  deleted_boreholes = duplicate.boreholes.includes(:handler).where(handlers:{final_status:"DELETED"})
+  deleted_boreholes.each do |deleted_borehole|
+    entity=Entity.new 
+    entity.geom
+    deleted_borehole
+  end 
 end
