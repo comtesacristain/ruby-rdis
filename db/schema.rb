@@ -11,7 +11,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150805085907) do
+ActiveRecord::Schema.define(version: 20150818052013) do
+
+  create_table "borehole_bloblinks", force: :cascade do |t|
+    t.integer  "bloblinkno"
+    t.string   "source_owner"
+    t.string   "source_table"
+    t.string   "source_column"
+    t.integer  "source_no"
+    t.integer  "blobno"
+    t.string   "remark"
+    t.string   "access_code"
+    t.integer  "ano"
+    t.datetime "entrydate"
+    t.string   "enteredby"
+    t.datetime "lastupdate"
+    t.string   "updatedby"
+    t.datetime "qadate"
+    t.string   "qaby"
+    t.string   "qa_status_code"
+    t.string   "activity_code"
+  end
+
+  create_table "borehole_core_data", force: :cascade do |t|
+    t.string  "uno"
+    t.string  "name"
+    t.string  "bmr_file_no"
+    t.string  "psla_no"
+    t.string  "location"
+    t.string  "legsln"
+    t.decimal "num_boxes"
+    t.decimal "total_boxes"
+    t.decimal "num_boxes_prev"
+    t.string  "print_label"
+    t.string  "t_type"
+    t.integer "eno"
+    t.string  "access_code"
+    t.integer "ano"
+  end
 
   create_table "borehole_dir_survey_stations", force: :cascade do |t|
     t.string   "usi"
@@ -197,6 +234,15 @@ ActiveRecord::Schema.define(version: 20150805085907) do
     t.integer "eno"
     t.string  "access_code"
     t.integer "ano"
+  end
+
+  create_table "borehole_reflinks", force: :cascade do |t|
+    t.integer  "eno"
+    t.integer  "refid"
+    t.string   "enteredby"
+    t.datetime "entrydate"
+    t.datetime "lastupdate"
+    t.string   "updatedby"
   end
 
   create_table "borehole_remarkws", force: :cascade do |t|
@@ -499,6 +545,33 @@ ActiveRecord::Schema.define(version: 20150805085907) do
     t.datetime "proposed_td_date"
   end
 
+  create_table "borehole_well_temps", force: :cascade do |t|
+    t.string   "uno"
+    t.string   "mud_comp"
+    t.string   "tool"
+    t.string   "temp_type"
+    t.decimal  "depth"
+    t.decimal  "rec_temp"
+    t.decimal  "post_circ_time"
+    t.decimal  "circ_time"
+    t.string   "remark"
+    t.string   "db_source"
+    t.datetime "rec_date"
+    t.datetime "updated"
+    t.string   "sidetrack"
+    t.integer  "diameter"
+    t.string   "cased"
+    t.decimal  "cased_to"
+    t.decimal  "casing_size"
+    t.string   "suite"
+    t.string   "run"
+    t.datetime "run_date"
+    t.decimal  "gradient"
+    t.integer  "eno"
+    t.string   "access_code"
+    t.integer  "ano"
+  end
+
   create_table "borehole_wells", force: :cascade do |t|
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
@@ -590,6 +663,7 @@ ActiveRecord::Schema.define(version: 20150805085907) do
     t.string   "resolved_name"
     t.string   "determination"
     t.string   "resolved"
+    t.string   "restore",              default: "N"
   end
 
   create_table "handlers", force: :cascade do |t|
